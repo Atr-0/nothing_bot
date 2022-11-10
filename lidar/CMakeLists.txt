@@ -52,7 +52,7 @@ install(TARGETS delta_lidar_node delta_lidar_node_client
   RUNTIME DESTINATION lib/${PROJECT_NAME}
 )
 
-install(DIRECTORY launch rviz sdk
+install(DIRECTORY launch sdk
   DESTINATION share/${PROJECT_NAME}
   USE_SOURCE_PERMISSIONS
 )
