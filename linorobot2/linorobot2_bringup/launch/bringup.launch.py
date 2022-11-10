@@ -12,6 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import os
 from launch import LaunchDescription
 from launch.actions import DeclareLaunchArgument, IncludeLaunchDescription
 from launch.substitutions import LaunchConfiguration, PathJoinSubstitution, PythonExpression
@@ -22,6 +23,8 @@ from launch.conditions import IfCondition
 
 
 def generate_launch_description():
+    laser_sensor_name = os.getenv('LINOROBOT2_LASER_SENSOR', '')
+    base_laser_sensor_name = os.getenv('LINOROBOT2_BASE_LASER_SENSOR', '')
     sensors_launch_path = PathJoinSubstitution(
         [FindPackageShare('linorobot2_bringup'), 'launch', 'sensors.launch.py']
     )
@@ -47,10 +50,15 @@ def generate_launch_description():
         [FindPackageShare("linorobot2_base"), "config", "ekf.yaml"]
     )
 
+    laser_launch_path = PathJoinSubstitution(
+        [FindPackageShare('linorobot2_bringup'), 'launch', 'lasers.launch.py']
+    )
+
+
     return LaunchDescription([
         DeclareLaunchArgument(
             name='base_serial_port', 
-            default_value='/dev/ttyACM0',
+            default_value='/dev/linorobot',
             description='Linorobot Base Serial Port'
         ),
 
@@ -76,15 +84,8 @@ def generate_launch_description():
             parameters=[
                 ekf_config_path
             ],
-            remappings=[("odometry/filtered", "odom")]
+            # remappings=[("odometry/filtered", "/odom")]
         ),
-
-        # Node(
-        #     package="tf2_ros",
-        #     executable="static_transform_publisher",
-        #     output="screen" ,
-        #     arguments=["0", "0", "0", "0", "0", "0", "base_link", "laser"]
-        # ),
 
         IncludeLaunchDescription(
             PythonLaunchDescriptionSource(description_launch_path)
@@ -94,9 +95,9 @@ def generate_launch_description():
             PythonLaunchDescriptionSource(realsense_launch_path)
         ),
 
-        # IncludeLaunchDescription(
-        #     PythonLaunchDescriptionSource(sensors_launch_path),
-        # ),
+        IncludeLaunchDescription(
+            PythonLaunchDescriptionSource(sensors_launch_path),
+        ),
 
         # IncludeLaunchDescription(
         #     PythonLaunchDescriptionSource(navigation_launch_path),
@@ -110,4 +111,27 @@ def generate_launch_description():
         # IncludeLaunchDescription(
         #     PythonLaunchDescriptionSource(location_launch_path),
         # )
+
+        # Node(
+        #     package="tf2_ros",
+        #     name="t265_2_laser",
+        #     executable="static_transform_publisher",
+        #     output="screen" ,
+        #     arguments=["0", "0", "0", "0", "0", "0", "odom_frame", "base_link","100"]
+        # ),
+        # Node(
+        #     package="tf2_ros",
+        #     name="t265_2_base",
+        #     executable="static_transform_publisher",
+        #     output="screen" ,
+        #     arguments=["0", "0", "0", "0", "0", "0", "camera_link", "base_link","100"]
+        # ),
+        # Node(
+        #     package="tf2_ros",
+        #     name="t265_2_base",
+        #     executable="static_transform_publisher",
+        #     output="screen" ,
+        #     arguments=["0", "0", "0", "0", "0", "0", "camera_link", "laser","100"]
+        # ),
+
     ])
