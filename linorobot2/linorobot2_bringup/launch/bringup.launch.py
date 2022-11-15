@@ -84,7 +84,7 @@ def generate_launch_description():
             parameters=[
                 ekf_config_path
             ],
-            # remappings=[("odometry/filtered", "/odom")]
+            # remappings=[("camera/pose/sample", "odom")]
         ),
 
         IncludeLaunchDescription(
@@ -117,21 +117,21 @@ def generate_launch_description():
         #     name="t265_2_laser",
         #     executable="static_transform_publisher",
         #     output="screen" ,
-        #     arguments=["0", "0", "0", "0", "0", "0", "odom_frame", "base_link","100"]
+        #     arguments=["0", "0", "0", "0", "0", "0", "camera_link", "laser"]
         # ),
         # Node(
         #     package="tf2_ros",
         #     name="t265_2_base",
         #     executable="static_transform_publisher",
         #     output="screen" ,
-        #     arguments=["0", "0", "0", "0", "0", "0", "camera_link", "base_link","100"]
+        #     arguments=["0", "0", "0", "0", "0", "0", "camera_pose_frame", "base_link"]
         # ),
-        # Node(
-        #     package="tf2_ros",
-        #     name="t265_2_base",
-        #     executable="static_transform_publisher",
-        #     output="screen" ,
-        #     arguments=["0", "0", "0", "0", "0", "0", "camera_link", "laser","100"]
-        # ),
+        Node(
+            package="tf2_ros",
+            name="t265_2_base",
+            executable="static_transform_publisher",
+            output="screen" ,
+            arguments=["0", "0", "0", "0", "0", "0", "odom_frame", "base_footprint"]
+        ),
 
     ])

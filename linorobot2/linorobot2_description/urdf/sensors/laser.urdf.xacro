@@ -38,11 +38,17 @@
       </visual> 
     </gazebo>
 
-    <joint name="${frame_id}_to_base_link" type="fixed">
+    <!-- <joint name="${frame_id}_to_base_link" type="fixed">
       <parent link="base_link"/>
       <child link="${frame_id}"/>
       <xacro:insert_block name="origin" />
+    </joint> -->
+    <joint name="${frame_id}_to_camera_link" type="fixed">
+      <parent link="camera_link"/>
+      <child link="${frame_id}"/>
+      <xacro:insert_block name="origin" />
     </joint>
+    
 
     <gazebo reference="${frame_id}">
       <sensor type="ray" name="${frame_id}_head_hokuyo_sensor">

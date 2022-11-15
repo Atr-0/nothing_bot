@@ -42,6 +42,11 @@
       </visual> 
     </gazebo>
 
+    <!-- <joint name="base_to_footprint" type="fixed">
+      <parent link="base_footprint"/>
+      <child link="base_link"/>
+      <origin xyz="0 0 ${wheel_radius - wheel_pos_z}" rpy="0 0 0"/>
+    </joint> -->
     <joint name="base_to_footprint" type="fixed">
       <parent link="base_footprint"/>
       <child link="base_link"/>

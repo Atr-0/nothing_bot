@@ -56,7 +56,7 @@ def generate_launch_description():
             package="tf2_ros",
             executable="static_transform_publisher",
             output="screen" ,
-            arguments=["0", "0", "0", "0", "0", "0", "odom", "imu_link"]
+            arguments=["0", "0", "0", "0", "0", "0", "map", "odom_frame"]
         )
 
     # serial_port_front = LaunchConfiguration('serial_port', default='/dev/ttyUSB0')
@@ -86,5 +86,5 @@ def generate_launch_description():
     ld.add_action(cartographer_node)
     ld.add_action(occupancy_grid_node)
     ld.add_action(rviz_node)   
-    # ld.add_action(tf_node) 
+    ld.add_action(tf_node) 
     return ld
