@@ -1,9 +1,10 @@
 import os
-from launch.actions import ExecuteProcess
+from launch.actions import DeclareLaunchArgument, IncludeLaunchDescription
 from launch import LaunchDescription
-from launch.substitutions import LaunchConfiguration
+from launch.substitutions import LaunchConfiguration, PathJoinSubstitution, PythonExpression
 from launch_ros.actions import Node
 from launch_ros.substitutions import FindPackageShare
+from launch.launch_description_sources import PythonLaunchDescriptionSource
 
 
 def generate_launch_description():
@@ -21,7 +22,7 @@ def generate_launch_description():
     # 配置文件夹路径
     configuration_directory = LaunchConfiguration('configuration_directory',default= os.path.join(pkg_share, 'config') )
     # 配置文件
-    configuration_basename = LaunchConfiguration('configuration_basename', default='lidar_2d.lua')
+    configuration_basename = LaunchConfiguration('configuration_basename', default='backpack_2d.lua')
 
     
     #=====================声明三个节点，cartographer/occupancy_grid_node/rviz_node=================================
@@ -56,8 +57,18 @@ def generate_launch_description():
             package="tf2_ros",
             executable="static_transform_publisher",
             output="screen" ,
-            arguments=["0", "0", "0", "0", "0", "0", "map", "odom_frame"]
+            arguments=[("0", "0", "0", "0", "0", "0", "map", "odom_frame")]
         )
+    # tf_node1 = Node(
+    #         package="tf2_ros",
+    #         executable="static_transform_publisher",
+    #         output="screen" ,
+    #         arguments=["0", "0", "0", "0", "0", "0", "camera_link", "base_footprint"]
+    #     )
+
+    realsense_launch_path = PathJoinSubstitution(
+        [FindPackageShare('realsense2_camera'), 'launch', 'rs_launch.py']
+    )
 
     # serial_port_front = LaunchConfiguration('serial_port', default='/dev/ttyUSB0')
     # frame_idF_front = LaunchConfiguration('frame_id', default='laser')
@@ -86,5 +97,6 @@ def generate_launch_description():
     ld.add_action(cartographer_node)
     ld.add_action(occupancy_grid_node)
     ld.add_action(rviz_node)   
+    # ld.add_action(tf_node1) 
     ld.add_action(tf_node) 
     return ld

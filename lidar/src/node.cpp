@@ -99,7 +99,7 @@ int main(int argc, char * argv[])
     node->get_parameter("frame_id", frame_id);
     node->get_parameter("lidar_scan", lidar_scan);
     rclcpp::Publisher<sensor_msgs::msg::LaserScan>::SharedPtr scan_pub = 
-    node->create_publisher<sensor_msgs::msg::LaserScan>(lidar_scan, 1000);
+    node->create_publisher<sensor_msgs::msg::LaserScan>(lidar_scan, 500);
 
 
     CSerialConnection serial_connect;
@@ -125,8 +125,7 @@ int main(int argc, char * argv[])
     rclcpp::Time start_scan_time;
     rclcpp::Time end_scan_time;
     double scan_duration;
-    start_scan_time = node->now();
-    
+    start_scan_time = node->get_clock()->now();
     while (rclcpp::ok())
     {
 		TLidarGrabResult result = robotics_lidar.getScanData();
@@ -155,7 +154,7 @@ int main(int argc, char * argv[])
             	float angle_max = DEG2RAD(359.0f);
 
 
-				end_scan_time = node->now();
+				end_scan_time = node->get_clock()->now();
 				scan_duration = (end_scan_time - start_scan_time).seconds() * 1e-3;
                 // printf("Receive Lidar count %u!\n", lidar_scan_size);
 
@@ -183,6 +182,7 @@ int main(int argc, char * argv[])
             }
         }
         usleep(50);
+        // rclcpp::spin(node);
         rclcpp::spin_some(node);
     }
     rclcpp::shutdown();

@@ -21,11 +21,11 @@ options = {
   map_builder = MAP_BUILDER,
   trajectory_builder = TRAJECTORY_BUILDER,
   map_frame = "map",
-  tracking_frame = "camera_fisheye2_optical_frame",
+  tracking_frame = "base_footprint",
   published_frame = "odom_frame",
   odom_frame = "odom_frame",
   provide_odom_frame = false,
-  publish_frame_projected_to_2d = true,
+  publish_frame_projected_to_2d = false,
   use_odometry = true,
   use_nav_sat = false,
   use_landmarks = false,
@@ -46,8 +46,8 @@ options = {
 
 MAP_BUILDER.use_trajectory_builder_2d = true
 
-TRAJECTORY_BUILDER_2D.min_range = 0.12
-TRAJECTORY_BUILDER_2D.max_range = 3.
+TRAJECTORY_BUILDER_2D.min_range = 0.2
+TRAJECTORY_BUILDER_2D.max_range = 4.
 TRAJECTORY_BUILDER_2D.missing_data_ray_length = 4.
 TRAJECTORY_BUILDER_2D.use_imu_data = false
 TRAJECTORY_BUILDER_2D.use_online_correlative_scan_matching = false 

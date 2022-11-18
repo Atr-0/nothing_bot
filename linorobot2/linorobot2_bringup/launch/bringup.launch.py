@@ -84,7 +84,7 @@ def generate_launch_description():
             parameters=[
                 ekf_config_path
             ],
-            # remappings=[("camera/pose/sample", "odom")]
+            # remappings=[("/imu/data", "/imu/data_robot")]
         ),
 
         IncludeLaunchDescription(
@@ -93,6 +93,12 @@ def generate_launch_description():
         
         IncludeLaunchDescription(
             PythonLaunchDescriptionSource(realsense_launch_path)
+        ),
+        Node(
+            package="tf2_ros",
+            executable="static_transform_publisher",
+            output="screen" ,
+            arguments=["0", "0", "0", "0", "0", "0", "camera_link", "base_footprint"]
         ),
 
         IncludeLaunchDescription(
@@ -126,12 +132,13 @@ def generate_launch_description():
         #     output="screen" ,
         #     arguments=["0", "0", "0", "0", "0", "0", "camera_pose_frame", "base_link"]
         # ),
-        Node(
-            package="tf2_ros",
-            name="t265_2_base",
-            executable="static_transform_publisher",
-            output="screen" ,
-            arguments=["0", "0", "0", "0", "0", "0", "odom_frame", "base_footprint"]
-        ),
+        # Node(
+        #     package="tf2_ros",
+        #     name="t265_2_base",
+        #     executable="static_transform_publisher",
+        #     output="screen" ,
+        #     arguments=["0", "0", "0", "0", "0", "0", "camera_link", "
+        # "]
+        # ),
 
     ])

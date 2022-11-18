@@ -33,7 +33,7 @@ configurable_parameters = [{'name': 'camera_name',                  'default': '
                            {'name': 'enable_confidence',            'default': 'true', 'description': 'enable depth stream'},
                            {'name': 'gyro_fps',                     'default': '0', 'description': "''"},                           
                            {'name': 'accel_fps',                    'default': '0', 'description': "''"},                           
-                           {'name': 'enable_gyro',                  'default': 'false', 'description': "''"},                           
+                           {'name': 'enable_gyro',                  'default': 'true', 'description': "''"},                           
                            {'name': 'enable_accel',                 'default': 'false', 'description': "''"},                           
                            {'name': 'enable_pose',                  'default': 'true', 'description': "''"},                           
                            {'name': 'pose_fps',                     'default': '200', 'description': "''"},                           
@@ -83,6 +83,7 @@ def generate_launch_description():
                 parameters=[set_configurable_parameters(configurable_parameters)
                             ],
                 output='screen',
+                remappings=[('/camera/pose/sample','/odom')],
                 arguments=['--ros-args', '--log-level', LaunchConfiguration('log_level')],
                 ),
             launch_ros.actions.Node(
@@ -96,6 +97,7 @@ def generate_launch_description():
                             , PythonExpression([LaunchConfiguration("config_file")])
                             ],
                 output='screen',
+                remappings=[('/camera/pose/sample','/odom')],
                 arguments=['--ros-args', '--log-level', LaunchConfiguration('log_level')],
                 ),
             ])
@@ -111,6 +113,7 @@ def generate_launch_description():
                 parameters=[set_configurable_parameters(configurable_parameters)
                             ],
                 output='screen',
+                remappings=[('/camera/pose/sample','/odom')],
                 arguments=['--ros-args', '--log-level', LaunchConfiguration('log_level')],
                 emulate_tty=True,
                 ),
@@ -124,6 +127,7 @@ def generate_launch_description():
                             , PythonExpression([LaunchConfiguration("config_file")])
                             ],
                 output='screen',
+                remappings=[('/camera/pose/sample','/odom')],
                 arguments=['--ros-args', '--log-level', LaunchConfiguration('log_level')],
                 emulate_tty=True,
                 ),

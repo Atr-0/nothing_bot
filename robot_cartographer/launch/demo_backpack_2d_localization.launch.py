@@ -47,7 +47,7 @@ def generate_launch_description():
     # 配置文件
     configuration_basename = LaunchConfiguration('configuration_basename', default='backpack_2d_localization.lua')
     # 地图文件
-    load_state_filename =  LaunchConfiguration('load_state_filename', default=os.path.join(pkg_share, 'maps','oiu.pbstream'))
+    load_state_filename =  LaunchConfiguration('load_state_filename', default=os.path.join(pkg_share, 'maps','001map.pbstream'))
 
     nav2_bringup_dir = get_package_share_directory('nav2_bringup')
     map_yaml_file = os.path.join(pkg_share, 'maps', 'lll_map.yaml')
@@ -95,6 +95,12 @@ def generate_launch_description():
         parameters 
         = [{'use_sim_time': False}],
     )
+    tf_node = Node(
+        package="tf2_ros",
+        executable="static_transform_publisher",
+        output="screen" ,
+        arguments=[("0", "0", "0", "0", "0", "0", "map", "odom_frame")]
+    )
 
 
     # serial_port_front = LaunchConfiguration('serial_port', default='/dev/ttyUSB0')
@@ -124,5 +130,6 @@ def generate_launch_description():
         # (delta_lidar_behind),   
         cartographer_node,
         cartographer_occupancy_grid_node,
+        tf_node,
         # rviz_node,
     ])
