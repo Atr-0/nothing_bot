@@ -21,7 +21,7 @@ from launch.conditions import IfCondition
 from launch_ros.substitutions import FindPackageShare
 from launch_ros.actions import Node
 
-MAP_NAME="mmp" #change to the name of your own map here
+MAP_NAME="001map" #change to the name of your own map here
 
 def generate_launch_description():
     depth_sensor = os.getenv('LINOROBOT2_DEPTH_SENSOR', '')
@@ -69,7 +69,7 @@ def generate_launch_description():
                 'params_file': nav2_config_path
             }.items()
         ),
-
+        
         Node(
             package='rviz2',
             executable='rviz2',
@@ -78,5 +78,5 @@ def generate_launch_description():
             arguments=['-d', rviz_config_path],
             condition=IfCondition(LaunchConfiguration("rviz")),
             parameters=[{'use_sim_time': LaunchConfiguration("sim")}]
-        )
+        ),
     ])

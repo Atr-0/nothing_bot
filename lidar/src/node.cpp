@@ -99,7 +99,7 @@ int main(int argc, char * argv[])
     node->get_parameter("frame_id", frame_id);
     node->get_parameter("lidar_scan", lidar_scan);
     rclcpp::Publisher<sensor_msgs::msg::LaserScan>::SharedPtr scan_pub = 
-    node->create_publisher<sensor_msgs::msg::LaserScan>(lidar_scan, 500);
+    node->create_publisher<sensor_msgs::msg::LaserScan>(lidar_scan, 1000);
 
 
     CSerialConnection serial_connect;

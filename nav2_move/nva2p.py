@@ -27,7 +27,7 @@ Basic navigation demo to go to pose.
 global _flag
 _flag=False
 global orsgx
-orsgx=0.13
+orsgx=0.00
 def main():
     rclpy.init()
 
@@ -71,7 +71,7 @@ def main():
     goal_pose.header.stamp = navigator.get_clock().now().to_msg()
     goal_pose.pose.position.x = orsgx
     goal_pose.pose.position.y = 0.0
-    goal_pose.pose.position.z = 0.075
+    goal_pose.pose.position.z = 0.012
 
     # goal_pose.pose.orientation.x
     # goal_pose.pose.orientation.y

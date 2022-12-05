@@ -94,12 +94,6 @@ def generate_launch_description():
         IncludeLaunchDescription(
             PythonLaunchDescriptionSource(realsense_launch_path)
         ),
-        Node(
-            package="tf2_ros",
-            executable="static_transform_publisher",
-            output="screen" ,
-            arguments=["0", "0", "0", "0", "0", "0", "camera_link", "base_footprint"]
-        ),
 
         IncludeLaunchDescription(
             PythonLaunchDescriptionSource(sensors_launch_path),
@@ -108,37 +102,32 @@ def generate_launch_description():
         # IncludeLaunchDescription(
         #     PythonLaunchDescriptionSource(navigation_launch_path),
         # ),
-
+        
         IncludeLaunchDescription(
             PythonLaunchDescriptionSource(joy_launch_path),
             condition=IfCondition(LaunchConfiguration("joy")),
         ),
 
-        # IncludeLaunchDescription(
-        #     PythonLaunchDescriptionSource(location_launch_path),
-        # )
-
-        # Node(
-        #     package="tf2_ros",
-        #     name="t265_2_laser",
-        #     executable="static_transform_publisher",
-        #     output="screen" ,
-        #     arguments=["0", "0", "0", "0", "0", "0", "camera_link", "laser"]
-        # ),
-        # Node(
-        #     package="tf2_ros",
-        #     name="t265_2_base",
-        #     executable="static_transform_publisher",
-        #     output="screen" ,
-        #     arguments=["0", "0", "0", "0", "0", "0", "camera_pose_frame", "base_link"]
-        # ),
-        # Node(
-        #     package="tf2_ros",
-        #     name="t265_2_base",
-        #     executable="static_transform_publisher",
-        #     output="screen" ,
-        #     arguments=["0", "0", "0", "0", "0", "0", "camera_link", "
-        # "]
-        # ),
+        IncludeLaunchDescription(
+            PythonLaunchDescriptionSource(location_launch_path),
+        ),
+        Node(
+            package="tf2_ros",
+            executable="static_transform_publisher",
+            output="screen" ,
+            arguments=[("0", "0", "0", "0", "0", "0", "map", "odom")]
+        ),
+        Node(
+            package="tf2_ros",
+            executable="static_transform_publisher",
+            output="screen" ,
+            arguments=[("0", "0", "0", "0", "0", "0", "map", "laser")]
+        ),
+        Node(
+            package="tf2_ros",
+            executable="static_transform_publisher",
+            output="screen" ,
+            arguments=["0", "0", "0", "0", "0", "0", "camera_link", "base_footprint"]
+        ),
 
     ])

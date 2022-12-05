@@ -83,7 +83,7 @@ def generate_launch_description():
         output = 'screen',
         parameters = [
             {'use_sim_time': False},
-            # {'-pure_localization': True},
+            {'-pure_localization': True},
             {'resolution': 0.05}],
         )
 
@@ -95,41 +95,16 @@ def generate_launch_description():
         parameters 
         = [{'use_sim_time': False}],
     )
-    tf_node = Node(
-        package="tf2_ros",
-        executable="static_transform_publisher",
-        output="screen" ,
-        arguments=[("0", "0", "0", "0", "0", "0", "map", "odom_frame")]
-    )
-
-
-    # serial_port_front = LaunchConfiguration('serial_port', default='/dev/ttyUSB0')
-    # frame_idF_front = LaunchConfiguration('frame_id', default='laser_1')
-    # scan_front = LaunchConfiguration('lidar_scan', default='/scan')
-    # delta_lidar_front = Node(
-    #     package='lidar',
-    #     executable='delta_lidar_node',
-    #     output='screen',
-    #     parameters=[{'serial_port':serial_port_front},{'frame_id':frame_idF_front},{'lidar_scan':scan_front}]
-    #     )
-
-    # serial_port_behind= LaunchConfiguration('serial_port', default='/dev/ttyUSB1')
-    # frame_id_behind = LaunchConfiguration('frame_id', default='laser_2')
-    # scan_behind = LaunchConfiguration('lidar_scan', default='/scan_2')
-    # delta_lidar_behind = Node(
-    #     package='lidar',
-    #     executable='delta_lidar_node',
-    #     output='screen',
-    #     parameters=[{'serial_port':serial_port_behind},{'frame_id':frame_id_behind},{'lidar_scan':scan_behind}]
-    #     )
-
-    
-    
+    # tf_node = Node(
+    #     package="tf2_ros",
+    #     executable="static_transform_publisher",
+    #     output="screen" ,
+    #     arguments=[("0", "0", "0", "0", "0", "0", "map", "odom_frame")]
+    # )
+       
     return LaunchDescription([
-        # (delta_lidar_front),
-        # (delta_lidar_behind),   
         cartographer_node,
         cartographer_occupancy_grid_node,
-        tf_node,
+        # tf_node,
         # rviz_node,
     ])
