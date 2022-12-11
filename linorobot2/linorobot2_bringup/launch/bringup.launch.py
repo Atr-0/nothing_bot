@@ -103,14 +103,14 @@ def generate_launch_description():
         #     PythonLaunchDescriptionSource(navigation_launch_path),
         # ),
         
-        IncludeLaunchDescription(
-            PythonLaunchDescriptionSource(joy_launch_path),
-            condition=IfCondition(LaunchConfiguration("joy")),
-        ),
+        # IncludeLaunchDescription(
+        #     PythonLaunchDescriptionSource(joy_launch_path),
+        #     condition=IfCondition(LaunchConfiguration("joy")),
+        # ),
 
-        IncludeLaunchDescription(
-            PythonLaunchDescriptionSource(location_launch_path),
-        ),
+        # IncludeLaunchDescription(
+        #     PythonLaunchDescriptionSource(location_launch_path),
+        # ),
         Node(
             package="tf2_ros",
             executable="static_transform_publisher",

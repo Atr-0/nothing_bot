@@ -23,14 +23,14 @@
 #include "tf2_ros/transform_listener.h"
 #include "cartographer_ros/msg_conversion.h"
 
-template<typename T>
-T getParam_Func(rclcpp:NodeHandle& pnh,
-                    const std::string& param_name, const T & default_val)
-{
-  T param_val;
-  pnh.param<T>(param_name, param_val, default_val);
-  return param_val;
-}
+// template<typename T>
+// T getParam_Func(rclcpp:NodeHandle& pnh,
+//                     const std::string& param_name, const T & default_val)
+// {
+//   T param_val;
+//   pnh.param<T>(param_name, param_val, default_val);
+//   return param_val;
+// }
 
 DEFINE_bool(collect_metrics, false,
             "Activates the collection of runtime metrics. If activated, the "
