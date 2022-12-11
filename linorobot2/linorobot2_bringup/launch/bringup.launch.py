@@ -33,17 +33,21 @@ def generate_launch_description():
     )
 
     joy_launch_path = PathJoinSubstitution(
-        [FindPackageShare('linorobot2_bringup'), 'launch', 'joy_teleop.launch.py']
+        [FindPackageShare('linorobot2_bringup'), 'launch',
+         'joy_teleop.launch.py']
     )
 
     description_launch_path = PathJoinSubstitution(
-        [FindPackageShare('linorobot2_description'), 'launch', 'description.launch.py']
+        [FindPackageShare('linorobot2_description'),
+         'launch', 'description.launch.py']
     )
     location_launch_path = PathJoinSubstitution(
-        [FindPackageShare('robot_cartographer'), 'launch', 'demo_backpack_2d_localization.launch.py']
+        [FindPackageShare('robot_cartographer'), 'launch',
+         'demo_backpack_2d_localization.launch.py']
     )
     navigation_launch_path = PathJoinSubstitution(
-        [FindPackageShare('linorobot2_navigation'), 'launch', 'navigation.launch.py']
+        [FindPackageShare('linorobot2_navigation'),
+         'launch', 'navigation.launch.py']
     )
 
     ekf_config_path = PathJoinSubstitution(
@@ -54,16 +58,15 @@ def generate_launch_description():
         [FindPackageShare('linorobot2_bringup'), 'launch', 'lasers.launch.py']
     )
 
-
     return LaunchDescription([
         DeclareLaunchArgument(
-            name='base_serial_port', 
+            name='base_serial_port',
             default_value='/dev/linorobot',
             description='Linorobot Base Serial Port'
         ),
 
-       DeclareLaunchArgument(
-            name='joy', 
+        DeclareLaunchArgument(
+            name='joy',
             default_value='false',
             description='Use Joystick'
         ),
@@ -73,7 +76,8 @@ def generate_launch_description():
             executable='micro_ros_agent',
             name='micro_ros_agent',
             output='screen',
-            arguments=['serial', '--dev', LaunchConfiguration("base_serial_port")]
+            arguments=['serial', '--dev',
+                       LaunchConfiguration("base_serial_port")]
         ),
 
         Node(
@@ -90,7 +94,7 @@ def generate_launch_description():
         IncludeLaunchDescription(
             PythonLaunchDescriptionSource(description_launch_path)
         ),
-        
+
         IncludeLaunchDescription(
             PythonLaunchDescriptionSource(realsense_launch_path)
         ),
@@ -102,32 +106,33 @@ def generate_launch_description():
         # IncludeLaunchDescription(
         #     PythonLaunchDescriptionSource(navigation_launch_path),
         # ),
-        
+
         # IncludeLaunchDescription(
         #     PythonLaunchDescriptionSource(joy_launch_path),
         #     condition=IfCondition(LaunchConfiguration("joy")),
         # ),
 
-        # IncludeLaunchDescription(
-        #     PythonLaunchDescriptionSource(location_launch_path),
-        # ),
+        IncludeLaunchDescription(
+            PythonLaunchDescriptionSource(location_launch_path),
+        ),
         Node(
             package="tf2_ros",
             executable="static_transform_publisher",
-            output="screen" ,
+            output="screen",
             arguments=[("0", "0", "0", "0", "0", "0", "map", "odom")]
         ),
         Node(
             package="tf2_ros",
             executable="static_transform_publisher",
-            output="screen" ,
+            output="screen",
             arguments=[("0", "0", "0", "0", "0", "0", "map", "laser")]
         ),
         Node(
             package="tf2_ros",
             executable="static_transform_publisher",
-            output="screen" ,
-            arguments=["0", "0", "0", "0", "0", "0", "camera_link", "base_footprint"]
+            output="screen",
+            arguments=["0", "0", "0", "0", "0", "0",
+                       "camera_link", "base_footprint"]
         ),
 
     ])
