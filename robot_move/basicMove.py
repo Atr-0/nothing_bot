@@ -52,4 +52,4 @@ class basicMove(Node):
             twist.angular.z = 0.0
             self.pub.publish(twist)
 
-            rclpy.shutdown()
+            rclpy.shutdown(Node)
