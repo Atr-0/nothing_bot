@@ -95,9 +95,9 @@ def generate_launch_description():
             PythonLaunchDescriptionSource(description_launch_path)
         ),
 
-        IncludeLaunchDescription(
-            PythonLaunchDescriptionSource(realsense_launch_path)
-        ),
+        # IncludeLaunchDescription(
+        #     PythonLaunchDescriptionSource(realsense_launch_path)
+        # ),
 
         IncludeLaunchDescription(
             PythonLaunchDescriptionSource(sensors_launch_path),
@@ -112,27 +112,27 @@ def generate_launch_description():
         #     condition=IfCondition(LaunchConfiguration("joy")),
         # ),
 
-        IncludeLaunchDescription(
-            PythonLaunchDescriptionSource(location_launch_path),
-        ),
-        Node(
-            package="tf2_ros",
-            executable="static_transform_publisher",
-            output="screen",
-            arguments=[("0", "0", "0", "0", "0", "0", "map", "odom")]
-        ),
-        Node(
-            package="tf2_ros",
-            executable="static_transform_publisher",
-            output="screen",
-            arguments=[("0", "0", "0", "0", "0", "0", "map", "laser")]
-        ),
-        Node(
-            package="tf2_ros",
-            executable="static_transform_publisher",
-            output="screen",
-            arguments=["0", "0", "0", "0", "0", "0",
-                       "camera_link", "base_footprint"]
-        ),
+        # IncludeLaunchDescription(
+        #     PythonLaunchDescriptionSource(location_launch_path),
+        # ),
+        # Node(
+        #     package="tf2_ros",
+        #     executable="static_transform_publisher",
+        #     output="screen",
+        #     arguments=[("0", "0", "0", "0", "0", "0", "map", "odom")]
+        # ),
+        # Node(
+        #     package="tf2_ros",
+        #     executable="static_transform_publisher",
+        #     output="screen",
+        #     arguments=[("0", "0", "0", "0", "0", "0", "map", "laser")]
+        # ),
+        # Node(
+        #     package="tf2_ros",
+        #     executable="static_transform_publisher",
+        #     output="screen",
+        #     arguments=["0", "0", "0", "0", "0", "0",
+        #                "camera_link", "base_footprint"]
+        # ),
 
     ])
