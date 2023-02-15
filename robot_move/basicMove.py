@@ -49,21 +49,16 @@ class movement(Node):
         self.twist = Twist()
         position = Point()
 
-        (position, rotation) = self.get_odom()
+        # (position, rotation) = self.get_odom()
+        (position, rotation) = 0, 0
+
         prepos = position
 
         node_sub = line_sensor_subscription()
-
-        # while dis > 0:
-        #     rclpy.spin_once(node_sub)
-        #     self.publish_twist()
-        #     print(sensor_matrix)
-        #     dis = dis-1
-        while not rclpy.shutdown:
+        distance = 0
+        while rclpy.ok():
             rclpy.spin_once(node_sub)
             print(sensor_matrix)
-            # 获得linesensor节点的传感器数据
-
             if distance > dis - 0.08 and (sensor_matrix[2][2]+sensor_matrix[2][1]+sensor_matrix[2][0]+sensor_matrix[2][3] >= 4):
                 break
             elif distance > dis - 0.08:
