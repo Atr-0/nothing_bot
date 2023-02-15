@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 import rclpy
 from rclpy.node import Node
+from rclpy.duration import Duration
 import rclpy.qos
 from geometry_msgs.msg import Twist, Point, Quaternion
 from std_msgs.msg import Int32
@@ -30,8 +31,11 @@ class movement(Node):
         global sensor_matrix
         self.tf_buffer = tf2_ros.Buffer()
         self.tf_listener = tf2_ros.TransformListener(self.tf_buffer, self)
-        self.odom_frame = '/odom'
-        self.base_frame = '/base_footprint'
+        self.odom_frame = 'odom'
+        self.tf_buffer.can_transform('odom',
+                                     'base_footprint',
+                                     Duration(seconds=1.0))
+        self.base_frame = 'base_footprint'
 
         self.pub = self.create_publisher(
             Twist, 'cmd_vel', 10)
@@ -121,7 +125,7 @@ class movement(Node):
         # Get the current transform between the odom and base frames
         try:
             (trans, rot) = self.tf_buffer.lookup_transform(
-                self.odom_frame, self.base_frame, rclpy.time.Time(0))
+                self.odom_frame, self.base_frame, rclpy.time.Time())
         except (tf2_ros.TypeException):
             self.get_logger().info("TF Exception")
             return
