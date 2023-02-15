@@ -1,13 +1,12 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 import rclpy
-from rclpy.node import Node, Subscription
-import rclpy.qos
+from rclpy.node import Node
 from geometry_msgs.msg import Twist
 from std_msgs.msg import Int32
 from rclpy.exceptions import ROSInterruptException
-import time
 import numpy as np
+
 np.set_printoptions(threshold=np.inf)
 sensor_matrix = np.zeros([6, 4])
 
@@ -33,9 +32,17 @@ class movement(Node):
             rclpy.spin_once(node_sub)
             self.publish_twist()
             print(sensor_matrix)
-            # self.rate.sleep()
             dis = dis-1
         node_sub.destroy_node()
+
+        self.twist.linear.x = 0.0
+        self.twist.linear.y = 0.0
+        self.twist.linear.z = 0.0
+        self.twist.angular.x = 0.0
+        self.twist.angular.y = 0.0
+        self.twist.angular.z = 0.0
+
+        self.pub.publish(self.twist)
 
     def publish_twist(self):
         self.pub.publish(self.twist)
@@ -52,7 +59,7 @@ class line_sensor_subscription(Node):
         super().__init__("line_sensor_subscription")
 
         self.create_subscription(
-            Int32, 'linesensor', self.line_sensor_callback, 10)
+            Int32, 'topic', self.line_sensor_callback, 10)
         self.subscriptions
 
     def line_sensor_callback(self, data):
@@ -74,21 +81,10 @@ def main(args=None):
     rclpy.init(args=args)
     node = movement()
     try:
-        rclpy.spin(node)
+        rclpy.spin_once(node)
     except ROSInterruptException:
         pass
     finally:
-        node.pub.publish(node.twist)
-
-        node.twist.linear.x = 0.0
-        node.twist.linear.y = 0.0
-        node.twist.linear.z = 0.0
-        node.twist.angular.x = 0.0
-        node.twist.angular.y = 0.0
-        node.twist.angular.z = 0.0
-
-        node.pub.publish(node.twist)
-
         node.destroy_node()
         rclpy.shutdown()
 
