@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 import rclpy
 from rclpy.node import Node
+import rclpy.qos
 from geometry_msgs.msg import Twist
 from std_msgs.msg import Int32
 from rclpy.exceptions import ROSInterruptException
@@ -24,7 +25,7 @@ class movement(Node):
         self.y = 1.0
         self.z = 0.0
         self.th = 1.0
-        self.rate = self.create_rate(500)
+        self.rate = self.create_rate(40)
         self.twist = Twist()
         node_sub = line_sensor_subscription()
 
@@ -59,7 +60,7 @@ class line_sensor_subscription(Node):
         super().__init__("line_sensor_subscription")
 
         self.create_subscription(
-            Int32, 'topic', self.line_sensor_callback, 10)
+            Int32, 'topic', self.line_sensor_callback, rclpy.qos.qos_profile_sensor_data)
         self.subscriptions
 
     def line_sensor_callback(self, data):
