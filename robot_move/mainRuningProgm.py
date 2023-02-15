@@ -14,7 +14,7 @@ def count_time(func):
 @count_time
 def main(args=None):
     # basicMove.getPose()
-    basicMove.movement(-0.4, 0, 4)
+    basicMove.movement(0.2, 0, 0.4)
     # time.sleep(10)
     # basicMove.basicMove(-0.4,0,3)
 
