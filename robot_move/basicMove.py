@@ -7,7 +7,6 @@ from geometry_msgs.msg import Twist, Point, Quaternion
 from std_msgs.msg import Int32
 from rclpy.exceptions import ROSInterruptException
 import numpy as np
-from tf2_ros import TypeException, Exception, NotImplementedException
 import tf2_ros
 import rclpy.time
 import time
@@ -123,7 +122,7 @@ class movement(Node):
         try:
             (trans, rot) = self.tf_buffer.lookup_transform(
                 self.odom_frame, self.base_frame, rclpy.time.Time(0))
-        except (Exception):
+        except (tf2_ros.TypeException):
             self.get_logger().info("TF Exception")
             return
         return (Point(*trans), self.quat_to_angle(Quaternion(*rot)))
