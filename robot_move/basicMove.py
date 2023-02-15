@@ -28,7 +28,7 @@ class movement(Node):
     def __init__(self, vel, turnVel, dis):
         rclpy.init(args=None)
         super().__init__("movement")
-
+        global sensor_matrix
         self.tf_buffer = tf2_ros.Buffer()
         self.tf_listener = tf2_ros.TransformListener(self.tf_buffer, self)
         self.odom_frame = '/odom'
@@ -60,7 +60,6 @@ class movement(Node):
             rclpy.spin_once(node_sub)
             print(sensor_matrix)
             # 获得linesensor节点的传感器数据
-            global sensor_matrix
 
             if distance > dis - 0.08 and (sensor_matrix[2][2]+sensor_matrix[2][1]+sensor_matrix[2][0]+sensor_matrix[2][3] >= 4):
                 break
