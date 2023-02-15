@@ -62,12 +62,13 @@ def generate_launch_description():
         DeclareLaunchArgument(
             name='base_serial_port',
             default_value='/dev/linorobot',
+            # default_value='/dev/ttyACM0',
             description='Linorobot Base Serial Port'
         ),
 
         DeclareLaunchArgument(
             name='joy',
-            default_value='false',
+            default_value='true',
             description='Use Joystick'
         ),
 
