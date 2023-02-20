@@ -4,17 +4,25 @@ import numpy as np
 import math
 
 
-def getRobotPos():
-    pose = np.loadtxt('/tmp/pose.txt', delimiter=',')
-    print(pose)
-
-
 def distance(v1, v2):
     v3 = v1-v2
     X = v3[0] * v3[0]
     Y = v3[1] * v3[1]
     # Z = v3[2] * v3[2]
     return math.Sqrt(X + Y)
+
+
+def lerp(_from, to, t):
+    return _from + (to - _from) * t
+
+
+def normalize_angle(angle):
+    res = angle
+    while res > math.pi:
+        res -= 2.0*math.pi
+    while res < -math.pi:
+        res += 2.0*math.pi
+    return res
 
 
 def euler_from_quaternion(x, y, z, w):

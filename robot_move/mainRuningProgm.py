@@ -13,10 +13,8 @@ def count_time(func):
 
 @count_time
 def main(args=None):
-    # basicMove.getPose()
-    basicMove.movement(0.2, 0, 0.4)
-    # time.sleep(10)
-    # basicMove.basicMove(-0.4,0,3)
+
+    basicMove.axis_movement(0.2, 0, 0.4)
 
 
 if __name__ == '__main__':
