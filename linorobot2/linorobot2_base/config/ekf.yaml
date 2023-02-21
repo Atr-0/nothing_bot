@@ -1,35 +1,55 @@
 ekf_filter_node:
-    ros__parameters:
-        frequency: 50.0
-        two_d_mode: true
-        publish_tf: true
- 
-        map_frame: map             
-        odom_frame: odom           
-        base_link_frame: base_footprint 
-        world_frame: odom
+  ros__parameters:
+    frequency: 50.0
+    two_d_mode: false
+    publish_tf: true
 
-        # x     , y     , z,
-        # roll  , pitch , yaw,
-        # vx    , vy    , vz,
-        # vroll , vpitch, vyaw,
-        # ax    , ay    , az
-        odom0: /odom
-        odom0_config: [false, false, false,
-                       false, false, false,
-                       true, true, false,
-                       false, false, true,
-                       false, false, false]
-        # odom0: camera/pose/sample
-        # odom0_config: [false, false, false,
-        #                false, false, false,
-        #                true, true, false,
-        #                false, false, true,
-        #                false, false, false]
+    map_frame: map
+    odom_frame: odom
+    base_link_frame: base_footprint
+    world_frame: odom
 
-        # imu0: imu/data_robot
-        # imu0_config: [false, false, false,
-        #               false, false, false,
-        #               false, false, false,
-        #               false, false, true,
-        #               false, false, false]
+    #x     , y     , z,
+    #roll  , pitch , yaw,
+    #vx    , vy    , vz,
+    #vroll , vpitch, vyaw,
+    #ax    , ay    , az
+    odom0: odom/unfiltered
+    odom0_config:
+      [
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        true,
+        true,
+        false,
+        false,
+        false,
+        true,
+        false,
+        false,
+        false,
+      ]
+
+    imu0: imu/data
+    imu0_config:
+      [
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        true,
+        false,
+        false,
+        false,
+      ]

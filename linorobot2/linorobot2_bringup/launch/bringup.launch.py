@@ -23,39 +23,17 @@ from launch.conditions import IfCondition
 
 
 def generate_launch_description():
-    laser_sensor_name = os.getenv('LINOROBOT2_LASER_SENSOR', '')
-    base_laser_sensor_name = os.getenv('LINOROBOT2_BASE_LASER_SENSOR', '')
     sensors_launch_path = PathJoinSubstitution(
         [FindPackageShare('linorobot2_bringup'), 'launch', 'sensors.launch.py']
-    )
-    realsense_launch_path = PathJoinSubstitution(
-        [FindPackageShare('realsense2_camera'), 'launch', 'rs_launch.py']
-    )
-
-    joy_launch_path = PathJoinSubstitution(
-        [FindPackageShare('linorobot2_bringup'), 'launch',
-         'joy_teleop.launch.py']
     )
 
     description_launch_path = PathJoinSubstitution(
         [FindPackageShare('linorobot2_description'),
          'launch', 'description.launch.py']
     )
-    location_launch_path = PathJoinSubstitution(
-        [FindPackageShare('robot_cartographer'), 'launch',
-         'demo_backpack_2d_localization.launch.py']
-    )
-    navigation_launch_path = PathJoinSubstitution(
-        [FindPackageShare('linorobot2_navigation'),
-         'launch', 'navigation.launch.py']
-    )
 
     ekf_config_path = PathJoinSubstitution(
         [FindPackageShare("linorobot2_base"), "config", "ekf.yaml"]
-    )
-
-    laser_launch_path = PathJoinSubstitution(
-        [FindPackageShare('linorobot2_bringup'), 'launch', 'lasers.launch.py']
     )
 
     return LaunchDescription([
@@ -89,51 +67,14 @@ def generate_launch_description():
             parameters=[
                 ekf_config_path
             ],
-            # remappings=[("/imu/data", "/imu/data_robot")]
         ),
 
         IncludeLaunchDescription(
             PythonLaunchDescriptionSource(description_launch_path)
         ),
 
-        # IncludeLaunchDescription(
-        #     PythonLaunchDescriptionSource(realsense_launch_path)
-        # ),
-
         IncludeLaunchDescription(
             PythonLaunchDescriptionSource(sensors_launch_path),
         ),
-
-        # IncludeLaunchDescription(
-        #     PythonLaunchDescriptionSource(navigation_launch_path),
-        # ),
-
-        # IncludeLaunchDescription(
-        #     PythonLaunchDescriptionSource(joy_launch_path),
-        #     condition=IfCondition(LaunchConfiguration("joy")),
-        # ),
-
-        # IncludeLaunchDescription(
-        #     PythonLaunchDescriptionSource(location_launch_path),
-        # ),
-        # Node(
-        #     package="tf2_ros",
-        #     executable="static_transform_publisher",
-        #     output="screen",
-        #     arguments=[("0", "0", "0", "0", "0", "0", "map", "odom")]
-        # ),
-        # Node(
-        #     package="tf2_ros",
-        #     executable="static_transform_publisher",
-        #     output="screen",
-        #     arguments=[("0", "0", "0", "0", "0", "0", "map", "laser")]
-        # ),
-        # Node(
-        #     package="tf2_ros",
-        #     executable="static_transform_publisher",
-        #     output="screen",
-        #     arguments=["0", "0", "0", "0", "0", "0",
-        #                "camera_link", "base_footprint"]
-        # ),
 
     ])
