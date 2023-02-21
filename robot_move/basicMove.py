@@ -2,20 +2,15 @@
 # -*- coding: utf-8 -*-
 import rclpy
 from rclpy.node import Node
-from rclpy.duration import Duration
 import rclpy.qos
 from geometry_msgs.msg import Twist, Point, Vector3, Quaternion
 from std_msgs.msg import Int32
-from nav_msgs.msg import Odometry
 from rclpy.exceptions import ROSInterruptException
 import numpy as np
 import tf2_ros
 import rclpy.time
 import time
 import math
-import utils
-import PyKDL
-import getPose
 np.set_printoptions(threshold=np.inf)
 sensor_matrix = np.zeros([6, 4])
 position = Vector3()
@@ -23,7 +18,7 @@ position = Vector3()
 
 class axis_movement(Node):
     integral, previous_error, error = 0, 0, 0
-    kp, ki, kd = 1.0, 0.0, 0.1
+    kp, ki, kd = 0.83, 0.0, 0.083
 
     def __init__(self, vel, turnVel, dis, yaxis=False):
         rclpy.init(args=None)
@@ -53,30 +48,37 @@ class axis_movement(Node):
         node_odom_sub = odom_subscription()
 
         rclpy.spin_once(node_odom_sub)
-        prepos = position
+        global position
+        prepos = Vector3()
+        prepos.x = position.x
+        prepos.y = position.y
+        prepos.z = position.z
+        # prepos
         distance = 0.0
 
         while rclpy.ok():
+            rclpy.spin_once(node_odom_sub)
+            # print("xxxx", position)
+            # print("ppp", prepos)
             rclpy.spin_once(node_sub)
-            print(sensor_matrix)
-            if distance > self.dis - 0.08 and (sensor_matrix[2][1]+sensor_matrix[2][2]+sensor_matrix[5][1]+sensor_matrix[5][2] >= 3) and not yaxis:
+            # print(sensor_matrix)
+            if distance > self.dis - 0.1 and (sensor_matrix[2][1]+sensor_matrix[2][2]+sensor_matrix[5][1]+sensor_matrix[5][2] >= 3) and not yaxis:
                 break
-            elif distance > self.dis - 0.08 and (sensor_matrix[0][3]+sensor_matrix[1][0]+sensor_matrix[3][3]+sensor_matrix[4][0] >= 4) and yaxis:
+            elif distance > self.dis - 0.1 and (sensor_matrix[0][3]+sensor_matrix[1][0]+sensor_matrix[3][0]+sensor_matrix[4][3] >= 3) and yaxis:
                 break
-            # elif distance > self.dis - 0.08:
-            #     self.speed = 0.25
+            elif distance > self.dis - 0.1:
+                self.speed = 0.25*(1.0 if self.speed > 0.0 else -1.0)
 
             self.y_axis_movement(
                 self.speed) if yaxis else self.x_axis_movement(self.speed)
 
-            time.sleep(0.02)
-
-            rclpy.spin_once(node_odom_sub)
-
-            distance += math.sqrt(pow((position.x - prepos.x), 2) +
-                                  pow((position.y - prepos.y), 2))
-            prepos = position
-            print(distance)
+            distance = math.sqrt(pow((position.x - prepos.x), 2) +
+                                 pow((position.y - prepos.y), 2))+distance
+            prepos.x = position.x
+            prepos.y = position.y
+            prepos.z = position.z
+            # print("dddd", distance)
+            time.sleep(0.05)
 
         node_sub.destroy_node()
         node_odom_sub.destroy_node()
@@ -88,25 +90,24 @@ class axis_movement(Node):
         front, back = sensor_matrix[0], sensor_matrix[3]
         front = np.append(front, sensor_matrix[1])
         back = np.append(back, sensor_matrix[4])
-        print(front)
+
         feedback = 0
         value = 0
-        _weight = 8-weight
+        f_or_d = (1.0 if self.speed > 0.0 else -1.0)
         for i in range(0, weight):
             feedback = feedback + \
-                (front[i]*weight*abs(i-weight))
-            feedback = feedback + \
-                (back[i]*_weight*abs(weight-i))
+                (front[i]*abs(i-weight)*f_or_d)
+            feedback = feedback - \
+                (back[i]*abs(weight-i)*f_or_d)
         for i in range(weight, 8):
             feedback = feedback - \
-                (front[i]*_weight*abs(i-weight))
-            feedback = feedback - \
-                (back[i]*weight*abs(weight-i))
-        feedback *= 0.1
-        print(feedback)
+                (front[i]*abs(weight-i)*f_or_d)
+            feedback = feedback + \
+                (back[i]*abs(i-weight)*f_or_d)
+        feedback *= 0.25
+        print("f", feedback)
 
         value = value + np.sum(front) + np.sum(back)
-        print(value)
         if value == 0:
             self.error = 0
         else:
@@ -123,37 +124,29 @@ class axis_movement(Node):
         if (ans != 0):
             self.publish_twist(v, corr)
         else:
-            self.publish_twist(0.1, 0)
+            self.publish_twist(0.1*f_or_d, 0)
         self.previous_error = self.error
 
-    def y_axis_movement(self, v, weight=0.5):
+    def y_axis_movement(self, v, weight=2):
         global sensor_matrix
-
-        temp = np.zeros([2, 4])
-        temp[0] = sensor_matrix[2]
-        temp[1] = sensor_matrix[5]
-
+        front, back = sensor_matrix[2], sensor_matrix[5]
         feedback = 0
         value = 0
+        f_or_d = (1.0 if self.speed > 0.0 else -1.0)
+        for i in range(0, weight):
+            feedback = feedback + \
+                (front[i]*abs(i-1)*f_or_d)
+            feedback = feedback - \
+                (back[i]*abs(1-i)*f_or_d)
+        for i in range(weight, 4):
+            feedback = feedback - \
+                (front[i]*abs(1-i)*f_or_d)
+            feedback = feedback + \
+                (back[i]*abs(i-1)*f_or_d)
+        feedback *= 0.25
 
-        count_f = utils.lerp(0.0, 1.0, weight)
-        print("w", count_f)
-        f = utils.lerp(1.0, 1.5, count_f)
-        f1 = utils.lerp(1.5, 1.0, count_f)
-
-        print("FF", f, f1)
-        for i in range(0, 2):
-            for j in range(0, 4):
-                if j < 2:
-                    feedback = feedback + \
-                        ((temp[i][j]*f)*(1+weight))
-                else:
-                    feedback = feedback - \
-                        ((temp[i][j]*f1)*(1-weight))
-        print(feedback)
-
-        value = value + temp.sum()
-        print(value)
+        value = value + np.sum(front) + np.sum(back)
+        # print(value)
         if value == 0:
             self.error = 0
         else:
@@ -164,31 +157,14 @@ class axis_movement(Node):
         self.integral += self.error
 
         corr = self.kp * self.error + self.ki * self.integral + self.kd * derivative
-        print(corr)
+        # print(corr)
 
         ans = np.sum(sensor_matrix)
         if (ans != 0):
             self.publish_twist(v, corr)
         else:
-            self.publish_twist(0.1, 0)
+            self.publish_twist(0.1*f_or_d, 0)
         self.previous_error = self.error
-
-    def get_odom(self):
-        try:
-            self.tf_buffer.can_transform(self.odom_frame,
-                                         self.base_frame,
-                                         Duration(seconds=1.0))
-            (trans, rot) = self.tf_buffer.lookup_transform(
-                self.odom_frame, self.base_frame, rclpy.time.Time())
-            print("", trans, rot)
-        except (tf2_ros.TypeException):
-            self.get_logger().info("TF Exception")
-            return
-        return (Point(*trans), self.quat_to_angle(Quaternion(*rot)))
-
-    def quat_to_angle(self, quat):
-        rot = PyKDL.Rotation.Quaternion(quat.x, quat.y, quat.z, quat.w)
-        return rot.GetRPY()
 
     def publish_twist(self, vel, turn):
         self.pub.publish(self.twist)
@@ -228,14 +204,15 @@ class odom_subscription(Node):
         super().__init__("odom_subscription")
 
         self.create_subscription(
-            Odometry, 'odom/unfiltered', self.odom_callback, 10)
+            Vector3, 'frame_listener', self.odom_callback, 10)
         self.subscriptions
 
     def odom_callback(self, data):
-        position.x = data.pose.pose.position.x
-        position.y = data.pose.pose.position.y
-        position.z = data.pose.pose.position.z
-        print(position)
+        global position
+        position.x = data.x
+        position.y = data.y
+        position.z = data.z
+        # print("!!",position)
 
 
 def main(args=None):

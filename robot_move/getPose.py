@@ -19,7 +19,7 @@ class getPose(Node):
         self.position_vector = Vector3()
         self.tf_buffer = tf2_ros.Buffer()
         self.tf_listener = tf2_ros.TransformListener(self.tf_buffer, self)
-        self.timer = self.create_timer(1.0, self.timer_callback)
+        self.timer = self.create_timer(0.05, self.timer_callback)
 
     def timer_callback(self):
         self.tf_buffer.can_transform('odom',
