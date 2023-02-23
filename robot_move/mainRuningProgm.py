@@ -14,29 +14,30 @@ def count_time(func):
 
 @count_time
 def main():
-    basicMove.movement(2, 0.4, 0.0, 0.6, yaxis=True)
+    move = basicMove.movement
+    move(2, 0.4, 0.0, 0.6, yaxis=True)
     time.sleep(0.5)
-    basicMove.movement(3, -0.4, 0.0, 0.2, yaxis=False)
+    move(3, -0.4, 0.0, 0.2, yaxis=False)
     time.sleep(0.5)
-    basicMove.movement(2, -0.4, 0.0, 0.4, yaxis=True, yaxis_stop_weight=7)
+    move(2, -0.4, 0.0, 0.4, yaxis=True, yaxis_stop_weight=7)
     for i in range(6):
         time.sleep(0.5)
-        basicMove.movement(1, -0.4, 0.0, 0.4, yaxis=False)
+        move(1, -0.4, 0.0, 0.4, yaxis=False)
     time.sleep(0.5)
 
-    basicMove.movement(2, 0.4, 0.0, 0.4, yaxis=True)
+    move(2, 0.4, 0.0, 0.4, yaxis=True)
     time.sleep(0.5)
-    basicMove.movement(3, 0.4, 0.0, 0.4, yaxis=False)
+    move(3, 0.4, 0.0, 0.4, yaxis=False)
 
     time.sleep(0.5)
-    basicMove.movement(2, 0.4, 0.0, 0.78, yaxis=True)
+    move(2, 0.4, 0.0, 0.78, yaxis=True)
     time.sleep(0.5)
-    basicMove.movement(3, 0.0, -1.6, 0.0, yaxis=False)
+    move(3, 0.0, -1.6, 0.0, yaxis=False)
     time.sleep(0.5)
-    basicMove.movement(2, -0.4, 0.0, 0.4, yaxis=True, yaxis_stop_weight=6)
+    move(2, -0.4, 0.0, 0.4, yaxis=True, yaxis_stop_weight=6)
     for i in range(6):
         time.sleep(0.5)
-        basicMove.movement(1, -0.4, 0.0, 0.4, yaxis=False)
+        move(1, -0.4, 0.0, 0.4, yaxis=False)
     time.sleep(0.5)
 
 
