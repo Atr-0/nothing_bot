@@ -17,6 +17,15 @@ np.set_printoptions(threshold=np.inf)
 direction = 0
 sensor_matrix = np.zeros([6, 4])
 position = Vector3()
+'''
+linosensors
+^   1234 1234   ^
+|4             1|
+|3             2|
+|2             3|
+|1             4|
+    1234 1234
+'''
 
 
 class movement(Node):
@@ -51,10 +60,10 @@ class movement(Node):
         prepos.y = position.y
         prepos.z = position.z
         distance = 0.0
-        # while 1:
-        #     rclpy.spin_once(node_sub)
-        #     print(sensor_matrix)
-        #     time.sleep(0.05)
+        while 1:
+            rclpy.spin_once(node_sub)
+            print(sensor_matrix)
+            time.sleep(0.05)
         tick = 0.0
         while rclpy.ok():
             rclpy.spin_once(node_odom_sub)
@@ -64,7 +73,7 @@ class movement(Node):
             # print(sensor_matrix)
             if self.turnVel == 0.0:
                 temp = (list(sensor_matrix[0])+list(sensor_matrix[1]) +
-                        list(sensor_matrix[4])+list(sensor_matrix[3]))
+                        list(sensor_matrix[3])+list(sensor_matrix[4]))
                 # print(temp)
                 if distance > self.dis - 0.18 and (sensor_matrix[2][1]+sensor_matrix[2][2]+sensor_matrix[5][1]+sensor_matrix[5][2] >= 2) and not yaxis:
                     break
