@@ -1,6 +1,7 @@
 from utils import *
 import basicMove
 import time
+import rclpy
 
 
 def count_time(func):
@@ -12,9 +13,32 @@ def count_time(func):
 
 
 @count_time
-def main(args=None):
+def main():
+    move = basicMove.movement
+    move(2, 0.4, 0.0, 0.6, yaxis=True)
+    time.sleep(0.5)
+    move(3, -0.4, 0.0, 0.2, yaxis=False)
+    time.sleep(0.5)
+    move(2, -0.4, 0.0, 0.4, yaxis=True, yaxis_stop_weight=7)
+    for i in range(6):
+        time.sleep(0.5)
+        move(1, -0.4, 0.0, 0.4, yaxis=False)
+    time.sleep(0.5)
 
-    basicMove.axis_movement(0.2, 0, 0.4)
+    move(2, 0.4, 0.0, 0.4, yaxis=True)
+    time.sleep(0.5)
+    move(3, 0.4, 0.0, 0.4, yaxis=False)
+
+    time.sleep(0.5)
+    move(2, 0.4, 0.0, 0.78, yaxis=True)
+    time.sleep(0.5)
+    move(3, 0.0, -1.6, 0.0, yaxis=False)
+    time.sleep(0.5)
+    move(2, -0.4, 0.0, 0.4, yaxis=True, yaxis_stop_weight=6)
+    for i in range(6):
+        time.sleep(0.5)
+        move(1, -0.4, 0.0, 0.4, yaxis=False)
+    time.sleep(0.5)
 
 
 if __name__ == '__main__':

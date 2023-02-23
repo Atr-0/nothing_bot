@@ -11,48 +11,33 @@ import tf2_ros
 import rclpy.time
 import time
 import math
+import utils
 np.set_printoptions(threshold=np.inf)
-'''
-    1: 1234 2: 1234
-6:  4
-    3
-    2
-    1            3:   4
-                      3
-                      2
-                      1
-    5: 1234 4: 4321
 
-'''
+direction = 0
 sensor_matrix = np.zeros([6, 4])
 position = Vector3()
 
 
-class axis_movement(Node):
-    integral, previous_error, error = 0, 0, 0
-    kp, ki, kd = 1.0, 0.0, 0.1
+class movement(Node):
+    integral, previous_error, error = 0.0, 0.0, 0.0
 
-    def __init__(self, vel, turnVel, dis, yaxis=False):
+    def __init__(self, weight, vel, turnVel=0.0, dis=0.4, yaxis=False, yaxis_stop_weight=3):
         rclpy.init(args=None)
         super().__init__("movement")
-        global sensor_matrix, position
-        self.tf_buffer = tf2_ros.Buffer()
-        self.tf_listener = tf2_ros.TransformListener(self.tf_buffer, self)
-
-        self.odom_frame = 'odom'
-        self.base_frame = 'base_footprint'
+        global sensor_matrix, position, direction
 
         self.pub = self.create_publisher(
             Twist, 'cmd_vel', 10)
-
+        self.weight = weight
         self.speed = vel
-        self.turn = turnVel
+        self.turnVel = turnVel
         self.x = float(~int(yaxis)+2)
         self.y = float(yaxis)
 
         self.z = 0.0
         self.th = 1.0
-        self.dis = dis*2
+        self.dis = dis*2.0
         self.rate = self.create_rate(40)
         self.twist = Twist()
 
@@ -70,22 +55,38 @@ class axis_movement(Node):
         #     rclpy.spin_once(node_sub)
         #     print(sensor_matrix)
         #     time.sleep(0.05)
-
+        tick = 0.0
         while rclpy.ok():
             rclpy.spin_once(node_odom_sub)
             # print("xxxx", position)
             # print("ppp", prepos)
             rclpy.spin_once(node_sub)
             # print(sensor_matrix)
-            if distance > self.dis - 0.13 and (sensor_matrix[2][1]+sensor_matrix[2][2]+sensor_matrix[5][1]+sensor_matrix[5][2] >= 2) and not yaxis:
-                break
-            elif distance > self.dis - 0.13 and (sensor_matrix[0][0]+sensor_matrix[1][3]+sensor_matrix[3][0]+sensor_matrix[4][3] >= 2) and yaxis:
-                break
-            elif distance > self.dis - 0.13:
-                self.speed = 0.25*(1.0 if self.speed > 0.0 else -1.0)
-
-            self.y_axis_movement(
-                self.speed) if yaxis else self.x_axis_movement(self.speed)
+            if self.turnVel == 0.0:
+                temp = (list(sensor_matrix[0])+list(sensor_matrix[1]) +
+                        list(sensor_matrix[4])+list(sensor_matrix[3]))
+                # print(temp)
+                if distance > self.dis - 0.18 and (sensor_matrix[2][1]+sensor_matrix[2][2]+sensor_matrix[5][1]+sensor_matrix[5][2] >= 2) and not yaxis:
+                    break
+                elif distance > self.dis - 0.18 and (
+                    temp[yaxis_stop_weight] +
+                    temp[yaxis_stop_weight+1] +
+                    temp[yaxis_stop_weight+6] +
+                        temp[yaxis_stop_weight+7] >= 2) and yaxis:
+                    break
+                elif distance > self.dis - 0.18:
+                    self.speed = 0.25*(1.0 if self.speed > 0.0 else -1.0)
+                elif distance > self.dis+0.4:
+                    break
+                self.y_axis_movement(
+                    self.speed) if yaxis else self.x_axis_movement(self.speed)
+            else:
+                angle_fac = utils.lerp(0, 90, tick)
+                tick += 0.02
+                # print(angle_fac)
+                if angle_fac >= 90 and (sensor_matrix[0][self.weight]+sensor_matrix[1][3-self.weight]+sensor_matrix[3][3-self.weight]+sensor_matrix[4][self.weight] >= 3):
+                    break
+                self.publish_twist(0.0, self.turnVel)
 
             distance = math.sqrt(pow((position.x - prepos.x), 2) +
                                  pow((position.y - prepos.y), 2))+distance
@@ -94,34 +95,38 @@ class axis_movement(Node):
             prepos.z = position.z
             # print("dddd", distance)
             time.sleep(0.05)
-
+        self.integral, self.previous_error, self.error = 0.0, 0.0, 0.0
         node_sub.destroy_node()
         node_odom_sub.destroy_node()
-        self.publish_twist(0, 0)
         self.publish_twist(0, 0)
         self.destroy_node()
         rclpy.shutdown()
 
-    def x_axis_movement(self, v, weight=4):
+    def x_axis_movement(self, v):
         global sensor_matrix
-        front, back = sensor_matrix[0], sensor_matrix[3]
-        front = np.append(front, sensor_matrix[1])
-        back = np.append(back, sensor_matrix[4])
+        weight = self.weight
+        kp, ki, kd = 1.0, 0.0, 0.1
+        front, back = (list(sensor_matrix[0])+list(sensor_matrix[1]),
+                       list(sensor_matrix[3])+list(sensor_matrix[4]))
 
         feedback = 0
         value = 0
-        f_or_d = (1.0 if self.speed > 0.0 else -1.0)
+        f_or_d = (1.0 if self.speed > 0.0 else 1.0)
         _weight = weight+1
         for i in range(0, weight):
-            feedback = feedback + \
-                ((front[i]+1)*abs(i-_weight)*f_or_d)
-            feedback = feedback - \
-                ((back[i]+1)*abs(i-_weight)*f_or_d)
+            if self.speed > 0.0:
+                feedback = feedback + \
+                    ((front[i])*abs(i-_weight))
+            else:
+                feedback = feedback + \
+                    ((back[i])*abs(i-_weight))
         for i in range(weight, 8):
-            feedback = feedback - \
-                ((front[i]+1)*abs(i-weight)*f_or_d)
-            feedback = feedback + \
-                ((back[i]+1)*abs(i-weight)*f_or_d)
+            if self.speed > 0.0:
+                feedback = feedback - \
+                    ((front[i])*abs(i-weight))
+            else:
+                feedback = feedback - \
+                    ((back[i])*abs(i-weight))
         feedback *= 0.2
         # print("f", feedback)
 
@@ -135,8 +140,8 @@ class axis_movement(Node):
 
         self.integral += self.error
 
-        corr = self.kp * self.error + self.ki * self.integral + self.kd * derivative
-        print(corr)
+        corr = kp * self.error + ki * self.integral + kd * derivative
+        # print(corr)
 
         ans = np.sum(sensor_matrix)
         if (ans != 0):
@@ -145,25 +150,30 @@ class axis_movement(Node):
             self.publish_twist(0.1*f_or_d, 0)
         self.previous_error = self.error
 
-    def y_axis_movement(self, v, weight=3):
+    def y_axis_movement(self, v):
         global sensor_matrix
+        weight = self.weight
         kp, ki, kd = 1.0, 0.0, 0.1
-        front, back = sensor_matrix[2], sensor_matrix[5]
+        front, back = sensor_matrix[5], sensor_matrix[2]
         feedback = 0.0
         value = 0.0
         f_or_d = (1.0 if self.speed > 0.0 else -1.0)
         # f_or_d = 1.0
         _weight = weight+1
         for i in range(0, weight):
-            feedback = feedback + \
-                ((front[i]+1)*abs(i-_weight)*f_or_d)
-            feedback = feedback - \
-                ((back[i]+1)*abs(i-_weight)*f_or_d)
+            if self.speed > 0.0:
+                feedback = feedback + \
+                    ((front[i])*abs(i-_weight))
+            else:
+                feedback = feedback + \
+                    ((back[i])*abs(i-_weight))
         for i in range(weight, 4):
-            feedback = feedback - \
-                ((front[i]+1)*abs(i-weight)*f_or_d)
-            feedback = feedback + \
-                ((back[i]+1)*abs(i-weight)*f_or_d)
+            if self.speed > 0.0:
+                feedback = feedback - \
+                    ((front[i])*abs(i-weight))
+            else:
+                feedback = feedback - \
+                    ((back[i])*abs(i-weight))
         feedback *= 0.2
 
         value = value + (np.sum(front) if self.speed > 0.0 else np.sum(back))
@@ -178,7 +188,7 @@ class axis_movement(Node):
         self.integral += self.error
 
         corr = kp * self.error + ki * self.integral + kd * derivative
-        print(corr)
+        # print(corr)
 
         ans = np.sum(sensor_matrix)
         if (ans != 0):
@@ -218,8 +228,11 @@ class line_sensor_subscription(Node):
                 mijishu = mijishu-1
             pass
         pass
-        reverse_3, reverse_5, = (np.flipud(sensor_matrix[3]), np.flipud(
-            sensor_matrix[5]))
+        reverse_2, reverse_3, reverse_5, = (
+            np.flipud(sensor_matrix[2]),
+            np.flipud(sensor_matrix[3]),
+            np.flipud(sensor_matrix[5]))
+        sensor_matrix[2] = reverse_2
         sensor_matrix[3] = reverse_3
         sensor_matrix[5] = reverse_5
         # print(sensor_matrix)
