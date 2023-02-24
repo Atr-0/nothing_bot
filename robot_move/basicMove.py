@@ -60,10 +60,10 @@ class movement(Node):
         prepos.y = position.y
         prepos.z = position.z
         distance = 0.0
-        while 1:
-            rclpy.spin_once(node_sub)
-            print(sensor_matrix)
-            time.sleep(0.05)
+        # while 1:
+        #     rclpy.spin_once(node_sub)
+        #     print(sensor_matrix)
+        #     time.sleep(0.05)
         tick = 0.0
         while rclpy.ok():
             rclpy.spin_once(node_odom_sub)
@@ -73,15 +73,15 @@ class movement(Node):
             # print(sensor_matrix)
             if self.turnVel == 0.0:
                 temp = (list(sensor_matrix[0])+list(sensor_matrix[1]) +
-                        list(sensor_matrix[3])+list(sensor_matrix[4]))
+                        list(sensor_matrix[4])+list(sensor_matrix[3]))
                 # print(temp)
                 if distance > self.dis - 0.18 and (sensor_matrix[2][1]+sensor_matrix[2][2]+sensor_matrix[5][1]+sensor_matrix[5][2] >= 2) and not yaxis:
                     break
                 elif distance > self.dis - 0.18 and (
-                    temp[yaxis_stop_weight] +
-                    temp[yaxis_stop_weight+1] +
-                    temp[yaxis_stop_weight+6] +
-                        temp[yaxis_stop_weight+7] >= 2) and yaxis:
+                        temp[yaxis_stop_weight] +
+                        temp[yaxis_stop_weight+1] +
+                        temp[yaxis_stop_weight+7] +
+                        temp[yaxis_stop_weight+8] >= 2) and yaxis:
                     break
                 elif distance > self.dis - 0.18:
                     self.speed = 0.25*(1.0 if self.speed > 0.0 else -1.0)
@@ -93,7 +93,11 @@ class movement(Node):
                 angle_fac = utils.lerp(0, 90, tick)
                 tick += 0.02
                 # print(angle_fac)
-                if angle_fac >= 90 and (sensor_matrix[0][self.weight]+sensor_matrix[1][3-self.weight]+sensor_matrix[3][3-self.weight]+sensor_matrix[4][self.weight] >= 3):
+                if angle_fac >= 90 and (
+                        sensor_matrix[0][self.weight] +
+                        sensor_matrix[1][3-self.weight] +
+                        sensor_matrix[3][3-self.weight] +
+                        sensor_matrix[4][self.weight] >= 3):
                     break
                 self.publish_twist(0.0, self.turnVel)
 
