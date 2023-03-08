@@ -123,8 +123,6 @@ class movement(Node):
         self.destroy_node()
         node_sub.destroy_node()
         node_odom_sub.destroy_node()
-        # rclpy.shutdown()
-        # c
 
     def x_axis_movement(self, v):
         global sensor_matrix
@@ -267,7 +265,7 @@ class movement(Node):
 
         ans = np.sum(sensor_matrix)
         if (ans != 0):
-            self.publish_twist(houcorr/-3, v, (corr*f_or_d)/-2)
+            self.publish_twist(houcorr/-4, v, (corr*f_or_d)/-2)
             # print(corr/-2)
         else:
             self.publish_twist(0.0, 0.1*f_or_d, 0)

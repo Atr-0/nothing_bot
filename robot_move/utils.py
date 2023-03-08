@@ -12,13 +12,13 @@ def distance(v1, v2):
     return math.sqrt(X + Y)
 
 
-def lerp(_from, to, t, clamp=True):
+def lerp(FORM, TO, t, clamp=True):
     if clamp:
         if t >= 1:
-            return to
+            return TO
         elif t <= 0:
-            return _from
-    return _from + (to - _from) * t
+            return FORM
+    return FORM + (TO - FORM) * t
 
 
 def normalize_angle(angle):
