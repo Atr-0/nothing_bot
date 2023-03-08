@@ -9,10 +9,15 @@ def distance(v1, v2):
     X = v3[0] * v3[0]
     Y = v3[1] * v3[1]
     # Z = v3[2] * v3[2]
-    return math.Sqrt(X + Y)
+    return math.sqrt(X + Y)
 
 
-def lerp(_from, to, t):
+def lerp(_from, to, t, clamp=True):
+    if clamp:
+        if t >= 1:
+            return to
+        elif t <= 0:
+            return _from
     return _from + (to - _from) * t
 
 
