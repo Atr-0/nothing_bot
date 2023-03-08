@@ -1,15 +1,15 @@
 from utils import *
-import basicMove
+import robot_move.basic as basic
 import time
 import rclpy
 from rclpy.node import Node
 from std_msgs.msg import String, Int32
 
-correct_sorting = np.array(
+target = np.array(
     [0, 0, 1, 1, 2, 2,
      0, 0, 1, 1, 2, 2]
 )
-original_sorting = np.array(
+currently = np.array(
     [0, 1, 1, 2, 2, 0,
      0, 2, 0, 1, 1, 2]
 )
@@ -18,38 +18,38 @@ original_sorting = np.array(
 class a_zone_grab():
 
     def __init__(self, func):
-        global correct_sorting, original_sorting
+        global target, currently
         self.func = func
         self.dec = {
             "0": self.redZone(),
             "1": self.greenZone(),
             "2": self.blueZone(),
         }
-        while not (np.array_equal(correct_sorting, original_sorting)):
-            self.digui()
+        while not (np.array_equal(target, currently)):
+            self.recursive()
             break
 
     def func(self, *args, **kwargs):
         return self.func(*args, **kwargs)
 
-    def digui(self, zone_num=2, pre_pos=0):
+    def recursive(self, zone_num=2, pre_pos=0):
         self.dec = {
             "0": self.redZone(),
             "1": self.greenZone(),
             "2": self.blueZone(),
         }
-        global correct_sorting, original_sorting
+        global target, currently
         pos = pre_pos
-        if zone_num >= 0 and pre_pos <= 5:
+        if zone_num >= 0:
             for i in range(4):
                 if self.dec[str(zone_num)][i] != zone_num:
                     if (pos % 2 == 0) and (i == 0 or i == 2):
-                        basicMove.movement(
+                        basic.movement(
                             7, 0.2, 0.0, 0.38, yaxis=False)
                         pos += 1
                         time.sleep(1)
                     elif (pos % 2 != 0) and (i == 1 or i == 3):
-                        basicMove.movement(
+                        basic.movement(
                             7, -0.2, 0.0, 0.38, yaxis=False)
                         pos -= 1
                         time.sleep(1)
@@ -64,13 +64,14 @@ class a_zone_grab():
                         if self.dec[str(goal_zone)][j] == zone_num:
                             goal_zone_item_pos = j
                             break
-                    item_pos = (zone_num*2) + (i if i <= 1 else (i-2))
-                    goal_item_pos = (
-                        goal_zone*2) + (goal_zone_item_pos if goal_zone_item_pos <= 1 else (goal_zone_item_pos-2))
+                    item_pos = zone_num*2 + (i if i <= 1 else (i-2))
+                    goal_item_pos = goal_zone*2 + \
+                        (goal_zone_item_pos if goal_zone_item_pos <=
+                         1 else (goal_zone_item_pos-2))
 
                     goal_dis = abs(item_pos-goal_item_pos)*0.4
                     print(goal_dis)
-                    basicMove.simple_movement(0.0, -0.1, 0, 10)
+                    basic.simple_movement(0.0, -0.1, 0, 10)
                     time.sleep(0.5)
 
                     # grab
@@ -79,13 +80,13 @@ class a_zone_grab():
 
                     time.sleep(1)
 
-                    basicMove.movement(
+                    basic.movement(
                         6, 0.2*dir, 0.0, goal_dis-0.03, yaxis=False)
                     time.sleep(0.5)
 
-                    basicMove.simple_movement(0, -0.1, 0, 10)
+                    basic.simple_movement(0, -0.1, 0, 10)
                     time.sleep(1)
-                    basicMove.simple_movement(-0.1, 0.0, 0, 10)
+                    basic.simple_movement(-0.1, 0.0, 0, 10)
                     time.sleep(0.5)
 
                     # push
@@ -95,17 +96,17 @@ class a_zone_grab():
 
                     #########################################################
 
-                    basicMove.simple_movement(0.1, 0.0, 0, 13)
+                    basic.simple_movement(0.1, 0.0, 0, 13)
                     time.sleep(0.5)
 
                     # grab
                     self.grab_above() if goal_zone_item_pos < 2 else self.grab_below()
                     time.sleep(0.5)
 
-                    basicMove.movement(
+                    basic.movement(
                         6, 0.2*-dir, 0.0, goal_dis, yaxis=False)
                     time.sleep(1)
-                    basicMove.simple_movement(0, -0.1, 0, 10)
+                    basic.simple_movement(0, -0.1, 0, 10)
                     time.sleep(0.5)
 
                     # push
@@ -118,36 +119,36 @@ class a_zone_grab():
                     # print("a" if i > 1 else "b", " to ",
                     #       "a" if goal_zone_item_pos > 1 else "b",)
 
-                    original_sorting[item_pos + (6 if i > 1 else 0)] = zone_num
-                    original_sorting[goal_item_pos +
-                                     (6 if goal_zone_item_pos > 1 else 0)] = goal_zone
-                    print(original_sorting)
+                    currently[item_pos + (6 if i > 1 else 0)] = zone_num
+                    currently[goal_item_pos +
+                              (6 if goal_zone_item_pos > 1 else 0)] = goal_zone
+                    print(currently)
 
-                    return self.digui(zone_num, pos)
+                    return self.recursive(zone_num, pos)
             dis = 0.4 if (pos % 2 != 0) else 0.8
             if pos < 5:
-                basicMove.movement(
+                basic.movement(
                     6, 0.2, 0.0, dis, yaxis=False)
             pos += (1 if (dis == 0.4) else 2)
             time.sleep(0.5)
-            return self.digui(zone_num-1, pos)
+            return self.recursive(zone_num-1, pos)
 
     def redZone(self):
-        global correct_sorting, original_sorting
-        redZone = (original_sorting[0], original_sorting[1],
-                   original_sorting[6], original_sorting[7])
+        global target, currently
+        redZone = (currently[0], currently[1],
+                   currently[6], currently[7])
         return redZone
 
     def greenZone(self):
-        global correct_sorting, original_sorting
-        greenZone = (original_sorting[2], original_sorting[3],
-                     original_sorting[8], original_sorting[9])
+        global target, currently
+        greenZone = (currently[2], currently[3],
+                     currently[8], currently[9])
         return greenZone
 
     def blueZone(self):
-        global correct_sorting, original_sorting
-        blueZone = (original_sorting[4], original_sorting[5],
-                    original_sorting[10], original_sorting[11])
+        global target, currently
+        blueZone = (currently[4], currently[5],
+                    currently[10], currently[11])
         return blueZone
 
     def grab_below(self):

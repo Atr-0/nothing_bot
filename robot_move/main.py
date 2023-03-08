@@ -1,6 +1,6 @@
 import os
 from utils import *
-import basicMove
+import robot_move.basic as basic
 import time
 import rclpy
 from rclpy.node import Node
@@ -44,14 +44,14 @@ def main():
     time.sleep(1)
     motor_control("1", "1", "0000")
     time.sleep(5)
-    basicMove.movement(2, 0.3, 0.0, 0.5, yaxis=True, yaxis_stop_weight=3)
+    basic.movement(2, 0.3, 0.0, 0.5, yaxis=True, yaxis_stop_weight=3)
     time.sleep(0.5)
-    basicMove.movement(5, -0.35, 0.0, 0.7, yaxis=False)
+    basic.movement(5, -0.35, 0.0, 0.7, yaxis=False)
     time.sleep(0.5)
-    basicMove.movement(2, -0.2, 0.0, 0.4, yaxis=True, yaxis_stop_weight=6)
+    basic.movement(2, -0.2, 0.0, 0.4, yaxis=True, yaxis_stop_weight=6)
     for i in range(5):
         time.sleep(0.5)
-        basicMove.movement(6, -0.2, 0.0, 0.38, yaxis=False)
+        basic.movement(6, -0.2, 0.0, 0.38, yaxis=False)
     time.sleep(0.2)
     grab.a_zone_grab(motor_control)
     # basicMove.movement(2, 0.2, 0.0, 0.4, yaxis=True)
