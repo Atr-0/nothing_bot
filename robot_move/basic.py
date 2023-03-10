@@ -15,7 +15,7 @@ import utils
 np.set_printoptions(threshold=np.inf)
 
 direction = 0
-sensor_matrix = np.zeros([6, 4])
+sensor_matrix = np.zeros([8, 4])
 position = Vector3()
 
 
@@ -23,7 +23,7 @@ class movement(Node):
     integral, previous_error, error = 0.0, 0.0, 0.0
     houprevious_error, houerror = 0.0, 0.0
 
-    def __init__(self, weight, vel, turnVel=0.0, dis=0.4, yaxis=False, yaxis_stop_weight=3):
+    def __init__(self, weight, vel, turnVel=0.0, dis=0.4, yaxis=False, stop_weight=3):
         # rclpy.init()
         super().__init__("movement")
         global sensor_matrix, position, direction
@@ -47,7 +47,7 @@ class movement(Node):
         node_sub = line_sensor_subscription()
         node_odom_sub = odom_subscription()
 
-        rclpy.spin_once(node_odom_sub)
+        # rclpy.spin_once(node_odom_sub)
         global position
         prepos = Vector3()
         prepos.x = position.x
@@ -70,17 +70,17 @@ class movement(Node):
             if self.turnVel == 0.0:
                 tick1 += 0.1
                 temp = (list(sensor_matrix[0])+list(sensor_matrix[1]) +
-                        list(sensor_matrix[4])+list(sensor_matrix[3]))
+                        list(sensor_matrix[3])+list(sensor_matrix[4]))
                 # print(temp)
-                flag = sensor_matrix[2][1]+sensor_matrix[2][2] + \
-                    sensor_matrix[5][1]+sensor_matrix[5][2]
+                flag = sensor_matrix[4][1]+sensor_matrix[5][3] + \
+                    sensor_matrix[6][1]+sensor_matrix[7][3]
                 if distance > self.dis - 0.1 and (flag >= 2) and not yaxis:
                     break
                 elif distance > self.dis - 0.1 and (
-                        temp[yaxis_stop_weight] +
-                        temp[yaxis_stop_weight+1] +
-                        temp[yaxis_stop_weight+7] +
-                        temp[yaxis_stop_weight+8] >= 2) and yaxis:
+                        temp[stop_weight] +
+                        temp[stop_weight+1] +
+                        temp[stop_weight+7] +
+                        temp[stop_weight+8] >= 2) and yaxis:
                     break
                 elif distance > self.dis - 0.1:
                     self.speed = (abs(vel)-0.10)*(1.0 if vel > 0.0 else -1.0)
@@ -97,8 +97,8 @@ class movement(Node):
                 if angle_fac >= 90 and (
                         sensor_matrix[0][self.weight] +
                         sensor_matrix[1][3-self.weight] +
-                        sensor_matrix[3][self.weight] +
-                        sensor_matrix[4][3-self.weight] >= 3):
+                        sensor_matrix[2][self.weight] +
+                        sensor_matrix[3][3-self.weight] >= 3):
                     break
                 self.publish_twist(0.0, 0.0, self.turnVel)
 
@@ -109,7 +109,15 @@ class movement(Node):
             prepos.z = position.z
             # print("dddd", distance)
             time.sleep(0.05)
+        self.rest_effect()
+
+        self.destroy_node()
+        node_sub.destroy_node()
+        node_odom_sub.destroy_node()
+
+    def rest_effect(self):
         self.integral, self.previous_error, self.error = 0.0, 0.0, 0.0
+        self.houprevious_error, self.houerror = 0.0, 0.0
         self.speed = 0.0
         self.turnVel = 0.0
         self.x = 0.0
@@ -118,11 +126,7 @@ class movement(Node):
         self.z = 0.0
         self.th = 0.0
         self.dis = 0.0
-
         self.publish_twist(0, 0, 0)
-        self.destroy_node()
-        node_sub.destroy_node()
-        node_odom_sub.destroy_node()
 
     def x_axis_movement(self, v):
         global sensor_matrix
@@ -130,7 +134,7 @@ class movement(Node):
         kp, ki, kd = 0.8, 0.0, 0.05
         hou_kp, hou_ki, hou_kd = 0.56, 0.0, 0.05
         front, back = (list(sensor_matrix[0])+list(sensor_matrix[1]),
-                       list((sensor_matrix[4]))+list((sensor_matrix[3])))
+                       list(sensor_matrix[2])+list(sensor_matrix[3]))
         # print(front)
         # print("bbbbbbb",back)
         if np.sum(front) > 3:
@@ -142,9 +146,8 @@ class movement(Node):
                 back[i] = 0.0
         feedback = 0
         houwucha = 0
-        value = 0
-        houvalue = 0
-        f_or_d = (1.0 if self.speed > 0.0 else -1.0)
+
+        num = (1.0 if self.speed > 0.0 else -1.0)
 
         for i in range(0, weight):
             if self.speed > 0.0:
@@ -171,27 +174,9 @@ class movement(Node):
         feedback *= 0.4
         houwucha *= 0.4
 
-        value = value + (np.sum(np.array(front)) if self.speed >
-                         0.0 else np.sum(np.array(back)))
-        if value == 0:
-            self.error = 0
-        else:
-            self.error = feedback / value
-        derivative = self.error - self.previous_error
-        self.integral += self.error
-        corr = kp * self.error + ki * self.integral + kd * derivative
-        # print(corr)
-
-        houvalue = houvalue + (np.sum(np.array(back)) if self.speed >
-                               0.0 else np.sum(np.array(front)))
-        if houvalue == 0:
-            self.houerror = 0
-        else:
-            self.houprevious_error = houwucha / houvalue
-        houderivative = self.houerror - self.houprevious_error
-        self.integral += self.houerror
-        houcorr = hou_kp * self.houerror + hou_ki * \
-            self.integral + hou_kd * houderivative
+        corr = self.new_method(kp, ki, kd, front, back, feedback)
+        houcorr = self.new_method(
+            hou_kp, hou_ki, hou_kd, front, back, feedback, True)
         # print(houcorr)
 
         ans = np.sum(sensor_matrix)
@@ -199,7 +184,7 @@ class movement(Node):
             self.publish_twist(v, houcorr/-2, corr/2)
             # print(corr*2)
         else:
-            self.publish_twist(0.1*f_or_d, 0.0, 0)
+            self.publish_twist(0.1*num, 0.0, 0)
         self.previous_error = self.error
         self.houprevious_error = self.houerror
 
@@ -207,14 +192,14 @@ class movement(Node):
         global sensor_matrix
         weight = self.weight
         kp, ki, kd = 0.8, 0.0, 0.06
-        houkp, houki, houkd = 0.56, 0.0, 0.05
-        front, back = (sensor_matrix[5]), sensor_matrix[2]
+        hou_kp, hou_ki, hou_kd = 0.56, 0.0, 0.05
+        front, back = (list(sensor_matrix[4])+list(sensor_matrix[5]),
+                       list(sensor_matrix[6])+list(sensor_matrix[7]))
         # print(back)
         feedback = 0
         houwucha = 0
-        value = 0
-        houvalue = 0
-        f_or_d = (1.0 if self.speed > 0.0 else -1.0)
+
+        num = (1.0 if self.speed > 0.0 else -1.0)
 
         for i in range(0, weight):
             if self.speed > 0.0:
@@ -241,36 +226,44 @@ class movement(Node):
         feedback *= 0.4
         houwucha *= 0.4
 
-        value = value + (np.sum(np.array(front)) if self.speed >
-                         0.0 else np.sum(np.array(back)))
-        if value == 0:
-            self.error = 0
-        else:
-            self.error = feedback / value
-        derivative = self.error - self.previous_error
-        self.integral += self.error
-        corr = kp * self.error + ki * self.integral + kd * derivative
-        # print(corr)
-
-        houvalue = houvalue + (np.sum(np.array(back)) if self.speed >
-                               0.0 else np.sum(np.array(front)))
-        if houvalue == 0:
-            self.houerror = 0
-        else:
-            self.houprevious_error = houwucha / houvalue
-        houderivative = self.houerror - self.houprevious_error
-        self.integral += self.houerror
-        houcorr = houkp * self.houerror + houki * self.integral + houkd * houderivative
+        corr = self.new_method(kp, ki, kd, front, back, feedback)
+        houcorr = self.new_method(
+            hou_kp, hou_ki, hou_kd, front, back, feedback, True)
         # print(houcorr)
 
         ans = np.sum(sensor_matrix)
         if (ans != 0):
-            self.publish_twist(houcorr/-4, v, (corr*f_or_d)/-2)
+            self.publish_twist(houcorr/-4, v, (corr*num)/-2)
             # print(corr/-2)
         else:
-            self.publish_twist(0.0, 0.1*f_or_d, 0)
+            self.publish_twist(0.0, 0.1*num, 0)
         self.previous_error = self.error
         self.houprevious_error = self.houerror
+
+    def new_method(self, kp, ki, kd, front, back, feedback, hou=False):
+        error = 0
+        if hou:
+            previous_error = self.houprevious_error
+            value = value + (np.sum(np.array(back)) if self.speed >
+                             0.0 else np.sum(np.array(front)))
+        else:
+            previous_error = self.previous_error
+            value = value + (np.sum(np.array(front)) if self.speed >
+                             0.0 else np.sum(np.array(back)))
+
+        if value == 0:
+            error = 0
+        else:
+            error = feedback / value
+        derivative = error - previous_error
+        self.integral += error
+        corr = kp * error + ki * self.integral + kd * derivative
+
+        if hou:
+            self.houerror = error
+        else:
+            self.error = error
+        return corr
 
     def publish_twist(self, xvel, yvel, turn):
 
@@ -319,23 +312,27 @@ class line_sensor_subscription(Node):
         self.subscriptions
 
     def line_sensor_callback(self, data):
-        temp = data.data
-        mijishu = 23
-        temp = 2**24-temp-1
-        global sensor_matrix
-        for i in range(6):
-            for j in range(1, 5):
-                sensor_matrix[i][4-j] = temp//2**mijishu
-                temp = temp % 2**mijishu
-                mijishu = mijishu-1
+        try:
+            temp = data.data
+            mijishu = 31
+            temp = 2**32-temp-1
+            global sensor_matrix
+            for i in range(8):
+                for j in range(1, 5):
+                    sensor_matrix[i][4-j] = temp//2**mijishu
+                    temp = temp % 2**mijishu
+                    mijishu = mijishu-1
+                pass
             pass
-        pass
-        reverse_2, reverse_3, reverse_5, = (
-            np.flipud(sensor_matrix[2]),
-            np.flipud(sensor_matrix[3]),
-            np.flipud(sensor_matrix[5]))
+        except Exception:
+            print("e")
+            pass
+        # reverse_2, reverse_3, reverse_5, = (
+        #     np.flipud(sensor_matrix[2]),
+        #     np.flipud(sensor_matrix[3]),
+        #     np.flipud(sensor_matrix[5]))
         # sensor_matrix[2] = reverse_2
-        sensor_matrix[3] = reverse_3
+        # sensor_matrix[3] = reverse_3
         # sensor_matrix[5] = reverse_5
         # print(sensor_matrix)
 
