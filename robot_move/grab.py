@@ -71,6 +71,7 @@ class a_zone_grab():
 
                     goal_dis = abs(item_pos-goal_item_pos)*0.4
                     print(goal_dis)
+                    ''' zhua'''
                     basic.simple_movement(0.0, -0.1, 0, 10)
                     time.sleep(0.5)
 
@@ -114,7 +115,6 @@ class a_zone_grab():
                     time.sleep(1)
 
                     time.sleep(0.5)
-
                     # print(goal_dis, item_pos, goal_item_pos)
                     # print("a" if i > 1 else "b", " to ",
                     #       "a" if goal_zone_item_pos > 1 else "b",)

@@ -54,25 +54,10 @@ def main():
         basic.movement(6, -0.2, 0.0, 0.38, yaxis=False)
     time.sleep(0.2)
     grab.a_zone_grab(motor_control)
-    # basicMove.movement(2, 0.2, 0.0, 0.4, yaxis=True)
-    # time.sleep(0.1)
-    # basicMove.movement(4, 0.2, 0.0, 0.4, yaxis=False)
-
-    # time.sleep(0.5)
-    # basicMove.movement(2, 0.35, 0.0, 1.18, yaxis=True, yaxis_stop_weight=3)
-    # time.sleep(0.1)
-    # basicMove.movement(3, 0.0, -1.0, 0.0, yaxis=False)
-    # time.sleep(0.2)
-    # basicMove.movement(2, -0.2, 0.0, 0.4, yaxis=True, yaxis_stop_weight=4)
-    # for i in range(5):
-    #     time.sleep(0.2)
-    #     basicMove.movement(6, -0.2, 0.0, 0.38, yaxis=False)
-    # time.sleep(0.5)
 
 
 if __name__ == '__main__':
     try:
-        os.system("~/nothing_bot/src/robot_move/getPose.py")
         main()
     except KeyboardInterrupt:
         pass
