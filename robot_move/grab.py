@@ -240,7 +240,7 @@ class grab():
                     break
 
     def grab_below(self):
-        self.func("2", "02", "3048")
+        self.func("2", "02", "1048")
         time.sleep(4)
 
         self.func("3", "08", "2098")
@@ -268,7 +268,7 @@ class grab():
         time.sleep(2)
 
     def push_below(self):
-        self.func("2", "02", "2748")
+        self.func("2", "02", "1048")
         time.sleep(4)
 
         self.func("3", "08", "2198")
