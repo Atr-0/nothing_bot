@@ -24,6 +24,18 @@ class movement(Node):
     houprevious_error, houerror = 0.0, 0.0
 
     def __init__(self, weight, vel, turnVel=0.0, dis=0.4, yaxis=False, stop_weight=3):
+        '''巡线移动
+        Parameters:
+                weight - 巡线中心
+                vel - 速度
+                turnVel - 转弯速度
+                dis - 巡线距离
+                yaxis - 是否y方向移动
+                stop_weight - y方向计线中心
+        Return:
+                NONE
+
+        '''
         # rclpy.init()
         super().__init__("movement")
         global sensor_matrix, position, direction
@@ -33,6 +45,7 @@ class movement(Node):
 
         self.weight = weight
         self.speed = vel
+        self.current_speed = 0
         self.dir = (1.0 if self.speed > 0.0 else -1.0)
         self.turnVel = turnVel
 
@@ -46,11 +59,11 @@ class movement(Node):
         self.rate = self.create_rate(20)
         self.twist = Twist()
 
-        node_sub = line_sensor_subscription()
-        node_odom_sub = odom_subscription()
         # 订阅odom->base_footprint变换并传入到 position
+        node_odom_sub = odom_subscription()
         rclpy.spin_once(node_odom_sub)
         # 订阅传感器数据
+        node_sub = line_sensor_subscription()
         rclpy.spin_once(node_sub)
 
         global position
@@ -63,50 +76,55 @@ class movement(Node):
         #     rclpy.spin_once(node_sub)
         #     print(sensor_matrix)
         #     time.sleep(0.05)
-        turm_timer = 0.0
-        speed_timer = 0.0
-
+        turn_timer = 0.0
+        accel_timer = 0.0
+        decel_timer = 0.0
         while rclpy.ok():
             rclpy.spin_once(node_odom_sub)
             rclpy.spin_once(node_sub)
-
+            # 更新传感器
+            temp = (list(sensor_matrix[0])+list(sensor_matrix[1]) +
+                    list(sensor_matrix[2])+list(sensor_matrix[3]))
+            '''y计线'''
+            temp1 = (list(sensor_matrix[4])+list(sensor_matrix[5]) +
+                     list(sensor_matrix[6])+list(sensor_matrix[7]))
+            '''x计线'''
+            # print("xxxxx",temp)
             if self.turnVel == 0.0:
-                speed_timer += 0.1
-                # 更新传感器
-                temp = (list(sensor_matrix[0])+list(sensor_matrix[1]) +
-                        list(sensor_matrix[2])+list(sensor_matrix[3]))
-                '''y计线'''
-                temp1 = list(sensor_matrix[4])+list(sensor_matrix[5])
-                '''x计线左'''
-                temp2 = list(sensor_matrix[6])+list(sensor_matrix[7])
-                '''x计线右'''
-                flag = temp1[2]+temp1[3] + \
-                    temp2[4]+temp2[5]
-                if distance > self.dis - 0.1 and (flag >= 2) and not yaxis:
+                if distance > self.dis - 0.1 and (
+                        temp1[7-stop_weight] +
+                        temp1[8-stop_weight] +
+                        temp1[(stop_weight+7)] +
+                        temp1[(stop_weight+8)] >= 2) and not yaxis:
                     print("xxxxxx")
                     break
                 elif distance > self.dis - 0.1 and (
-                        temp[stop_weight] +
-                        temp[stop_weight+1] +
-                        temp[stop_weight+8] +
-                        temp[stop_weight+7] >= 2) and yaxis:
+                        temp[7-stop_weight] +
+                        temp[8-stop_weight] +
+                        temp[(stop_weight+7)] +
+                        temp[(stop_weight+8)] >= 2) and yaxis:
                     print("dddddd")
                     break
-                elif distance > self.dis - 0.2:
-                    self.speed = 0.2*self.dir
+                elif distance > self.dis - 0.1:
+                    # 减速度
+                    self.speed = self.dir * 0.1
                 elif distance < self.dis - 0.1:
+                    # 加速度
+                    accel_timer += 0.15
                     self.speed = utils.lerp(
-                        0.0, abs(vel), utils.lerp(0, 1, math.sqrt(speed_timer)))*self.dir
+                        0.0, abs(vel), utils.lerp(0, 1, math.sqrt(accel_timer)))*self.dir
+                    self.current_speed = self.speed
                 self.y_axis_movement(
                     self.speed) if yaxis else self.x_axis_movement(self.speed)
             else:
-                turm_timer += 0.05
-                angle_fac = utils.lerp(0, 90, turm_timer)
+                # 转弯
+                turn_timer += 0.045
+                angle_fac = utils.lerp(0, 90, turn_timer)
                 if angle_fac >= 90 and (
-                        sensor_matrix[0][self.weight] +
-                        sensor_matrix[1][3-self.weight] +
-                        sensor_matrix[2][self.weight] +
-                        sensor_matrix[3][3-self.weight] >= 3):
+                        temp[3] +
+                        temp[11] +
+                        temp1[3] +
+                        temp1[11] >= 2):
                     print("ttttttt")
                     break
                 self.publish_twist(0.0, 0.0, self.turnVel)
@@ -116,6 +134,7 @@ class movement(Node):
             prepos.x = position.x
             prepos.y = position.y
             prepos.z = position.z
+
             time.sleep(0.05)
         # 重置状态
         self.publish_twist(0, 0, 0)
@@ -139,35 +158,54 @@ class movement(Node):
     def x_axis_movement(self, v):
         global sensor_matrix
         weight = self.weight
-        kp, ki, kd = 0.8, 0.0, 0.05
+        kp, ki, kd = 0.8, 0.0, 0.08
         hou_kp, hou_ki, hou_kd = 0.56, 0.0, 0.05
+
         front, back = (list(sensor_matrix[0])+list(sensor_matrix[1]),
                        (list(sensor_matrix[2]))+(list(sensor_matrix[3])))
-        if self.speed < 0.0:
-            front, back = back, front
+        if self.dir == 1:
+            weight = 8-self.weight
         print(front)
         print("bbbbbbb", back)
-        if np.sum(front) > 3:
+        if np.sum(np.array(front)) > 3:
             for i in range(len(front)):
                 front[i] = 0.0
 
-        if np.sum(back) > 3:
+        if np.sum(np.array(back)) > 3:
             for i in range(len(back)):
                 back[i] = 0.0
 
         feedback, houwucha = self.feedback_value(weight, front, back)
         feedback *= 0.4
         houwucha *= 0.4
-
-        corr = self.pid(kp, ki, kd, front, back, feedback)
-        houcorr = self.pid(
-            hou_kp, hou_ki, hou_kd, front, back, houwucha, True)
-        # print(houcorr)
+        #########################
+        value = 0
+        value = value + (np.sum(np.array(front))if self.dir ==
+                         1 else np.sum(np.array(back)))
+        if value == 0:
+            self.error = 0
+        else:
+            self.error = feedback / value
+        derivative = self.error - self.previous_error
+        self.integral += self.error
+        corr = kp * self.error + ki * self.integral + kd * derivative
+        #########################
+        houvalue = 0
+        houvalue = houvalue + (np.sum(np.array(back))if self.dir ==
+                               1 else np.sum(np.array(front)))
+        if houvalue == 0:
+            self.houerror = 0
+        else:
+            self.houerror = houwucha / houvalue
+        houderivative = self.houerror - self.houprevious_error
+        self.integral += self.houerror
+        houcorr = hou_kp * self.houerror + hou_ki * \
+            self.integral + hou_kd * houderivative
 
         ans = np.sum(sensor_matrix)
         if (ans != 0):
-            self.publish_twist(v, houcorr/-4, corr*self.dir/-2)
-            # self.publish_twist(v, houcorr/-2, corr/2)
+            # self.publish_twist(v, 0, corr/-2*self.dir)
+            self.publish_twist(v, houcorr/-8, corr/2)
             # print(corr*2)
             # pass
         else:
@@ -178,33 +216,56 @@ class movement(Node):
     def y_axis_movement(self, v):
         global sensor_matrix
         weight = self.weight
-        kp, ki, kd = 0.8, 0.0, 0.06
+        kp, ki, kd = 0.8, 0.0, 0.08
         hou_kp, hou_ki, hou_kd = 0.56, 0.0, 0.05
+
         front, back = (list(sensor_matrix[4])+list(sensor_matrix[5]),
-                       list(sensor_matrix[6])+list(sensor_matrix[7]))
-        if self.dir == -1:
-            front, back = back, front
-        if np.sum(front) > 3:
+                       (list(sensor_matrix[6]))+(list(sensor_matrix[7])))
+        if self.dir == 1:
+            weight = 8-self.weight
+        print(front)
+        print("bbbbbbb", back)
+        if np.sum(np.array(front)) > 3:
             for i in range(len(front)):
                 front[i] = 0.0
 
-        if np.sum(back) > 3:
+        if np.sum(np.array(back)) > 3:
             for i in range(len(back)):
                 back[i] = 0.0
 
         feedback, houwucha = self.feedback_value(weight, front, back)
         feedback *= 0.4
         houwucha *= 0.4
-
-        corr = self.pid(kp, ki, kd, front, back, feedback)
-        houcorr = self.pid(
-            hou_kp, hou_ki, hou_kd, front, back, houwucha, True)
-        # print(houcorr)
+        #########################
+        value = 0
+        value = value + (np.sum(np.array(front))if self.dir ==
+                         1 else np.sum(np.array(back)))
+        if value == 0:
+            self.error = 0
+        else:
+            self.error = feedback / value
+        derivative = self.error - self.previous_error
+        self.integral += self.error
+        corr = kp * self.error + ki * self.integral + kd * derivative
+        #########################
+        houvalue = 0
+        houvalue = houvalue + (np.sum(np.array(back))if self.dir ==
+                               1 else np.sum(np.array(front)))
+        if houvalue == 0:
+            self.houerror = 0
+        else:
+            self.houerror = houwucha / houvalue
+        houderivative = self.houerror - self.houprevious_error
+        self.integral += self.houerror
+        houcorr = hou_kp * self.houerror + hou_ki * \
+            self.integral + hou_kd * houderivative
 
         ans = np.sum(sensor_matrix)
         if (ans != 0):
-            self.publish_twist(houcorr/-4, v, (corr*self.dir)/2)
-            # print(corr/-2)
+            # self.publish_twist(v, 0, corr/-2*self.dir)
+            self.publish_twist(houcorr/-10*self.dir, v, corr/2)
+            # print(corr*2)
+            # pass
         else:
             self.publish_twist(0.0, 0.1*self.dir, 0)
         self.previous_error = self.error
@@ -214,44 +275,36 @@ class movement(Node):
         '''
         计算X Y 方向的反馈值
         '''
+        this_front = front
+        this_back = back
         feedback = 0
         houwucha = 0
-        for i in range(0, weight):
-            feedback = feedback + \
-                ((front[i])*abs(weight-i))
-            houwucha = houwucha + \
-                ((back[i])*abs(weight-i))
-        for i in range(weight, 8):
-            feedback = feedback - \
-                ((front[i])*abs((i+1)-weight))
-            houwucha = houwucha - \
-                ((back[i])*abs((i+1)-weight))
+        if self.dir == -1:
+            this_front = np.flipud(front)
+            for i in range(0, weight):
+                feedback = feedback + \
+                    ((this_back[i])*abs(weight-i))
+                houwucha = houwucha + \
+                    ((this_front[i])*abs(weight-i))
+            for i in range(weight, 8):
+                feedback = feedback - \
+                    ((this_back[i])*abs((i+1)-weight))
+                houwucha = houwucha - \
+                    ((this_front[i])*abs((i+1)-weight))
+        else:
+            this_back = np.flipud(back)
+            for i in range(0, weight):
+                feedback = feedback + \
+                    ((this_front[i])*abs(weight-i))
+                houwucha = houwucha + \
+                    ((this_back[i])*abs(weight-i))
+            for i in range(weight, 8):
+                feedback = feedback - \
+                    ((this_front[i])*abs((i+1)-weight))
+                houwucha = houwucha - \
+                    ((this_back[i])*abs((i+1)-weight))
 
         return feedback, houwucha
-
-    def pid(self, kp, ki, kd, front, back, feedback, hou=False):
-        error = 0
-        value = 0
-        if hou:
-            previous_error = self.houprevious_error
-            value = value + np.sum(np.array(back))
-        else:
-            previous_error = self.previous_error
-            value = value + np.sum(np.array(front))
-
-        if value == 0:
-            error = 0
-        else:
-            error = feedback / value
-        derivative = error - previous_error
-        self.integral += error
-        corr = kp * error + ki * self.integral + kd * derivative
-
-        if hou:
-            self.houerror = error
-        else:
-            self.error = error
-        return corr
 
     def publish_twist(self, xvel, yvel, turn):
 
@@ -312,17 +365,9 @@ class line_sensor_subscription(Node):
                     mijishu = mijishu-1
                 pass
             pass
-        except Exception:
-            print("e")
+        except Exception as e:
+            print(e)
             pass
-        # reverse_2, reverse_3, reverse_5, = (
-        #     np.flipud(sensor_matrix[2]),
-        #     np.flipud(sensor_matrix[3]),
-        #     np.flipud(sensor_matrix[5]))
-        # sensor_matrix[2] = reverse_2
-        # sensor_matrix[3] = reverse_3
-        # sensor_matrix[5] = reverse_5
-        # print(sensor_matrix)
 
 
 class odom_subscription(Node):
