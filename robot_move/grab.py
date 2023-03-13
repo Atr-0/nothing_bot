@@ -8,13 +8,20 @@ from std_msgs.msg import String, Int32
 
 a_zone_item_list = [0, 2, 0, 2, 1, 2,
                     0, 1, 1, 1, 0, 2]
-
+'''
+1 2 3 4 5 6
+'''
 
 c_zone_item_list = [1, 2, 0, 0, 0, 1,
                     2, 2, 0, 1, 1, 2]
-
+'''
+1 2 3 4 5 6
+'''
 d_zone_item_list = [-1, 1, 0, 0, 3, -1,
                     -1, 2, 0, 0, -1, 4]
+'''
+1 2 3 4 5 6
+'''
 
 
 class grab():
@@ -173,43 +180,49 @@ class grab():
         global c_zone_item_list
         grab_pos, push_pos = -1, -1
         range_value = range(5, -1, -1)
-        if pos <= 3:
+        if pos < 3:
             range_value = range(0, 6)
 
         for i in range_value:
-            if grab_pos != -1:
-                break
             for j in range(2):
-                if c_zone_item_list[i+(j*6)] == 2:
+                if c_zone_item_list[i+(j*6)] == 2 and grab_pos == -1:
                     grab_pos = i+(j*6)
                     print("ggg", grab_pos)
-                    break
-
-        for i in range_value:
-            if push_pos != -1:
-                break
-            for j in range(2):
-                if c_zone_item_list[i+(j*6)] == 0:
+                if c_zone_item_list[i+(j*6)] == 0 and push_pos == -1:
                     push_pos = i+(j*6)
                     print("ppp", push_pos)
-                    break
+
         if push_pos == -1 and grab_pos == -1:
             return
-        norm_grab = normalize_pos(grab_pos)
-        norm_push = normalize_pos(push_pos)
-        to_grab_dis = (pos-norm_grab)
-        to_push_dis = (norm_grab-norm_push)
+        to_grab_dis = (pos-normalize_pos(grab_pos))
+        to_push_dis = (normalize_pos(grab_pos)-normalize_pos(push_pos))
+        basic.simple_movement(0.0, 0.1, 0, 8)
         time.sleep(0.5)
         if to_grab_dis != 0:
-            basic.movement(6, 0.3*(to_grab_dis/abs(to_grab_dis)),
-                           0, 0.4*abs(to_grab_dis))
+            basic.movement(6, 0.2*(to_grab_dis/abs(to_grab_dis)),
+                           0, 0.39*abs(to_grab_dis))
         c_zone_item_list[grab_pos] = 1
         ##### grab#####
+        if grab_pos < 6:
+            self.grab_above()
+            self.func("2", "02", "3048")
+            time.sleep(5)
+        else:
+            self.grab_below()
+        ###############
+        basic.simple_movement(0.0, 0.1, 0, 8)
         time.sleep(0.5)
         if to_push_dis != 0:
-            basic.movement(6, 0.3*(to_push_dis/abs(to_push_dis)),
-                           0, 0.4*abs(to_push_dis))
+            basic.movement(6, 0.2*(to_push_dis/abs(to_push_dis)),
+                           0, 0.39*abs(to_push_dis))
         ##### push#####
+        if push_pos < 6:
+            self.push_above()
+            self.func("2", "02", "3048")
+            time.sleep(5)
+        else:
+            self.push_below()
+        ###############
         c_zone_item_list[push_pos] = 1
         return self.c_zone_grab(normalize_pos(push_pos))
 
@@ -240,17 +253,17 @@ class grab():
                     break
 
     def grab_below(self):
-        self.func("2", "02", "1048")
+        self.func("2", "02", "3048")
         time.sleep(4)
 
         self.func("3", "08", "2098")
         time.sleep(0.5)
         self.spread_claw()
-        self.func("3", "08", "2148")
+        self.func("3", "08", "2198")
         time.sleep(1)
         self.closed_claw()
         time.sleep(2)
-        self.func("3", "08", "1848")
+        self.func("3", "08", "1748")
         time.sleep(2)
 
     def grab_above(self):
@@ -260,32 +273,34 @@ class grab():
         self.func("3", "08", "2098")
         time.sleep(0.5)
         self.spread_claw()
-        self.func("3", "08", "2148")
+        self.func("3", "08", "2198")
         time.sleep(1)
         self.closed_claw()
         time.sleep(2)
-        self.func("3", "08", "1848")
+        self.func("3", "08", "148")
         time.sleep(2)
 
     def push_below(self):
-        self.func("2", "02", "1048")
+        self.func("2", "02", "3048")
         time.sleep(4)
 
-        self.func("3", "08", "2198")
+        self.func("3", "08", "2248")
+        time.sleep(2)
         self.spread_claw()
         time.sleep(1)
-        self.func("3", "08", "1848")
+        self.func("3", "08", "1748")
         time.sleep(2)
         self.closed_claw()
 
     def push_above(self):
-        self.func("2", "02", "1048")
+        self.func("2", "02", "1508")
         time.sleep(5)
 
-        self.func("3", "08", "2198")
+        self.func("3", "08", "2248")
+        time.sleep(2)
         self.spread_claw()
         time.sleep(1)
-        self.func("3", "08", "1848")
+        self.func("3", "08", "1748")
         time.sleep(2)
         self.closed_claw()
 
