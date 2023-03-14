@@ -22,6 +22,7 @@ def motor_control(num="1", num1="1", v="0", v1="0"):
 
     msg.data = int(temp)
     motor_control_pub.publish(msg)
+
     time.sleep(0.2)
 
 
@@ -40,7 +41,14 @@ duoji, duoji1 = "18", "13"
 @count_time
 def main():
     global duoji, duoji1
-    # motor_control("2", "02", "2248")
+    # motor_control("3", "08", "2348")
+    # time.sleep(3)
+    # motor_control("3", "08", "1048")
+    # motor_control("2", "02", "3048")
+    # time.sleep(2)
+    # motor_control("2", "02", "1748")
+    # time.sleep(3)
+    # motor_control("2", "02", "3048")
     # grab.grab(motor_control,duoji,duoji1,"push_above")
     # time.sleep(1)
     # motor_control("3","08","1848")
@@ -62,16 +70,16 @@ def main():
     # basic.movement(6, -0.3, 0, 0.4, yaxis=True, stop_weight=4)
     # basic.movement(6, 0.3, 0, 0.4, yaxis=True, stop_weight=4)
     # basic.movement(6, -0.2, 0, 0.4, yaxis=False)
-    # basic.movement(6, -0.2, 0, 0.35, yaxis=False)
-    # time.sleep(0.5)
-    # basic.movement(4, -0.2, 0, 0.2, yaxis=True, stop_weight=4)
-    # time.sleep(1)
-    # basic.movement(3, 0, 0.4, 0)
-    # basic.movement(4, 0.3, 0, 0.3, yaxis=True, stop_weight=7)
-    # for i in range(5):
-    #     time.sleep(0.5)
-    #     basic.movement(6, -0.2, 0.0, 0.35, yaxis=False, stop_weight=6)
-    # time.sleep(0.2)
+    basic.movement(6, -0.3, 0, 0.35, yaxis=False)
+    time.sleep(0.5)
+    basic.movement(4, -0.3, 0, 0.2, yaxis=True, stop_weight=4)
+    time.sleep(1)
+    basic.movement(3, 0, 0.4, 0)
+    basic.movement(4, 0.3, 0, 0.3, yaxis=True, stop_weight=7)
+    for i in range(5):
+        time.sleep(0.5)
+        basic.movement(6, -0.25, 0.0, 0.35, yaxis=False, stop_weight=4)
+    time.sleep(0.2)
     grab.grab(motor_control, duoji, duoji1, "c")
     # A
     # basic.movement(4, 0.3, 0.0, 0.5, yaxis=True, stop_weight=3)
@@ -88,18 +96,18 @@ def main():
 
 if __name__ == '__main__':
     try:
-        motor_control("2", "02", "2048")
-        motor_control("3", "08", "2048")
+        # motor_control("2", "02", "2048")
+        # motor_control("3", "08", "2048")
         grab.grab(motor_control, duoji, duoji1, "closed")
         grab.grab(motor_control, duoji, duoji1, "closed")
         time.sleep(2)
-        motor_control("3", "08", "1048")
+        motor_control("3", "08", "1848")
         time.sleep(2)
-        motor_control("2", "02", "3048")
-        time.sleep(5)
+        motor_control("2", "02", "2248")
+        time.sleep(2)
         main()
     except KeyboardInterrupt:
         pass
     finally:
-        motor_control_node.destroy_node()
+        # motor_control_node.destroy_node()
         rclpy.shutdown()

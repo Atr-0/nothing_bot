@@ -95,7 +95,7 @@ class movement(Node):
                         temp1[7-stop_weight] +
                         temp1[8-stop_weight] +
                         temp1[(stop_weight+7)] +
-                        temp1[(stop_weight+8)] >= 1) and not yaxis:
+                        temp1[(stop_weight+8)] >= 2) and not yaxis:
                     print("xxxxxx")
                     break
                 elif distance > self.dis - 0.1 and (
@@ -118,7 +118,7 @@ class movement(Node):
                     self.speed) if yaxis else self.x_axis_movement(self.speed)
             else:
                 # 转弯
-                turn_timer += 0.045
+                turn_timer += 0.07
                 angle_fac = utils.lerp(0, 90, turn_timer)
                 if angle_fac >= 90 and (
                         temp[3] +
@@ -176,8 +176,8 @@ class movement(Node):
                 back[i] = 0
 
         feedback, houwucha = self.feedback_value(weight, front, back)
-        feedback *= 0.4
-        houwucha *= 0.4
+        feedback *= 0.3
+        houwucha *= 0.3
         #########################
         value = 0
         value = value + (np.sum(np.array(front))if self.dir ==
@@ -234,8 +234,8 @@ class movement(Node):
                 back[i] = 0.0
 
         feedback, houwucha = self.feedback_value(weight, front, back)
-        feedback *= 0.4
-        houwucha *= 0.4
+        feedback *= 0.3
+        houwucha *= 0.3
         #########################
         value = 0
         value = value + (np.sum(np.array(front))if self.dir ==
@@ -313,7 +313,7 @@ class movement(Node):
         self.twist.linear.z = 0.0
         self.twist.angular.x = 0.0
         self.twist.angular.y = 0.0
-        self.twist.angular.z = 2.0*turn
+        self.twist.angular.z = 2.5*turn
         self.pub.publish(self.twist)
 
 
