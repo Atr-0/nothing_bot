@@ -34,10 +34,12 @@ def count_time(func):
     return wrapper
 
 
+duoji, duoji1 = "18", "13"
+
+
 @count_time
 def main():
-    duoji = "18"
-    duoji1 = "13"
+    global duoji, duoji1
     # motor_control("2", "02", "2248")
     # grab.grab(motor_control,duoji,duoji1,"push_above")
     # time.sleep(1)
@@ -85,8 +87,6 @@ def main():
 
 
 if __name__ == '__main__':
-    duoji = "18"
-    duoji1 = "13"
     try:
         motor_control("2", "02", "2048")
         motor_control("3", "08", "2048")
@@ -95,8 +95,8 @@ if __name__ == '__main__':
         time.sleep(2)
         motor_control("3", "08", "1048")
         time.sleep(2)
-        # motor_control("2", "02", "3048")
-        # time.sleep(5)
+        motor_control("2", "02", "3048")
+        time.sleep(5)
         main()
     except KeyboardInterrupt:
         pass

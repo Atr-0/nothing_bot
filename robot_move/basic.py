@@ -26,11 +26,11 @@ class movement(Node):
     def __init__(self, weight, vel, turnVel=0.0, dis=0.4, yaxis=False, stop_weight=3):
         '''巡线移动
         Parameters:
-                weight - 巡线中心
-                vel - 速度
-                turnVel - 转弯速度
-                dis - 巡线距离
-                yaxis - 是否y方向移动
+                weight - 巡线中心\n
+                vel - 速度\n
+                turnVel - 转弯速度\n
+                dis - 巡线距离\n
+                yaxis - 是否y方向移动\n
                 stop_weight - y方向计线中心
         Return:
                 NONE
@@ -169,11 +169,11 @@ class movement(Node):
         print("bbbbbbb", back)
         if np.sum(np.array(front)) > 3:
             for i in range(len(front)):
-                front[i] = 0.0
+                front[i] = 0
 
         if np.sum(np.array(back)) > 3:
             for i in range(len(back)):
-                back[i] = 0.0
+                back[i] = 0
 
         feedback, houwucha = self.feedback_value(weight, front, back)
         feedback *= 0.4
