@@ -88,13 +88,67 @@ class grab():
                         i != target_zone+(target_zone+1) and i != target_zone+target_zone:
                     push_pos = i+(j*6)
         # print(push_pos)
+        to_grab_dis = (pos-normalize_pos(grab_pos))
+        to_push_dis = (normalize_pos(grab_pos) -
+                       normalize_pos(push_pos))
         if grab_pos == -1 and push_pos == -1:
             if pos > 0:
                 basic.movement(6, 0.2,
-                               0, 0.39*abs(5-pos), False, stop_weight=4)
+                               0, 0.39, False, stop_weight=4)
                 return self.a_zone_grab(pos=pos-1)
             else:
                 return
+
+        ##### grab#####
+        time.sleep(0.5)
+        if to_grab_dis != 0:
+            basic.movement(6, 0.2*(to_grab_dis/abs(to_grab_dis)),
+                           0, 0.39*abs(to_grab_dis), False, stop_weight=4)
+        time.sleep(0.5)
+        basic.simple_movement(0.0, 0.1, 0, 10)
+        if grab_pos < 6:
+            self.grab_above()
+            self.func("2", "02", "3048")
+            time.sleep(5)
+        else:
+            self.grab_below()
+        ###############
+        ##### push#####
+        time.sleep(0.5)
+        if to_push_dis != 0:
+            basic.movement(6, 0.2*(to_push_dis/abs(to_push_dis)),
+                           0, 0.39*abs(to_push_dis), False, stop_weight=4)
+        time.sleep(0.5)
+        basic.simple_movement(0.0, 0.1, 0, 10)
+        time.sleep(0.5)
+        basic.simple_movement(0.1, 0, 0, 10)
+        if push_pos < 6:
+            self.push_above()
+        else:
+            self.push_below()
+        time.sleep(0.5)
+        basic.simple_movement(-0.1, 0, 0, 10)
+        time.sleep(0.5)
+        self.spread_claw()
+        self.func("3", "08", "2248")
+        time.sleep(1)
+        self.closed_claw()
+        time.sleep(2)
+        self.func("3", "08", "1748")
+        time.sleep(2)
+        ##### push#####
+        if to_push_dis != 0:
+            basic.movement(6, -0.2*(to_push_dis/abs(to_push_dis)),
+                           0, 0.39*abs(to_push_dis), False, stop_weight=4)
+        time.sleep(0.5)
+        basic.simple_movement(0.0, 0.1, 0, 10)
+        if grab_pos < 6:
+            self.push_above()
+            self.func("2", "02", "3048")
+            time.sleep(5)
+        else:
+            self.push_below()
+        ###############
         a_zone_item_list[grab_pos] = target_zone
         a_zone_item_list[push_pos] = zone_num
         print(a_zone_item_list)
