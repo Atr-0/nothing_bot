@@ -165,8 +165,8 @@ class movement(Node):
                        (list(sensor_matrix[2]))+(list(sensor_matrix[3])))
         if self.dir == 1:
             weight = 8-self.weight
-        print(front)
-        print("bbbbbbb", back)
+        # print(front)
+        # print("bbbbbbb", back)
         if np.sum(np.array(front)) > 3:
             for i in range(len(front)):
                 front[i] = 0
@@ -223,8 +223,8 @@ class movement(Node):
                        (list(sensor_matrix[6]))+(list(sensor_matrix[7])))
         if self.dir == 1:
             weight = 8-self.weight
-        print(front)
-        print("bbbbbbb", back)
+        # print(front)
+        # print("bbbbbbb", back)
         if np.sum(np.array(front)) > 3:
             for i in range(len(front)):
                 front[i] = 0.0

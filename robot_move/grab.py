@@ -29,28 +29,22 @@ class grab():
     def __init__(self, func, duoji, duoji1, mode=None):
         '''抓取
         Parameters:
-                mode - 抓取模式:\n 
-                a | c \n
+                mode - 抓取模式:\n
+                a | c | d \n
                 spread | closed \n
                 grab_below | graba_above \n
-                push_below | push_above 
+                push_below | push_above
         '''
         global a_zone_item_list
         self.duoji = duoji
         self.duoji1 = duoji1
         self.func = func
-        self.dec = {
-            "0": (a_zone_item_list[0], a_zone_item_list[1],
-                  a_zone_item_list[6], a_zone_item_list[7]),
-            "1": (a_zone_item_list[2], a_zone_item_list[3],
-                  a_zone_item_list[8], a_zone_item_list[9]),
-            "2": (a_zone_item_list[4], a_zone_item_list[5],
-                  a_zone_item_list[10], a_zone_item_list[11]),
-        }
         if mode == "a":
             self.a_zone_grab()
         elif mode == "c":
             self.c_zone_grab()
+        elif mode == "d":
+            self.d_zone_grab()
         elif mode == "spread":
             self.spread_claw()
         elif mode == "closed":
@@ -67,128 +61,62 @@ class grab():
     def func(self, *args, **kwargs):
         return self.func(*args, **kwargs)
 
-    def a_zone_grab(self, zone_num=2, pre_pos=0):
+    def a_zone_grab(self, pos=5):
         global a_zone_item_list
-        self.dec = {
-            "0": (a_zone_item_list[0], a_zone_item_list[1],
-                  a_zone_item_list[6], a_zone_item_list[7]),
-            "1": (a_zone_item_list[2], a_zone_item_list[3],
-                  a_zone_item_list[8], a_zone_item_list[9]),
-            "2": (a_zone_item_list[4], a_zone_item_list[5],
-                  a_zone_item_list[10], a_zone_item_list[11]),
-        }
+        zone_num = 2 if (pos == 5 or pos == 4) else (
+            1 if (pos == 3 or pos == 2) else 0)
+        grab_pos, push_pos, target_zone = -1, -1, -1
+        range_value = range(5, -1, -1)
+        if pos < 3:
+            range_value = range(0, 6)
 
-        pos = pre_pos
-        if zone_num >= 0 and pre_pos <= 5:
-            for i in range(4):
-                if self.dec[str(zone_num)][i] != zone_num:
-                    if (pos % 2 == 0) and (i == 0 or i == 2):
-                        basic.movement(
-                            7, 0.2, 0.0, 0.38, yaxis=False)
-                        pos += 1
-                        time.sleep(1)
-                    elif (pos % 2 != 0) and (i == 1 or i == 3):
-                        basic.movement(
-                            7, -0.2, 0.0, 0.38, yaxis=False)
-                        pos -= 1
-                        time.sleep(1)
+        for i in range_value:
+            for j in range(1, -1, -1):
+                if a_zone_item_list[i+(j*6)] == zone_num and grab_pos == -1 and \
+                        i != zone_num+(zone_num+1) and i != zone_num+zone_num:
+                    grab_pos = i+(j*6)
+        # print(grab_pos)
 
-                    goal = zone_num - self.dec[str(zone_num)][i]
-                    goal_zone = self.dec[str(zone_num)][i]
+        if target_zone == -1 and grab_pos != -1:
+            target_zone = 2 if (normalize_pos(grab_pos) == 5 or normalize_pos(grab_pos) == 4) else (
+                1 if (normalize_pos(grab_pos) == 3 or normalize_pos(grab_pos) == 2) else 0)
 
-                    dir = 1 if goal > 0 else -1
-                    goal_zone_item_pos = 0
-
-                    for j in range(4):
-                        if self.dec[str(goal_zone)][j] == zone_num:
-                            goal_zone_item_pos = j
-                            break
-                    item_pos = (zone_num*2) + (i if i <= 1 else (i-2))
-                    goal_item_pos = (
-                        goal_zone*2) + (goal_zone_item_pos if goal_zone_item_pos <= 1 else (goal_zone_item_pos-2))
-
-                    goal_dis = abs(item_pos-goal_item_pos)*0.4
-                    print(goal_dis)
-                    basic.simple_movement(0.0, -0.1, 0, 10)
-                    time.sleep(0.5)
-
-                    # grab
-                    self.grab_above(True) if i < 2 else self.grab_below(True)
-                    time.sleep(0.5)
-                    # basicMove.simple_movement(0.0, 0.1, 0, 7)
-
-                    time.sleep(1)
-
-                    basic.movement(
-                        6, 0.2*dir, 0.0, goal_dis-0.03, yaxis=False)
-                    time.sleep(0.5)
-
-                    basic.simple_movement(0, -0.1, 0, 10)
-                    time.sleep(1)
-                    basic.simple_movement(-0.1, 0.0, 0, 10)
-                    time.sleep(0.5)
-
-                    # push
-                    self.push_above() if goal_zone_item_pos < 2 else self.push_below()
-
-                    time.sleep(0.5)
-
-                    #########################################################
-
-                    basic.simple_movement(0.1, 0.0, 0, 13)
-                    time.sleep(0.5)
-
-                    # grab
-                    self.grab_above() if goal_zone_item_pos < 2 else self.grab_below()
-                    # basicMove.simple_movement(0, 0.1, 0, 7)
-                    time.sleep(0.5)
-
-                    basic.movement(
-                        6, 0.2*-dir, 0.0, goal_dis, yaxis=False)
-                    time.sleep(1)
-                    basic.simple_movement(0, -0.1, 0, 10)
-                    time.sleep(0.5)
-
-                    # push
-                    self.push_above(True) if i < 2 else self.push_below(True)
-                    time.sleep(1)
-                    # basicMove.simple_movement(0, 0.1, 0, 7)
-
-                    time.sleep(0.5)
-
-                    # print(goal_dis, item_pos, goal_item_pos)
-                    # print("a" if i > 1 else "b", " to ",
-                    #       "a" if goal_zone_item_pos > 1 else "b",)
-
-                    a_zone_item_list[item_pos + (6 if i > 1 else 0)] = zone_num
-                    a_zone_item_list[goal_item_pos +
-                                     (6 if goal_zone_item_pos > 1 else 0)] = goal_zone
-                    print(a_zone_item_list)
-
-                    return self.a_zone_grab(zone_num, pos)
-            dis = 0.4 if (pos % 2 != 0) else 0.8
-            if pos < 5:
-                basic.movement(
-                    6, 0.2, 0.0, dis, yaxis=False)
-            pos += (1 if (dis == 0.4) else 2)
-            time.sleep(0.5)
-            return self.a_zone_grab(zone_num-1, pos)
+        # print(target_zone)
+        for i in range_value:
+            for j in range(1, -1, -1):
+                if a_zone_item_list[i+(j*6)] == target_zone and push_pos == -1 and \
+                        i != target_zone+(target_zone+1) and i != target_zone+target_zone:
+                    push_pos = i+(j*6)
+        # print(push_pos)
+        if grab_pos == -1 and push_pos == -1:
+            if pos > 0:
+                basic.movement(6, 0.2,
+                               0, 0.39*abs(5-pos), False, stop_weight=4)
+                return self.a_zone_grab(pos=pos-1)
+            else:
+                return
+        a_zone_item_list[grab_pos] = target_zone
+        a_zone_item_list[push_pos] = zone_num
+        print(a_zone_item_list)
+        return self.a_zone_grab(pos=pos)
 
     def c_zone_grab(self, pos=5):
         global c_zone_item_list
         grab_pos, push_pos = -1, -1
         range_value = range(5, -1, -1)
-        if pos <= 3:
+        if pos < 3:
             range_value = range(0, 6)
 
         for i in range_value:
-            for j in range(2):
+            for j in range(1, -1, -1):
                 if c_zone_item_list[i+(j*6)] == 2 and grab_pos == -1:
                     grab_pos = i+(j*6)
                 if c_zone_item_list[i+(j*6)] == 0 and push_pos == -1:
                     push_pos = i+(j*6)
 
         if push_pos == -1 and grab_pos == -1:
+            basic.movement(6, 0.2,
+                           0, 0.39*abs(5-pos), False, stop_weight=4)
             return
         to_grab_dis = (pos-normalize_pos(grab_pos))
         to_push_dis = (normalize_pos(grab_pos)-normalize_pos(push_pos))
@@ -226,21 +154,69 @@ class grab():
 
         return self.c_zone_grab(normalize_pos(push_pos))
 
-    def d_zone_grab(self, pos=6):
+    def d_zone_grab(self, pos=5):
+        global d_zone_item_list
         item = {
             "wangzai": 1,
             "xuehua": 2,
             "wanglaoji": 3,
             "ADgai": 4,
         }
+        '''
+        3 1
+        4 2
+        '''
         grab_pos = -1
-        for j in range(2):
-            for d, i in item.items():
-                if c_zone_item_list[pos+(j*5)] == i and grab_pos == -1:
-                    grab_pos = pos+(j*5)
-                    grab_item = i
-                break
-        to_push_dis = (pos-normalize_pos(grab_pos))
+        goal_item = -1
+        range_value = range(5, -1, -1)
+        if pos < 3:
+            range_value = range(0, 6)
+        for i in range_value:
+            if i == 3 or i == 2:
+                continue
+            for j in range(1, -1, -1):
+                for d, k in item.items():
+                    if d_zone_item_list[i+(j*6)] == k and grab_pos == -1:
+                        grab_pos = i+(j*6)
+                        push_pos = 3 if (k == 1 or k == 2) else 2
+                        goal_item = k
+                        break
+        if grab_pos == -1:
+            return
+        to_grab_dis = (pos-normalize_pos(grab_pos))
+        to_push_dis = (normalize_pos(grab_pos) -
+                       normalize_pos(push_pos))
+        if to_grab_dis != 0:
+            basic.movement(6, 0.2*(to_grab_dis/abs(to_grab_dis)),
+                           0, 0.39*abs(to_grab_dis), False, stop_weight=4)
+        time.sleep(0.5)
+        ##### grab#####
+        basic.simple_movement(0.0, 0.1, 0, 10)
+        if grab_pos < 6:
+            self.grab_above()
+            self.func("2", "02", "3048")
+            time.sleep(5)
+        else:
+            self.grab_below()
+        d_zone_item_list[grab_pos] = -1
+        ###############
+        time.sleep(0.5)
+        if to_push_dis != 0:
+            basic.movement(6, 0.2*(to_push_dis/abs(to_push_dis)),
+                           0, 0.39*abs(to_push_dis), False, stop_weight=4)
+        time.sleep(0.5)
+        ##### push#####
+        basic.simple_movement(0.0, 0.1, 0, 10)
+        if k % 2 != 0:
+            self.push_above()
+            self.func("2", "02", "3048")
+            time.sleep(5)
+        else:
+            self.push_below()
+        d_zone_item_list[push_pos+(((~(goal_item % 2))+2)*6)] = goal_item
+        ###############
+        print(d_zone_item_list)
+        return self.d_zone_grab(push_pos)
 
     def grab_below(self):
         self.func("2", "02", "3048")
@@ -296,11 +272,15 @@ class grab():
 
     def spread_claw(self, v="350", v1="350"):
         self.func("8", self.duoji, "500", v)
+        self.func("8", self.duoji, "500", v)
+        self.func("8", self.duoji1, "500", v1)
         self.func("8", self.duoji1, "500", v1)
         time.sleep(1)
 
     def closed_claw(self, v="350", v1="350"):
         self.func("8", self.duoji, "780", v)
+        self.func("8", self.duoji, "780", v)
+        self.func("8", self.duoji1, "240", v1)
         self.func("8", self.duoji1, "240", v1)
         time.sleep(1)
 

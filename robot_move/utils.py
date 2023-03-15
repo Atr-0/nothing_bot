@@ -14,18 +14,11 @@ def distance(v1, v2):
 
 def lerp(FORM, TO, t, clamp=True):
     if clamp:
-        if FORM < TO:
-            if t < FORM:
-                return 0.0
-            if t > TO:
-                return 1.0
-        else:
-            if t < TO:
-                return 1.0
-            if t > FORM:
-                return 0.0
-
-    return (t - FORM) / (TO - FORM)
+        if t >= 1:
+            return TO
+        elif t <= 0:
+            return FORM
+    return FORM + (TO - FORM) * t
 
 
 def normalize_angle(angle):

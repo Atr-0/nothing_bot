@@ -49,7 +49,8 @@ def main():
     # motor_control("2", "02", "1748")
     # time.sleep(3)
     # motor_control("2", "02", "3048")
-    # grab.grab(motor_control,duoji,duoji1,"push_above")
+    # while 1:
+    #     grab.grab(motor_control,duoji,duoji1,"spread")
     # time.sleep(1)
     # motor_control("3","08","1848")
     # time.sleep(10)
@@ -70,9 +71,11 @@ def main():
     # basic.movement(6, -0.3, 0, 0.4, yaxis=True, stop_weight=4)
     # basic.movement(6, 0.3, 0, 0.4, yaxis=True, stop_weight=4)
     # basic.movement(6, -0.2, 0, 0.4, yaxis=False)
-    basic.movement(6, -0.3, 0, 0.35, yaxis=False)
+    basic.movement(6, -0.2, 0, 0.35, yaxis=False)
     time.sleep(0.5)
-    basic.movement(4, -0.3, 0, 0.2, yaxis=True, stop_weight=4)
+    basic.movement(4, -0.2, 0, 0.55, yaxis=True, stop_weight=4)
+    time.sleep(1)
+    basic.movement(4, 0.2, 0, 0.55, yaxis=True, stop_weight=4)
     time.sleep(1)
     basic.movement(3, 0, 0.4, 0)
     basic.movement(4, 0.3, 0, 0.3, yaxis=True, stop_weight=7)
@@ -80,7 +83,19 @@ def main():
         time.sleep(0.5)
         basic.movement(6, -0.25, 0.0, 0.35, yaxis=False, stop_weight=4)
     time.sleep(0.2)
+
     grab.grab(motor_control, duoji, duoji1, "c")
+    time.sleep(1)
+    basic.movement(6, -0.3, 0, 1.18, yaxis=False)
+    time.sleep(1)
+    basic.movement(3, 0, 0.4, 0)
+    basic.movement(4, 0.3, 0, 0.3, yaxis=True, stop_weight=7)
+    for i in range(5):
+        time.sleep(0.5)
+        basic.movement(6, -0.25, 0.0, 0.35, yaxis=False, stop_weight=4)
+    time.sleep(0.2)
+    grab.grab(motor_control, duoji, duoji1, "d")
+
     # A
     # basic.movement(4, 0.3, 0.0, 0.5, yaxis=True, stop_weight=3)
     # time.sleep(0.5)
