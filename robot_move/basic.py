@@ -24,17 +24,14 @@ class movement(Node):
     houprevious_error, houerror = 0.0, 0.0
 
     def __init__(self, weight, vel, turnVel=0.0, dis=0.4, yaxis=False, stop_weight=3):
-        '''巡线移动
+        '''巡线移动\n
         Parameters:
                 weight - 巡线中心\n
                 vel - 速度\n
-                turnVel - 转弯速度\n
+                turnVel - 转弯速度 :0.4 不为0时只会转弯\n
                 dis - 巡线距离\n
                 yaxis - 是否y方向移动\n
-                stop_weight - y方向计线中心
-        Return:
-                NONE
-
+                stop_weight - 计线中心\n
         '''
         # rclpy.init()
         super().__init__("movement")
@@ -319,6 +316,15 @@ class movement(Node):
 
 class simple_movement(Node):
     def __init__(self, xvel, yvel, turnVel=0.0, dis=0.0):
+        '''
+        不巡线的移动\n
+        Parameters:
+                weight - 巡线中心\n
+                xvel - x速度\n
+                yvel - y速度\n
+                turnVel - 转弯速度\n
+                dis - 发布次数\n
+        '''
         # rclpy.init(args=None)
         super().__init__("simple_movement")
         self.pub = self.create_publisher(

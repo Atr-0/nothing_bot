@@ -29,11 +29,13 @@ class grab():
     def __init__(self, func, duoji, duoji1, mode=None):
         '''抓取
         Parameters:
+                duoji - 小舵机序号\n
+                duoji1 - 小舵机序号\n
                 mode - 抓取模式:\n
-                a | c | d \n
-                spread | closed \n
-                grab_below | graba_above \n
-                push_below | push_above
+                        "a" | "b" | "c" :抓取的区域\n
+                        "spread" | "closed" :爪子打开 | 爪子闭合 \n
+                        "grab_below" | "graba_above" :抓下面 | 抓上面 \n
+                        "push_below" | "push_above" :放下面 | 放下面 
         '''
         global a_zone_item_list
         self.duoji = duoji
