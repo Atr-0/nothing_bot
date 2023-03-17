@@ -26,7 +26,7 @@ d_zone_item_list = [2, 1, 0, 0, 3, -1,
 
 class grab():
 
-    def __init__(self, func, huatai, shengjiang, duoji, duoji1, mode=None, huataijuli="2248", shangjiangjuli="1543"):
+    def __init__(self, func, huatai, shengjiang, duoji, duoji1, mode=None, outdis="2248", updis="1543"):
         '''抓取
         Parameters:
                 huatai - 滑台舵机序号\n
@@ -58,13 +58,13 @@ class grab():
         elif mode == "closed":
             self.closed_claw()
         elif mode == "grab_below":
-            self.grab_below(huataijuli)
+            self.grab_below(outdis)
         elif mode == "graba_above":
-            self.grab_above(shangjiangjuli, huataijuli)
+            self.grab_above(updis, outdis)
         elif mode == "push_below":
-            self.push_below(huataijuli)
+            self.push_below(outdis)
         elif mode == "push_above":
-            self.push_above(shangjiangjuli, huataijuli)
+            self.push_above(updis, outdis)
 
     def func(self, *args, **kwargs):
         return self.func(*args, **kwargs)
@@ -280,39 +280,39 @@ class grab():
         print(d_zone_item_list)
         return self.d_zone_grab(push_pos)
 
-    def grab_below(self, shengchujuli="2248"):
+    def grab_below(self, outdis="2248"):
         self.func("2", self.shengjiang, "3048")
         time.sleep(4)
 
         # self.func("3", self.huatai, "2098")
         # time.sleep(0.5)
         self.spread_claw()
-        self.func("3", self.huatai, shengchujuli)
+        self.func("3", self.huatai, outdis)
         time.sleep(1)
         self.closed_claw()
         time.sleep(2)
         self.func("3", self.huatai, "1748")
         time.sleep(2)
 
-    def grab_above(self, shangshengjuli="1543", shengchujuli="2248"):
-        self.func("2", self.shengjiang, shangshengjuli)
+    def grab_above(self, updis="1543", outdis="2248"):
+        self.func("2", self.shengjiang, updis)
         time.sleep(4)
 
         # self.func("3", self.huatai, "2098")
         # time.sleep(0.5)
         self.spread_claw()
-        self.func("3", self.huatai, shengchujuli)
+        self.func("3", self.huatai, outdis)
         time.sleep(1)
         self.closed_claw()
         time.sleep(2)
         self.func("3", self.huatai, "1748")
         time.sleep(2)
 
-    def push_below(self, shengchujuli="2248"):
+    def push_below(self, outdis="2248"):
         self.func("2", self.shengjiang, "3048")
         time.sleep(4)
 
-        self.func("3", self.huatai, shengchujuli)
+        self.func("3", self.huatai, outdis)
         time.sleep(2)
         self.spread_claw("350", "400")
         time.sleep(1)
@@ -320,11 +320,11 @@ class grab():
         time.sleep(2)
         self.closed_claw()
 
-    def push_above(self, shangshengjuli="1543", shengchujuli="2248"):
-        self.func("2", self.shengjiang, shangshengjuli)
+    def push_above(self, updis="1543", outdis="2248"):
+        self.func("2", self.shengjiang, updis)
         time.sleep(5)
 
-        self.func("3", self.huatai, shengchujuli)
+        self.func("3", self.huatai, outdis)
         time.sleep(2)
         self.spread_claw("350", "400")
         time.sleep(1)

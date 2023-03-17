@@ -14,6 +14,13 @@ motor_control_pub = motor_control_node.create_publisher(
 
 
 def motor_control(num="1", num1="1", v="0", v1="0"):
+    '''电机控制\n
+    Parameters:
+        num - 滑台舵机:"3" 升降舵机:"2" 小舵机:"8"\n
+        num1 - 舵机序号 \n
+        v - 舵机位置\n
+        v1 - 舵机速度(只在用小舵机时有用)
+    '''
     global motor_control_pub
     temp = num+num1+v
     if num == "8":
@@ -36,14 +43,11 @@ def count_time(func):
 
 
 duoji, duoji1 = "18", "13"
-'''小舵机'''
-huatai, shengjiang = "08", "02"
-'''大舵机'''
 
 
 @count_time
 def main():
-    global duoji, duoji1, huatai, shengjiang
+    global duoji, duoji1
     # motor_control("3", "08", "2348")
     # time.sleep(3)
     # motor_control("3", "08", "1048")
@@ -87,7 +91,7 @@ def main():
         basic.movement(6, -0.25, 0.0, 0.35, yaxis=False, stop_weight=4)
     time.sleep(0.2)
 
-    grab.grab(motor_control, huatai, shengjiang, duoji, duoji1, "c")
+    grab.grab(motor_control, duoji, duoji1, "c")
     time.sleep(1)
     basic.movement(6, -0.3, 0, 1.18, yaxis=False)
     time.sleep(1)
@@ -97,7 +101,7 @@ def main():
         time.sleep(0.5)
         basic.movement(6, -0.25, 0.0, 0.35, yaxis=False, stop_weight=4)
     time.sleep(0.2)
-    grab.grab(motor_control, huatai, shengjiang, duoji, duoji1, "d")
+    grab.grab(motor_control, duoji, duoji1, "d")
 
     # A
     # basic.movement(4, 0.3, 0.0, 0.5, yaxis=True, stop_weight=3)
@@ -116,8 +120,8 @@ if __name__ == '__main__':
     try:
         # motor_control("2", "02", "2048")
         # motor_control("3", "08", "2048")
-        grab.grab(motor_control, huatai, shengjiang, duoji, duoji1, "closed")
-        grab.grab(motor_control, huatai, shengjiang, duoji, duoji1, "closed")
+        grab.grab(motor_control, duoji, duoji1, "closed")
+        grab.grab(motor_control, duoji, duoji1, "closed")
         time.sleep(2)
         motor_control("3", "08", "1848")
         time.sleep(2)
