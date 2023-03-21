@@ -26,7 +26,7 @@ d_zone_item_list = [2, 1, 0, 0, 3, -1,
 
 class grab():
 
-    def __init__(self, func, huatai, shengjiang, duoji, duoji1, mode=None, outdis="2248", updis="1543"):
+    def __init__(self, func, huatai, shengjiang, duoji, duoji1, mode=None, outdis="2248", updis="1598"):
         '''抓取
         Parameters:
                 huatai - 滑台舵机序号\n
@@ -294,7 +294,7 @@ class grab():
         self.func("3", self.huatai, "1748")
         time.sleep(2)
 
-    def grab_above(self, updis="1543", outdis="2248"):
+    def grab_above(self, updis="1598", outdis="2248"):
         self.func("2", self.shengjiang, updis)
         time.sleep(4)
 
@@ -320,7 +320,7 @@ class grab():
         time.sleep(2)
         self.closed_claw()
 
-    def push_above(self, updis="1543", outdis="2248"):
+    def push_above(self, updis="1598", outdis="2248"):
         self.func("2", self.shengjiang, updis)
         time.sleep(5)
 

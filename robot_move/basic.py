@@ -164,11 +164,11 @@ class movement(Node):
             weight = 8-self.weight
         # print(front)
         # print("bbbbbbb", back)
-        if np.sum(np.array(front)) > 3:
+        if np.sum(np.array(front)) > 2:
             for i in range(len(front)):
                 front[i] = 0
 
-        if np.sum(np.array(back)) > 3:
+        if np.sum(np.array(back)) > 2:
             for i in range(len(back)):
                 back[i] = 0
 
@@ -222,11 +222,11 @@ class movement(Node):
             weight = 8-self.weight
         # print(front)
         # print("bbbbbbb", back)
-        if np.sum(np.array(front)) > 3:
+        if np.sum(np.array(front)) > 2:
             for i in range(len(front)):
                 front[i] = 0.0
 
-        if np.sum(np.array(back)) > 3:
+        if np.sum(np.array(back)) > 2:
             for i in range(len(back)):
                 back[i] = 0.0
 
