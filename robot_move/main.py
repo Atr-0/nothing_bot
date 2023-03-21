@@ -13,6 +13,8 @@ motor_control_node = Node("motor_control")
 motor_control_pub = motor_control_node.create_publisher(
     Int64, 'action_msg', 10)
 cmd = ""
+item_list = [0, 0, 0, 0, 0, 0,
+             0, 0, 0, 0, 0, 0]
 
 
 def motor_control(num="1", num1="1", v="0", v1="0"):
@@ -47,6 +49,8 @@ def pub_detect(cmd=""):
     time.sleep(2)
     tmp.data = "n"
     detect_node_pub.publish(tmp)
+    time.sleep(0.2)
+    rclpy.spin_once(aqu_detect_sub())
 
 
 class aqu_detect_sub(Node):
@@ -80,25 +84,63 @@ huatai, shengjiang = "08", "02"
 @count_time
 def main():
     global duoji, duoji1, huatai, shengjiang
+    global cmd
+    pub_detect("c")
+    ########## -C-##########
+    # basic.movement(6, -0.2, 0, 0.35, False)
+    # time.sleep(0.5)
+    # basic.movement(6, 0.2, 0, 0.6, True)
+    # time.sleep(0.5)
+    # basic.movement(6, -0.2, 0, 0.38, True)
+    # time.sleep(0.5)
+    # basic.movement(3, 0, 0.4, 0)
+    # for i in range(5):
+    #     time.sleep(0.5)
+    #     basic.movement(6, -0.25, 0.0, 0.35, False, 4)
+
+    #     pub_detect("c")
+    #     time.sleep(0.5)
+    #     temp = [int(x) for x in temp]
+    #     if len(temp) > 1:
+    #         if temp[0] == 1:
+    #             item_list[i+6] = temp[0]
+    #         else:
+    #             item_list[i] = temp[1]
+    # time.sleep(0.2)
+
+    # grab.grab(motor_control, huatai, shengjiang, duoji, duoji1, "c")
+    ########## -D-##########
+    # time.sleep(1)
+    # basic.movement(6, -0.3, 0, 1.18, False)
+    # time.sleep(1)
+    # basic.movement(3, 0, 0.4, 0)
+    # basic.movement(4, -0.2, 0.0, 0.4, yaxis=True, stop_weight=6)
+    # for i in range(5):
+    #     time.sleep(0.5)
+    #     basic.movement(6, -0.25, 0.0, 0.35, False, 4)
+    # time.sleep(0.2)
+
+    # grab.grab(motor_control, huatai, shengjiang, duoji, duoji1, "d")
 
 
 if __name__ == '__main__':
     try:
-        # os.system("gnome-terminal -- python3 '/home/zzb/yolov5/shibie.py'")
-        # # motor_control("2", "02", "2048")
-        # # motor_control("3", "08", "2048")
-        # grab.grab(motor_control, huatai, shengjiang, duoji, duoji1, "closed")
-        # grab.grab(motor_control, huatai, shengjiang, duoji, duoji1, "closed")
-        # motor_control("3", "08", "1848")
-        # time.sleep(1)
+        os.system("gnome-terminal -- python3 '/home/zzb/yolov5/shibie.py'")
+        grab.grab(motor_control, huatai, shengjiang,
+                  duoji, duoji1, mode="closed")
+        grab.grab(motor_control, huatai, shengjiang,
+                  duoji, duoji1, mode="closed")
+        motor_control("3", "08", "1848")
+        time.sleep(1)
 
-        # motor_control("2", "02", "1848")
-        # time.sleep(2)
-        # motor_control("2", "02", "2248")
-        # time.sleep(2)
+        motor_control("2", "02", "1848")
+        time.sleep(2)
+        motor_control("2", "02", "2248")
+        time.sleep(2)
         main()
     except KeyboardInterrupt:
         pass
     finally:
-        # motor_control_node.destroy_node()
+        motor_control_node.destroy_node()
+        detect_node.destroy_node()
         rclpy.shutdown()

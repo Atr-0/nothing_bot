@@ -26,7 +26,7 @@ d_zone_item_list = [2, 1, 0, 0, 3, -1,
 
 class grab():
 
-    def __init__(self, func, huatai, shengjiang, duoji, duoji1, mode=None, outdis="2248", updis="1598"):
+    def __init__(self, func, huatai, shengjiang, duoji, duoji1, item_list=None, mode=None, outdis="2248", updis="1598"):
         '''抓取
         Parameters:
                 huatai - 滑台舵机序号\n
@@ -41,17 +41,21 @@ class grab():
                 huataijuli - 滑台伸出距离\n
                 shangjiangjuli - 升降上升距离\n
         '''
-        global a_zone_item_list
+        global a_zone_item_list, c_zone_item_list, d_zone_item_list
+
         self.duoji = duoji
         self.duoji1 = duoji1
         self.huatai = huatai
         self.shengjiang = shengjiang
         self.func = func
         if mode == "a":
+            a_zone_item_list = item_list
             self.a_zone_grab()
         elif mode == "c":
+            c_zone_item_list = item_list
             self.c_zone_grab()
         elif mode == "d":
+            d_zone_item_list = item_list
             self.d_zone_grab()
         elif mode == "spread":
             self.spread_claw()
