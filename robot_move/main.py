@@ -72,6 +72,25 @@ def count_time(func):
     return wrapper
 
 
+def tui(up=False):
+    grab.grab(motor_control, huatai, shengjiang,
+              duoji, duoji1, mode="spread")
+    motor_control("2", shengjiang, "1848" if not up else "1448")
+    time.sleep(0.5)
+    if up:
+        time.sleep(4.5)
+    motor_control("3", huatai, "2548")
+    time.sleep(4)
+    motor_control("3", huatai, "1048")
+    time.sleep(4)
+    grab.grab(motor_control, huatai, shengjiang,
+              duoji, duoji1, mode="closed")
+    motor_control("2", shengjiang, "3048")
+    time.sleep(0.5)
+    if up:
+        time.sleep(4.5)
+
+
 # duoji, duoji1 = "18", "13"
 # '''小舵机'''
 # huatai, shengjiang = "08", "02"
@@ -137,8 +156,7 @@ def main():
                         -0.1*(-1 if temp[1] == 0 else 1), 0, 0, 18)
                     time.sleep(0.5)
                 print("grab up", temp[1])
-                # grab.grab(motor_control, huatai, shengjiang,
-                #           duoji, duoji1, mode="spread")
+                tui(True)
 
                 if temp[1] != 1:
                     time.sleep(0.5)
@@ -151,8 +169,7 @@ def main():
                         0.1*(-1 if temp[2] == 0 else 1), 0, 0, 18)
                     time.sleep(0.5)
                 print("grab down", temp[2])
-                # grab.grab(motor_control, huatai, shengjiang,
-                #           duoji, duoji1, mode="spread")
+                tui()
 
                 if temp[2] != 1:
                     time.sleep(0.5)
@@ -165,8 +182,7 @@ def main():
                             0.1*(-1 if temp[1] == 0 else 1), 0, 0, 18)
                         time.sleep(0.5)
 
-                    # grab.grab(motor_control, huatai, shengjiang,
-                    #           duoji, duoji1, mode="spread")
+                        tui(True)
 
                     if temp[1] != 1:
                         time.sleep(0.5)
@@ -179,8 +195,7 @@ def main():
                             0.1*(-1 if temp[0] == 0 else 1), 0, 0, 18)
                         time.sleep(0.5)
 
-                    # grab.grab(motor_control, huatai, shengjiang,
-                    #           duoji, duoji1, mode="spread")
+                        tui()
 
                     if temp[0] != 1:
                         time.sleep(0.5)
