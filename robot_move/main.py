@@ -151,18 +151,6 @@ def main():
         print(temp)
         if len(temp) > 0:
             if len(temp) == 4:
-                if temp[1] != 1:
-                    basic.simple_movement(
-                        -0.1*(-1 if temp[1] == 0 else 1), 0, 0, 18)
-                    time.sleep(0.5)
-                print("grab up", temp[1])
-                tui(True)
-
-                if temp[1] != 1:
-                    time.sleep(0.5)
-                    basic.simple_movement(
-                        0.1*(-1 if temp[1] == 0 else 1), 0, 0, 18)
-                time.sleep(1)
                 ################################################
                 if temp[2] != 1:
                     basic.simple_movement(
@@ -175,6 +163,21 @@ def main():
                     time.sleep(0.5)
                     basic.simple_movement(
                         -0.1*(-1 if temp[2] == 0 else 1), 0, 0, 18)
+                ################################################
+                if temp[1] != 1:
+                    basic.simple_movement(
+                        0.1*(-1 if temp[1] == 0 else 1), 0, 0, 18)
+                    time.sleep(0.5)
+
+                print("grab up", temp[1])
+                tui(True)
+
+                if temp[1] != 1:
+                    time.sleep(0.5)
+                    basic.simple_movement(
+                        -0.1*(-1 if temp[1] == 0 else 1), 0, 0, 18)
+                time.sleep(1)
+                ################################################
             elif len(temp) == 2:
                 if temp[0] == 3:
                     if temp[1] != 1:
