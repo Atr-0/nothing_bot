@@ -47,9 +47,6 @@ def pub_detect(cmd=""):
     tmp.data = cmd
     detect_node_pub.publish(tmp)
     time.sleep(2.5)
-    tmp.data = "n"
-    detect_node_pub.publish(tmp)
-    time.sleep(0.2)
     # rclpy.spin_once(aqu_detect_sub())
 
 
@@ -71,11 +68,15 @@ def count_time(func):
         func(*args, **kwargs)
         print("运行时间:"+str((time.time()-t)//60) +
               "分"+str((time.time()-t) % 60)+"秒")
-        pub_detect("f")
+        # pub_detect("f")
     return wrapper
 
 
-duoji, duoji1 = "18", "13"
+# duoji, duoji1 = "18", "13"
+# '''小舵机'''
+# huatai, shengjiang = "08", "02"
+# '''大舵机'''
+duoji, duoji1 = "01", "09"
 '''小舵机'''
 huatai, shengjiang = "08", "02"
 '''大舵机'''
@@ -93,32 +94,102 @@ def main():
     # rclpy.spin_once(aqu_detect_sub())
     # time.sleep(10)
     # print(jieguo)
+    # while 1:
+    #     pub_detect("b")
+    # time.sleep(10)
+    # pub_detect("n")
     ########## -A-##########
-    basic.movement(4, -0.2, 0, 0.7, True)
-    time.sleep(0.5)
-    basic.movement(4, 0.2, 0, 0.3, True)
-    time.sleep(0.5)
-    basic.movement(4, 0.2, 0, 0.38, True)
-    time.sleep(0.5)
-    basic.movement(4, 0.2, 0, 0.38, True, 6)
+    # basic.movement(4, -0.2, 0, 0.7, True)
+    # time.sleep(0.5)
+    # basic.movement(4, 0.2, 0, 0.3, False)
+    # time.sleep(0.5)
+    # basic.movement(4, 0.2, 0, 0.38, False)
+    # time.sleep(0.5)
+    # basic.movement(4, 0.2, 0, 0.38, True, 6)
+    # for i in range(6):
+    #     pub_detect("a")
+    #     time.sleep(0.5)
+    #     rclpy.spin_once(detect_sub())
+    #     time.sleep(0.1)
+    #     temp = [int(x) for x in jieguo]
+    #     print(temp)
+    #     item_list[i] = temp[0]
+    #     item_list[i+6] = temp[1]
+    #     if i < 5:
+    #         time.sleep(0.5)
+    #         basic.movement(6, 0.25, 0.0, 0.35, False, 4)
+    # time.sleep(0.2)
+    # print(item_list)
+    # grab.grab(motor_control, huatai, shengjiang,
+    #           duoji, duoji1, item_list, mode="a")
+    ########## -B-##########
     for i in range(6):
-
-        pub_detect("a")
+        pub_detect("b")
         time.sleep(0.5)
         rclpy.spin_once(detect_sub())
         time.sleep(0.1)
         temp = [int(x) for x in jieguo]
         print(temp)
-        item_list[i] = np.sum(temp[0])
-        item_list[i+6] = np.sum(temp[1])
+        if len(temp) > 0:
+            if len(temp) == 4:
+                if temp[1] != 1:
+                    basic.simple_movement(
+                        -0.1*(-1 if temp[1] == 0 else 1), 0, 0, 18)
+                    time.sleep(0.5)
+                print("grab up", temp[1])
+                # grab.grab(motor_control, huatai, shengjiang,
+                #           duoji, duoji1, mode="spread")
+
+                if temp[1] != 1:
+                    time.sleep(0.5)
+                    basic.simple_movement(
+                        0.1*(-1 if temp[1] == 0 else 1), 0, 0, 18)
+                time.sleep(1)
+                ################################################
+                if temp[2] != 1:
+                    basic.simple_movement(
+                        0.1*(-1 if temp[2] == 0 else 1), 0, 0, 18)
+                    time.sleep(0.5)
+                print("grab down", temp[2])
+                # grab.grab(motor_control, huatai, shengjiang,
+                #           duoji, duoji1, mode="spread")
+
+                if temp[2] != 1:
+                    time.sleep(0.5)
+                    basic.simple_movement(
+                        -0.1*(-1 if temp[2] == 0 else 1), 0, 0, 18)
+            elif len(temp) == 2:
+                if temp[0] == 3:
+                    if temp[1] != 1:
+                        basic.simple_movement(
+                            0.1*(-1 if temp[1] == 0 else 1), 0, 0, 18)
+                        time.sleep(0.5)
+
+                    # grab.grab(motor_control, huatai, shengjiang,
+                    #           duoji, duoji1, mode="spread")
+
+                    if temp[1] != 1:
+                        time.sleep(0.5)
+                        basic.simple_movement(
+                            -0.1*(-1 if temp[1] == 0 else 1), 0, 0, 18)
+
+                else:
+                    if temp[0] != 1:
+                        basic.simple_movement(
+                            0.1*(-1 if temp[0] == 0 else 1), 0, 0, 18)
+                        time.sleep(0.5)
+
+                    # grab.grab(motor_control, huatai, shengjiang,
+                    #           duoji, duoji1, mode="spread")
+
+                    if temp[0] != 1:
+                        time.sleep(0.5)
+                        basic.simple_movement(
+                            -0.1*(-1 if temp[0] == 0 else 1), 0, 0, 18)
         if i < 5:
             time.sleep(0.5)
-            basic.movement(6, -0.25, 0.0, 0.35, False, 4)
+            basic.movement(6, 0.25, 0.0, 0.35, False, 4)
     time.sleep(0.2)
-    print(item_list)
-    grab.grab(motor_control, huatai, shengjiang,
-              duoji, duoji1, item_list, mode="c")
-    ########## -B-##########
     ########## -C-##########
     # basic.movement(6, -0.2, 0, 0.35, False)
     # time.sleep(0.5)
@@ -191,21 +262,28 @@ def main():
 
 if __name__ == '__main__':
     try:
-        os.system("gnome-terminal -- python3 '/home/zzb/yolov5/shibie.py'")
+        # os.system("gnome-terminal -- python3 '/home/zzb/yolov5/shibie.py'")
+        # time.sleep(20)
         grab.grab(motor_control, huatai, shengjiang,
                   duoji, duoji1, mode="closed")
         grab.grab(motor_control, huatai, shengjiang,
                   duoji, duoji1, mode="closed")
         motor_control("3", "08", "1848")
         time.sleep(1)
-
         motor_control("2", "02", "1848")
         time.sleep(2)
-        motor_control("2", "02", "2248")
+        motor_control("2", "02", "3048")
         time.sleep(2)
+        # while 1:
+        #     motor_control("2", "02", "1548")
+        #     time.sleep(5)
+        #     motor_control("2", "02", "3048")
+        #     time.sleep(5)
         # basic.simple_movement(0.2,0,0,50)
 
         # basic.movement(4, -0.2, 0, 0.8, True)
+        # pub_detect("d")
+        # pub_detect("b")
         pub_detect("d")
         main()
 
