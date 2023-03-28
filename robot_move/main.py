@@ -73,18 +73,20 @@ def count_time(func):
 
 
 def tui(up=False):
+    motor_control("2", shengjiang, "1868" if not up else "1338")
+    time.sleep(2)
+    if up:
+        time.sleep(4)
+
+    motor_control("3", huatai, "2458")
+    time.sleep(4)
     grab.grab(motor_control, huatai, shengjiang,
               duoji, duoji1, mode="spread")
-    motor_control("2", shengjiang, "1848" if not up else "1448")
-    time.sleep(0.5)
-    if up:
-        time.sleep(4.5)
-    motor_control("3", huatai, "2548")
-    time.sleep(4)
-    motor_control("3", huatai, "1048")
-    time.sleep(4)
     grab.grab(motor_control, huatai, shengjiang,
               duoji, duoji1, mode="closed")
+    motor_control("3", huatai, "1048")
+    time.sleep(4)
+
     motor_control("2", shengjiang, "3048")
     time.sleep(0.5)
     if up:
@@ -118,13 +120,14 @@ def main():
     # time.sleep(10)
     # pub_detect("n")
     ########## -A-##########
-    # basic.movement(4, -0.2, 0, 0.7, True)
-    # time.sleep(0.5)
-    # basic.movement(4, 0.2, 0, 0.3, False)
-    # time.sleep(0.5)
-    # basic.movement(4, 0.2, 0, 0.38, False)
-    # time.sleep(0.5)
-    # basic.movement(4, 0.2, 0, 0.38, True, 6)
+    # basic.movement(4, -0.2, 0, 0.7, True,4)
+    basic.simple_movement(0, -0.2, 0, 70)
+    time.sleep(0.5)
+    basic.movement(4, 0.2, 0, 0.2, False)
+    time.sleep(0.5)
+    basic.movement(4, 0.2, 0, 0.38, False)
+    time.sleep(0.5)
+    basic.movement(4, 0.2, 0, 0.38, True, 6)
     # for i in range(6):
     #     pub_detect("a")
     #     time.sleep(0.5)
@@ -141,7 +144,9 @@ def main():
     # print(item_list)
     # grab.grab(motor_control, huatai, shengjiang,
     #           duoji, duoji1, item_list, mode="a")
+    # return
     ########## -B-##########
+    # num=19
     for i in range(6):
         pub_detect("b")
         time.sleep(0.5)
@@ -150,32 +155,32 @@ def main():
         temp = [int(x) for x in jieguo]
         print(temp)
         if len(temp) > 0:
+            basic.simple_movement(
+                0, 0.1, 0, 10)
             if len(temp) == 4:
-                ################################################
                 if temp[2] != 1:
                     basic.simple_movement(
                         0.1*(-1 if temp[2] == 0 else 1), 0, 0, 18)
                     time.sleep(0.5)
-                print("grab down", temp[2])
+                print("tui down", temp[2])
                 tui()
 
-                if temp[2] != 1:
+                if temp[2] != 1 and temp[1] != temp[2]:
                     time.sleep(0.5)
-                    basic.simple_movement(
-                        -0.1*(-1 if temp[2] == 0 else 1), 0, 0, 18)
+                    basic.movement(
+                        6, -0.1*(-1 if temp[2] == 0 else 1), 0, 0.1, False)
                 ################################################
-                if temp[1] != 1:
+                if temp[1] != 1 and temp[1] != temp[2]:
                     basic.simple_movement(
                         0.1*(-1 if temp[1] == 0 else 1), 0, 0, 18)
                     time.sleep(0.5)
-
-                print("grab up", temp[1])
+                print("tui up", temp[1])
                 tui(True)
 
                 if temp[1] != 1:
                     time.sleep(0.5)
-                    basic.simple_movement(
-                        -0.1*(-1 if temp[1] == 0 else 1), 0, 0, 18)
+                    basic.movement(
+                        6, -0.1*(-1 if temp[1] == 0 else 1), 0, 0.1, False)
                 time.sleep(1)
                 ################################################
             elif len(temp) == 2:
@@ -185,20 +190,20 @@ def main():
                             0.1*(-1 if temp[1] == 0 else 1), 0, 0, 18)
                         time.sleep(0.5)
 
-                        tui(True)
+                    tui(True)
 
                     if temp[1] != 1:
                         time.sleep(0.5)
                         basic.simple_movement(
                             -0.1*(-1 if temp[1] == 0 else 1), 0, 0, 18)
 
-                else:
+                elif temp[1] == 4:
                     if temp[0] != 1:
                         basic.simple_movement(
                             0.1*(-1 if temp[0] == 0 else 1), 0, 0, 18)
                         time.sleep(0.5)
 
-                        tui()
+                    tui()
 
                     if temp[0] != 1:
                         time.sleep(0.5)
@@ -286,6 +291,12 @@ if __name__ == '__main__':
                   duoji, duoji1, mode="closed")
         grab.grab(motor_control, huatai, shengjiang,
                   duoji, duoji1, mode="closed")
+        # while 1:
+        #     grab.grab(motor_control, huatai, shengjiang,
+        #             duoji, duoji1, mode="spread",)
+        #     grab.grab(motor_control, huatai, shengjiang,
+        #             duoji, duoji1, mode="closed")
+
         motor_control("3", "08", "1848")
         time.sleep(1)
         motor_control("2", "02", "1848")
@@ -293,16 +304,18 @@ if __name__ == '__main__':
         motor_control("2", "02", "3048")
         time.sleep(2)
         # while 1:
-        #     motor_control("2", "02", "1548")
-        #     time.sleep(5)
-        #     motor_control("2", "02", "3048")
-        #     time.sleep(5)
+        #     motor_control("8", "01", "500","300")
+        #     time.sleep(3)
+        #     motor_control("8", "01", "800","300")
+        #     time.sleep(3)
         # basic.simple_movement(0.2,0,0,50)
 
         # basic.movement(4, -0.2, 0, 0.8, True)
         # pub_detect("d")
         # pub_detect("b")
-        pub_detect("d")
+        # while 1:
+        #     pub_detect("b")
+        #     time.sleep(5)
         main()
 
     except KeyboardInterrupt:
