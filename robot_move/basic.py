@@ -202,8 +202,8 @@ class movement(Node):
         ans = np.sum(sensor_matrix)
         if (ans != 0):
             # self.publish_twist(v, 0, corr/-2*self.dir)
-            self.publish_twist(v, houcorr/-8, corr/2)
-            # print(corr*2)
+            self.publish_twist(v, houcorr/8*self.dir, corr/2)
+            # print(corr/2,houcorr/8*self.dir)
             # pass
         else:
             self.publish_twist(0.1*self.dir, 0.0, 0)
