@@ -35,6 +35,8 @@ def motor_control(num="1", num1="1", v="0", v1="0"):
     motor_control_pub.publish(msg)
 
     time.sleep(0.2)
+    if num == "4":
+        time.sleep(0.1)
 
 
 detect_node = Node("detect_pub")
@@ -74,19 +76,19 @@ def count_time(func):
 
 def tui(up=False):
     motor_control("2", shengjiang, "1808" if not up else "1248")
-    time.sleep(2)
+    time.sleep(3)
     if up:
-        time.sleep(9)
+        time.sleep(10)
 
     motor_control("3", huatai, "2568")
     time.sleep(6)
     motor_control("3", huatai, "1048")
     time.sleep(6)
 
-    motor_control("2", shengjiang, "3048")
-    time.sleep(2)
+    motor_control("2", shengjiang, "4048")
+    time.sleep(3)
     if up:
-        time.sleep(9)
+        time.sleep(10)
 
 
 # duoji, duoji1 = "18", "13"
@@ -142,82 +144,86 @@ def main():
               duoji, duoji1, item_list, mode="a")
     # return
     ########## -B-##########
-    # for i in range(5):
-    #         time.sleep(0.5)
-    #         basic.movement(6, -0.25, 0.0, 0.35, False, 4)
-    # basic.movement(4, -0.2, 0, 0.38, True, 6)
-    # basic.movement(4, -0.2, 0, 0.38, False)
-    # basic.movement(4, -0.2, 0, 0.78, True, 4)
-    # basic.movement(3, 0, 0.4, 0)
-    # time.sleep(0.5)
-    # basic.movement(4, 0.2, 0, 0.38, True, 6)
+    for i in range(5):
+        time.sleep(0.5)
+        basic.movement(6, -0.25, 0.0, 0.35, False, 4)
+    basic.movement(4, -0.2, 0, 0.38, True, 6)
+    basic.movement(4, -0.2, 0, 0.38, False)
+    basic.movement(4, -0.2, 0, 0.78, True, 4)
+    basic.movement(3, 0, 0.4, 0)
+    time.sleep(0.5)
+    basic.movement(4, 0.2, 0, 0.38, True, 6)
     # # # num=19
-    # for i in range(6):
-    #     pub_detect("b")
-    #     time.sleep(0.5)
-    #     rclpy.spin_once(detect_sub())
-    #     time.sleep(0.1)
-    #     temp = [int(x) for x in jieguo]
-    #     print(temp)
-    #     if len(temp) > 0:
-    #         basic.simple_movement(
-    #             0, 0.1, 0, 10)
-    #         if len(temp) == 4:
-    #             if temp[2] != 1:
-    #                 basic.simple_movement(
-    #                     0.1*(-1 if temp[2] == 0 else 1), 0, 0, 18)
-    #                 time.sleep(0.5)
-    #             print("tui down", temp[2])
-    #             tui()
+    for i in range(6):
+        pub_detect("b")
+        time.sleep(0.5)
+        rclpy.spin_once(detect_sub())
+        time.sleep(0.1)
+        temp = [int(x) for x in jieguo]
+        print(temp)
+        if len(temp) > 0:
+            basic.simple_movement(
+                0, 0.1, 0, 10)
+            time.sleep(0.5)
+            if len(temp) == 4:
+                if temp[2] != 1:
+                    basic.simple_movement(
+                        0.1*(-1 if temp[2] == 0 else 1), 0, 0, 20)
+                    time.sleep(0.5)
+                print("tui down", temp[2])
+                tui()
 
-    #             if temp[2] != 1 and temp[1] != temp[2]:
-    #                 time.sleep(0.5)
-    #                 basic.movement(
-    #                     6, -0.1*(-1 if temp[2] == 0 else 1), 0, 0.1, False)
-    #             ################################################
-    #             if temp[1] != 1 and temp[1] != temp[2]:
-    #                 basic.simple_movement(
-    #                     0.1*(-1 if temp[1] == 0 else 1), 0, 0, 18)
-    #                 time.sleep(0.5)
-    #             print("tui up", temp[1])
-    #             tui(True)
+                if temp[2] != 1 and temp[1] != temp[2]:
+                    time.sleep(0.5)
+                    basic.movement(
+                        6, -0.1*(-1 if temp[2] == 0 else 1), 0, 0.1, False)
+                ################################################
+                basic.simple_movement(
+                    0, 0.1, 0, 8)
+                time.sleep(0.5)
+                if temp[1] != 1 and temp[1] != temp[2]:
+                    basic.simple_movement(
+                        0.1*(-1 if temp[1] == 0 else 1), 0, 0, 20)
+                    time.sleep(0.5)
+                print("tui up", temp[1])
+                tui(True)
 
-    #             if temp[1] != 1:
-    #                 time.sleep(0.5)
-    #                 basic.movement(
-    #                     6, -0.1*(-1 if temp[1] == 0 else 1), 0, 0.1, False)
-    #             time.sleep(1)
-    #             ################################################
-    #         elif len(temp) == 2:
-    #             if temp[0] == 3:
-    #                 if temp[1] != 1:
-    #                     basic.simple_movement(
-    #                         0.1*(-1 if temp[1] == 0 else 1), 0, 0, 18)
-    #                     time.sleep(0.5)
+                if temp[1] != 1:
+                    time.sleep(0.5)
+                    basic.movement(
+                        6, -0.1*(-1 if temp[1] == 0 else 1), 0, 0.1, False)
+                time.sleep(1)
+                ################################################
+            elif len(temp) == 2:
+                if temp[0] == 3:
+                    if temp[1] != 1:
+                        basic.simple_movement(
+                            0.1*(-1 if temp[1] == 0 else 1), 0, 0, 20)
+                        time.sleep(0.5)
 
-    #                 tui(True)
+                    tui(True)
 
-    #                 if temp[1] != 1:
-    #                     time.sleep(0.5)
-    #                     basic.simple_movement(
-    #                         -0.1*(-1 if temp[1] == 0 else 1), 0, 0, 18)
+                    if temp[1] != 1:
+                        time.sleep(0.5)
+                        basic.simple_movement(
+                            -0.1*(-1 if temp[1] == 0 else 1), 0, 0, 20)
 
-    #             elif temp[1] == 4:
-    #                 if temp[0] != 1:
-    #                     basic.simple_movement(
-    #                         0.1*(-1 if temp[0] == 0 else 1), 0, 0, 18)
-    #                     time.sleep(0.5)
+                elif temp[1] == 4:
+                    if temp[0] != 1:
+                        basic.simple_movement(
+                            0.1*(-1 if temp[0] == 0 else 1), 0, 0, 20)
+                        time.sleep(0.5)
 
-    #                 tui()
+                    tui()
 
-    #                 if temp[0] != 1:
-    #                     time.sleep(0.5)
-    #                     basic.simple_movement(
-    #                         -0.1*(-1 if temp[0] == 0 else 1), 0, 0, 18)
-    #     if i < 5:
-    #         time.sleep(0.5)
-    #         basic.movement(6, 0.25, 0.0, 0.35, False, 4)
-    # time.sleep(0.2)
+                    if temp[0] != 1:
+                        time.sleep(0.5)
+                        basic.simple_movement(
+                            -0.1*(-1 if temp[0] == 0 else 1), 0, 0, 20)
+        if i < 5:
+            time.sleep(0.5)
+            basic.movement(6, 0.25, 0.0, 0.35, False, 4)
+    time.sleep(0.2)
     ########## -C-##########
     # basic.movement(6, -0.2, 0, 0.35, False)
     # time.sleep(0.5)
@@ -296,11 +302,11 @@ if __name__ == '__main__':
         # while 1:
         # time.sleep(2)
         # time.sleep(1)
-        while 1:
-            motor_control("2", shengjiang, "1348")
-            time.sleep(13)
-            motor_control("2", shengjiang, "3048")
-            time.sleep(13)
+        # while 1:
+        #     motor_control("2",shengjiang,"1248")
+        #     time.sleep(13)
+        #     motor_control("2",shengjiang,"4048")
+        #     time.sleep(13)
         motor_control("4", duoji1, "3048")
         motor_control("4", duoji, "1148")
         time.sleep(1)
