@@ -350,6 +350,96 @@ class simple_movement(Node):
         self.pub.publish(self.twist)
 
 
+class simple_movement_forline(Node):
+    def __init__(self, xvel, yvel, turnVel=0.0, dis=0.0, yaxis=False, stop_weight=3):
+        '''
+        Parameters:
+                weight - 巡线中心\n
+                xvel - x速度\n
+                yvel - y速度\n
+                turnVel - 转弯速度\n
+                dis - 距离\n
+        '''
+        # rclpy.init(args=None)
+        super().__init__("simple_movement")
+        self.pub = self.create_publisher(
+            Twist, 'cmd_vel', 10)
+        self.x = 1.0
+        self.y = 1.0
+        self.dis = dis
+        self.rate = self.create_rate(20)
+        self.twist = Twist()
+
+        # 订阅odom->base_footprint变换并传入到 position
+        node_odom_sub = odom_subscription()
+        rclpy.spin_once(node_odom_sub)
+        # 订阅传感器数据
+        node_sub = line_sensor_subscription()
+        rclpy.spin_once(node_sub)
+
+        global position
+        prepos = Vector3()
+        prepos.x = position.x
+        prepos.y = position.y
+        prepos.z = position.z
+        distance = 0.0
+
+        while rclpy.ok():
+            rclpy.spin_once(node_odom_sub)
+            rclpy.spin_once(node_sub)
+            # 更新传感器
+            temp = (list(sensor_matrix[0])+list(sensor_matrix[1]) +
+                    list(sensor_matrix[2])+list(sensor_matrix[3]))
+            '''y计线'''
+            temp1 = (list(sensor_matrix[4])+list(sensor_matrix[5]) +
+                     list(sensor_matrix[6])+list(sensor_matrix[7]))
+            '''x计线'''
+            # print("xxxxx",temp)
+            if distance > self.dis - 0.1 and (
+                    temp1[7-stop_weight] +
+                    temp1[8-stop_weight] +
+                    temp1[(stop_weight+7)] +
+                    temp1[(stop_weight+8)] >= 2) and not yaxis:
+                print("xxxxxx")
+                break
+            elif distance > self.dis - 0.1 and (
+                    temp[7-stop_weight] +
+                    temp[8-stop_weight] +
+                    temp[(stop_weight+7)] +
+                    temp[(stop_weight+8)] >= 2) and yaxis:
+                print("dddddd")
+                break
+
+            self.publish_twist(xvel, yvel, turnVel)
+
+            # 更新距离
+            distance = math.sqrt(pow((position.x - prepos.x), 2) +
+                                 pow((position.y - prepos.y), 2))+distance
+            prepos.x = position.x
+            prepos.y = position.y
+            prepos.z = position.z
+
+            time.sleep(0.05)
+
+        self.publish_twist(0, 0, 0)
+        time.sleep(0.01)
+        self.publish_twist(0, 0, 0)
+        time.sleep(0.01)
+        self.publish_twist(0, 0, 0)
+        node_odom_sub.destroy_node()
+        node_sub.destroy_node()
+        self.destroy_node()
+
+    def publish_twist(self, xvel, yvel, turn):
+        self.twist.linear.x = self.x*xvel
+        self.twist.linear.y = self.y*yvel
+        self.twist.linear.z = 0.0
+        self.twist.angular.x = 0.0
+        self.twist.angular.y = 0.0
+        self.twist.angular.z = 2.0*turn
+        self.pub.publish(self.twist)
+
+
 class line_sensor_subscription(Node):
     def __init__(self):
         super().__init__("line_sensor_subscription")
