@@ -26,7 +26,7 @@ d_zone_item_list = [2, 1, 0, 0, 3, -1,
 
 class grab():
 
-    def __init__(self, func, huatai, shengjiang, duoji, duoji1, item_list=None, mode=None, outdis="2248", updis="1538"):
+    def __init__(self, func, huatai, shengjiang, duoji, duoji1, item_list=None, mode=None, outdis="2308", updis="1538"):
         '''抓取
         Parameters:
                 huatai - 滑台舵机序号\n
@@ -42,33 +42,34 @@ class grab():
                 shangjiangjuli - 升降上升距离\n
         '''
         global a_zone_item_list, c_zone_item_list, d_zone_item_list
+
         self.duoji = duoji
         self.duoji1 = duoji1
         self.huatai = huatai
         self.shengjiang = shengjiang
         self.func = func
-        match mode:
-            case "a":
-                a_zone_item_list = item_list
-                self.a_zone_grab()
-            case "c":
-                c_zone_item_list = item_list
-                self.c_zone_grab()
-            case "d":
-                d_zone_item_list = item_list
-                self.d_zone_grab()
-            case "spread":
-                self.spread_claw()
-            case "closed":
-                self.closed_claw()
-            case "grab_below":
-                self.grab_below(outdis)
-            case "graba_above":
-                self.grab_above(updis, outdis)
-            case "push_below":
-                self.push_below(outdis)
-            case "push_above":
-                self.push_above(updis, outdis)
+        if mode == "a":
+            a_zone_item_list = item_list
+            # a_zone_item_list = item_list
+            self.a_zone_grab()
+        elif mode == "c":
+            c_zone_item_list = item_list
+            self.c_zone_grab()
+        elif mode == "d":
+            d_zone_item_list = item_list
+            self.d_zone_grab()
+        elif mode == "spread":
+            self.spread_claw()
+        elif mode == "closed":
+            self.closed_claw()
+        elif mode == "grab_below":
+            self.grab_below(outdis)
+        elif mode == "graba_above":
+            self.grab_above(updis, outdis)
+        elif mode == "push_below":
+            self.push_below(outdis)
+        elif mode == "push_above":
+            self.push_above(updis, outdis)
 
     def func(self, *args, **kwargs):
         return self.func(*args, **kwargs)
@@ -115,19 +116,19 @@ class grab():
         if push_pos < 6:
             self.func("2", self.shengjiang, "1348")
             time.sleep(10)
-            self.__spread_claw__()
+            self.__spread_claw__(200)
             time.sleep(1)
             self.func("2", self.shengjiang, "2188")
-            time.sleep(2)
+            time.sleep(1.5)
             self.__closed_claw__()
-            self.func("2", self.shengjiang, "4048")
+            self.func("2", self.shengjiang, "3048")
             time.sleep(10)
         else:
             self.func("2", self.shengjiang, "1828")
             time.sleep(2)
-            self.__spread_claw__()
+            self.__spread_claw__(200)
             time.sleep(1)
-            self.func("2", self.shengjiang, "3048")
+            self.func("2", self.shengjiang, "2448")
             time.sleep(2)
             self.__closed_claw__()
         ##### push#####
@@ -136,36 +137,36 @@ class grab():
             basic.movement(6, -0.2*(to_grab_dis/abs(to_grab_dis)),
                            0, 0.39*abs(to_grab_dis), False, stop_weight=4)
         time.sleep(0.5)
-        basic.simple_movement(0.0, 0.1, 0, 8)
+        basic.simple_movement(0.0, 0.1, 0, 10)
         time.sleep(0.5)
-        basic.simple_movement(-0.1, 0, 0, 19)
+        basic.simple_movement(-0.1, 0, 0, 20)
         if grab_pos < 6:
             self.func("2", self.shengjiang, "1408")
             time.sleep(10)
-            self.__spread_claw__()
+            self.__spread_claw__(200, True)
             self.func("2", self.shengjiang, "1998")
 
             time.sleep(1)
             basic.movement(6, 0.1, 0, 0.1, False, 4)
             time.sleep(1)
 
-            self.func("2", self.shengjiang, "2198")
+            self.func("2", self.shengjiang, "2148")
             time.sleep(2)
             self.__closed_claw__()
-            self.func("2", self.shengjiang, "4048")
+            self.func("2", self.shengjiang, "3048")
             time.sleep(10)
         else:
             self.func("2", self.shengjiang, "1948")
             time.sleep(1.5)
-            self.__spread_claw__()
+            self.__spread_claw__(200, True)
             self.func("2", self.shengjiang, "1948")
 
             time.sleep(1)
             basic.movement(6, 0.1, 0, 0.1, False, 4)
             time.sleep(1)
 
-            self.func("2", self.shengjiang, "3048")
-            time.sleep(2.5)
+            self.func("2", self.shengjiang, "2348")
+            time.sleep(2)
             self.__closed_claw__()
 
         ##### push#####
@@ -173,25 +174,24 @@ class grab():
             basic.movement(6, 0.2*(to_grab_dis/abs(to_grab_dis)),
                            0, 0.39*abs(to_grab_dis), False, stop_weight=4)
         time.sleep(0.5)
-        basic.simple_movement(0.0, 0.1, 0, 8)
         if push_pos < 6:
             self.func("2", self.shengjiang, "1388")
             time.sleep(10)
-            self.__spread_claw__()
-            self.func("2", self.shengjiang, "1948")
-            time.sleep(2)
-            self.__closed_claw__()
-            self.func("2", self.shengjiang, "4048")
-            time.sleep(10)
-        else:
-            self.func("2", self.shengjiang, "1948")
-            time.sleep(2)
-            self.__spread_claw__()
+            self.__spread_claw__(200, True)
             self.func("2", self.shengjiang, "1948")
             time.sleep(2)
             self.__closed_claw__()
             self.func("2", self.shengjiang, "3048")
-            time.sleep(3)
+            time.sleep(10)
+        else:
+            self.func("2", self.shengjiang, "1878")
+            time.sleep(2)
+            self.__spread_claw__(200, True)
+            self.func("2", self.shengjiang, "1948")
+            time.sleep(2)
+            self.__closed_claw__()
+            self.func("2", self.shengjiang, "3048")
+            time.sleep(2)
         ###############
         a_zone_item_list[grab_pos] = target_zone
         a_zone_item_list[push_pos] = zone_num
@@ -213,9 +213,9 @@ class grab():
                     push_pos = i+(j*6)
 
         if grab_pos == -1 or push_pos == -1:
-            # if abs(5-pos) != 0:
-            #     basic.movement(6, -0.25,
-            #                    0, 0.39*abs(5-pos), False, stop_weight=4)
+            if abs(5-pos) != 0:
+                basic.movement(6, -0.25,
+                               0, 0.39*abs(5-pos), False, stop_weight=4)
             return
         to_grab_dis = (pos-normalize_pos(grab_pos))
         to_push_dis = (normalize_pos(grab_pos)-normalize_pos(push_pos))
@@ -297,9 +297,9 @@ class grab():
         basic.simple_movement(0.0, 0.1, 0, 10)
         if item_pos != 1:
             if item_pos == 0:
-                basic.simple_movement(0.1, 0, 0, 20)
+                basic.simple_movement(0.1, 0.05, 0, 17)
             else:
-                basic.simple_movement(-0.1, 0, 0, 20)
+                basic.simple_movement(-0.1, 0.05, 0, 17)
         if grab_pos < 6:
             self.grab_above("1538")
             self.func("2", self.shengjiang, "3048")
@@ -308,9 +308,9 @@ class grab():
             self.grab_below()
         if item_pos != 1:
             if item_pos == 0:
-                basic.movement(6, -0.1, 0, 0.05, False)
+                basic.simple_movement(-0.1, 0.05, 0, 19)
             else:
-                basic.movement(6, 0.1, 0, 0.05, False)
+                basic.simple_movement(0.1, 0.05, 0, 19)
 
         d_zone_item_list[grab_pos] = -1
         ###############
@@ -332,7 +332,7 @@ class grab():
         print(d_zone_item_list)
         return self.d_zone_grab(push_pos)
 
-    def grab_below(self, outdis="2288"):
+    def grab_below(self, outdis="2308"):
         self.spread_claw()
         self.func("3", self.huatai, outdis)
         time.sleep(2)
@@ -340,7 +340,7 @@ class grab():
         self.func("3", self.huatai, "1748")
         time.sleep(2)
 
-    def grab_above(self, updis="1538", outdis="2288"):
+    def grab_above(self, updis="1538", outdis="2308"):
         self.func("2", self.shengjiang, updis)
         time.sleep(5)
         self.spread_claw()
@@ -350,12 +350,12 @@ class grab():
         self.func("3", self.huatai, "1748")
         time.sleep(2)
 
-    def push_below(self, outdis="2288"):
+    def push_below(self, outdis="2308"):
         self.func("2", self.shengjiang, "1998")
         time.sleep(1)
         self.func("3", self.huatai, outdis)
         time.sleep(2)
-        self.spread_claw()
+        self.spread_claw(x=0)
 
         self.func("2", self.shengjiang, "1948")
         time.sleep(2)
@@ -366,13 +366,13 @@ class grab():
         self.func("2", self.shengjiang, "2548")
         time.sleep(0.2)
 
-    def push_above(self, updis="1538", outdis="2288"):
+    def push_above(self, updis="1538", outdis="2308"):
         self.func("2", self.shengjiang, str(int(updis)-50))
         time.sleep(5)
 
         self.func("3", self.huatai, outdis)
         time.sleep(3)
-        self.spread_claw()
+        self.spread_claw(x=0)
         self.func("2", self.shengjiang, "1948")
         time.sleep(2)
         self.func("3", self.huatai, "1748")
@@ -393,19 +393,16 @@ class grab():
         self.func("8", self.duoji1, "260", v1)
         time.sleep(1)
 
-    def __spread_claw__(self, x=250, wait=False):
-        self.func("4", self.duoji, str(2048+x))
-        self.func("4", self.duoji1, str(2048-x))
-        self.func("4", self.duoji, str(2048+x))
-        self.func("4", self.duoji1, str(2048-x))
-
+    def __spread_claw__(self, x=200, wait=False):
+        self.func("4", self.duoji1, str(2048+x))
+        if wait:
+            time.sleep(1)
+        self.func("4", self.duoji, str(2048-x))
         time.sleep(1)
 
     def __closed_claw__(self, x=0):
-        self.func("4", self.duoji1, "3048")
-        self.func("4", self.duoji, "1148")
-        self.func("4", self.duoji1, "3048")
-        self.func("4", self.duoji, "1148")
+        self.func("4", self.duoji, "3048")
+        self.func("4", self.duoji1, "1048")
         time.sleep(1)
 
 
