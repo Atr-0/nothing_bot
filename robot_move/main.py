@@ -221,12 +221,54 @@ def main():
     #         time.sleep(0.5)
     #         basic.movement(6, 0.25, 0.0, 0.35, False, 4)
     # time.sleep(0.2)
-    ########## -C-##########
+    ########## -D-##########
     # basic.movement(6, -0.2, 0, 0.35, False)
     # time.sleep(0.5)
     # basic.movement(4, -0.2, 0, 0.6, True)
     # time.sleep(0.5)
     # basic.movement(4, 0.2, 0, 0.38, True)
+    # time.sleep(0.5)
+    # basic.movement(3, 0, 0.4, 0)
+    # time.sleep(0.5)
+    # basic.movement(4, 0.2, 0, 0.38, True, 6)
+    # for i in range(6):
+
+    #     if i != 2 and i != 3:
+    #         pub_detect("d")
+    #         time.sleep(0.5)
+    #         rclpy.spin_once(detect_sub())
+    #         time.sleep(0.1)
+    #         temp = [str(x) for x in jieguo]
+    #         print(temp)
+    #         if len(temp) > 3:
+    #             item_list[i] = int(temp[1]+temp[2])
+    #             item_list[i+6] = int(temp[4]+temp[5])
+    #         elif len(temp) == 3:
+    #             if temp[0] == "1":
+    #                 item_list[i] = int(temp[1]+temp[2])
+    #                 item_list[i+6] = -1
+    #             else:
+    #                 item_list[i] = -1
+    #                 item_list[i+6] = int(temp[1]+temp[2])
+    #         else:
+    #             item_list[i] = -1
+    #             item_list[i+6] = -1
+    #     else:
+    #         item_list[i] = 0
+    #         item_list[i+6] = 0
+
+    #     if i < 5:
+    #         time.sleep(0.5)
+    #         basic.movement(6, -0.25, 0.0, 0.35, False, 4)
+    # time.sleep(0.2)
+    # print(item_list)
+    # grab.grab(motor_control, huatai, shengjiang,
+    #           duoji, duoji1, item_list, mode="d")
+
+    ######## -C-##########
+    # basic.movement(6, -0.2, 0, 0.35, False)
+    # time.sleep(0.5)
+    # basic.movement(4, -0.2, 0, 0.78, False)
     # time.sleep(0.5)
     # basic.movement(3, 0, 0.4, 0)
     # time.sleep(0.5)
@@ -248,46 +290,6 @@ def main():
     # print(item_list)
     # grab.grab(motor_control, huatai, shengjiang,
     #           duoji, duoji1, item_list, mode="c")
-    ########## -D-##########
-    # basic.movement(6, -0.2, 0, 0.35, False)
-    # time.sleep(0.5)
-    # basic.movement(4, -0.2, 0, 0.78, False)
-    # time.sleep(0.5)
-    # basic.movement(3, 0, 0.4, 0)
-    # time.sleep(0.5)
-    # basic.movement(4, 0.2, 0, 0.38, True, 6)
-    # for i in range(6):
-    #     if i != 2 and i != 3:
-    #         pub_detect("d")
-    #         time.sleep(0.5)
-    #         rclpy.spin_once(detect_sub())
-    #         time.sleep(0.1)
-    #         temp = [int(x) for x in jieguo]
-    #         print(temp)
-    #         if len(temp) > 2:
-    #             item_list[i] = temp[1]
-    #             item_list[i+6] = temp[3]
-    #         elif len(temp) == 2:
-    #             if temp[0] == 1:
-    #                 item_list[i] = temp[1]
-    #                 item_list[i+6] = -1
-    #             else:
-    #                 item_list[i] = -1
-    #                 item_list[i+6] = temp[1]
-    #         else:
-    #             item_list[i] = -1
-    #             item_list[i+6] = -1
-    #     else:
-    #         item_list[i] = 0
-    #         item_list[i+6] = 0
-
-    #     if i < 5:
-    #         time.sleep(0.5)
-    #         basic.movement(6, -0.25, 0.0, 0.35, False, 4)
-    # time.sleep(0.2)
-    # print(item_list)
-    # grab.grab(motor_control, huatai, shengjiang,
-    #           duoji, duoji1, item_list, mode="d")
 
 
 if __name__ == '__main__':
