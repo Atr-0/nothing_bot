@@ -37,6 +37,22 @@ def motor_control(num="1", num1="1", v="0", v1="250"):
     time.sleep(0.2)
 
 
+def huataidaduoji(num, v1, v2):
+    motor_control(3, num, v1, v2)
+
+
+def shengjiangdaduoji(num, v1, v2):
+    motor_control(2, num, v1, v2)
+
+
+def xiaoduoji(num, v1, v2):
+    motor_control(8, num, v1, v2)
+
+
+def ABduoji(num, v1, v2):
+    motor_control(4, num, v1, v2)
+
+
 detect_node = Node("detect_pub")
 detect_node_pub = detect_node.create_publisher(String, "shibie", 10)
 
@@ -46,8 +62,7 @@ def pub_detect(cmd=""):
     tmp = String()
     tmp.data = cmd
     detect_node_pub.publish(tmp)
-    time.sleep(2.5)
-    # rclpy.spin_once(aqu_detect_sub())
+    time.sleep(0.1)
 
 
 class detect_sub(Node):
@@ -116,7 +131,7 @@ def main():
     # time.sleep(10)
     # pub_detect("n")
     ########## -A-##########
-    # basic.simple_movement_forline(-0.01, -0.2, -0.05, 0.6)
+    # basic.simple_movement_forline(-0.01, -0.2, -0.05, 0.6, True)
     # time.sleep(0.5)
     # basic.movement(4, 0.2, 0, 0.2, False)
     # time.sleep(0.5)
