@@ -23,7 +23,7 @@ class movement(Node):
     integral, previous_error, error = 0.0, 0.0, 0.0
     houprevious_error, houerror = 0.0, 0.0
 
-    def __init__(self, weight, vel, turnVel=0.0, dis=0.4, yaxis=False, stop_weight=4):
+    def __init__(self, weight, vel, turnVel=0.0, dis=0.4, yaxis=False, stop_weight=3):
         '''巡线移动\n
         Parameters:
                 weight - 巡线中心\n
@@ -351,7 +351,7 @@ class simple_movement(Node):
 
 
 class simple_movement_forline(Node):
-    def __init__(self, xvel, yvel, turnVel=0.0, dis=0.0, yaxis=False, stop_weight=4):
+    def __init__(self, xvel, yvel, turnVel=0.0, dis=0.0, yaxis=False, stop_weight=3):
         '''
         Parameters:
                 weight - 巡线中心\n

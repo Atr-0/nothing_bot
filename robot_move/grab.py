@@ -46,7 +46,7 @@ class grab():
         self.duoji1 = duoji1
         self.huatai = huatai
         self.shengjiang = shengjiang
-        self.func = func
+        self.motor_control = func
         match mode:
             case "a":
                 a_zone_item_list = item_list
@@ -70,8 +70,8 @@ class grab():
             case "push_above":
                 self.push_above(updis, outdis)
 
-    def func(self, *args, **kwargs):
-        return self.func(*args, **kwargs)
+    def motor_control(self, *args, **kwargs):
+        return self.motor_control(*args, **kwargs)
 
     def a_zone_grab(self, pos=5):
         global a_zone_item_list
@@ -81,7 +81,9 @@ class grab():
         range_value = range(5, -1, -1)
         if pos < 3:
             range_value = range(0, 6)
-
+        '''
+        检测其他前区域中的当前区域方块
+        '''
         for i in range_value:
             for j in range(1, -1, -1):
                 if a_zone_item_list[i+(j*6)] == zone_num and grab_pos == -1 and (i != zone_num+(zone_num+1) and i != zone_num+zone_num):
@@ -90,12 +92,16 @@ class grab():
                         1 if (normalize_pos(grab_pos) == 3 or normalize_pos(grab_pos) == 2) else 0)
                     print(grab_pos, "xxxxxxxxxxxxxxx")
         # print(grab_pos)
+        '''
+        检测当前前区域中的其他区域方块
+        '''
         for i in range(zone_num+(zone_num+1), zone_num+zone_num-1, -1):
             for j in range(1, -1, -1):
                 if a_zone_item_list[i+(j*6)] == target_zone and push_pos == -1:
                     push_pos = i+(j*6)
                     print(push_pos, "yyyyyyyyyyyy")
         # print(push_pos)
+        # 车要走的距离
         to_dis = (pos-normalize_pos(push_pos))
         to_grab_dis = normalize_pos(push_pos)-normalize_pos(grab_pos)
         if grab_pos == -1 or push_pos == -1:
@@ -112,22 +118,22 @@ class grab():
             basic.movement(6, -0.2*(to_dis/abs(to_dis)),
                            0, 0.39*abs(to_dis), False, stop_weight=4)
         basic.simple_movement(0.0, 0.1, 0, 8)
-        if push_pos < 6:
-            self.func("2", self.shengjiang, "1348")
+        if push_pos < 6:  # 抓上面
+            self.motor_control("2", self.shengjiang, "1348")
             time.sleep(6)
             self.__spread_claw__(x=175)
             time.sleep(1)
-            self.func("2", self.shengjiang, "2188")
+            self.motor_control("2", self.shengjiang, "2188")
             time.sleep(2)
             self.__closed_claw__()
-            self.func("2", self.shengjiang, "4048")
+            self.motor_control("2", self.shengjiang, "4048")
             time.sleep(6)
-        else:
-            self.func("2", self.shengjiang, "1828")
+        else:  # 抓下面
+            self.motor_control("2", self.shengjiang, "1828")
             time.sleep(1)
             self.__spread_claw__(x=175)
             time.sleep(1)
-            self.func("2", self.shengjiang, "3048")
+            self.motor_control("2", self.shengjiang, "3048")
             time.sleep(1)
             self.__closed_claw__()
         ##### push#####
@@ -140,16 +146,18 @@ class grab():
         time.sleep(0.5)
         basic.simple_movement(-0.1, 0.01, 0, 17)
         if grab_pos < 6:
-            self.func("2", self.shengjiang, "1408")
+            # 放上面
+            self.motor_control("2", self.shengjiang, "1408")
             time.sleep(6)
             self.__spread_claw__()
-            self.func("4", self.duoji1, str(2048-200))
-            self.func("4", self.duoji1, str(2048-200))
-            self.func("4", self.duoji1, str(2048+300))
-            self.func("4", self.duoji1, str(2048+300))
-            # self.__spread_claw__(150)
+            self.motor_control("4", self.duoji1, str(2048-200))
+            self.motor_control("4", self.duoji1, str(2048-200))
+            self.motor_control("4", self.duoji1, str(2048+300))
+            self.motor_control("4", self.duoji1, str(2048+300))
             self.__spread_claw__()
-            self.func("2", self.shengjiang, "1998")
+
+            # 抓上面
+            self.motor_control("2", self.shengjiang, "1998")
 
             time.sleep(0.5)
             basic.simple_movement_forline(0.1, 0.05, 0, dis=0.1)
@@ -157,30 +165,31 @@ class grab():
             basic.simple_movement(0.1, 0.05, 0, 10)
             time.sleep(0.5)
 
-            self.func("2", self.shengjiang, "2198")
+            self.motor_control("2", self.shengjiang, "2198")
             time.sleep(1)
             self.__closed_claw__()
-            self.func("2", self.shengjiang, "4048")
+            self.motor_control("2", self.shengjiang, "4048")
             time.sleep(6)
         else:
-            self.func("2", self.shengjiang, "1948")
+            # 放下面
+            self.motor_control("2", self.shengjiang, "1948")
             time.sleep(1.5)
             self.__spread_claw__()
-            self.func("4", self.duoji1, str(2048-200))
-            self.func("4", self.duoji1, str(2048-200))
-            self.func("4", self.duoji1, str(2048+300))
-            self.func("4", self.duoji1, str(2048+300))
-            # self.__spread_claw__(150)
+            self.motor_control("4", self.duoji1, str(2048-200))
+            self.motor_control("4", self.duoji1, str(2048-200))
+            self.motor_control("4", self.duoji1, str(2048+300))
+            self.motor_control("4", self.duoji1, str(2048+300))
             self.__spread_claw__()
-            self.func("2", self.shengjiang, "1948")
 
+            # 抓下面
+            self.motor_control("2", self.shengjiang, "1948")
             time.sleep(0.5)
             basic.simple_movement_forline(0.1, 0.05, 0, dis=0.1)
             time.sleep(0.5)
             basic.simple_movement(0.1, 0.05, 0, 10)
             time.sleep(0.5)
 
-            self.func("2", self.shengjiang, "3048")
+            self.motor_control("2", self.shengjiang, "3048")
             time.sleep(1)
             self.__closed_claw__()
         ##### push#####
@@ -189,23 +198,23 @@ class grab():
                            0, 0.39*abs(to_grab_dis), False, stop_weight=4)
         time.sleep(0.5)
         basic.simple_movement(0.0, 0.1, 0, 8)
-        if push_pos < 6:
-            self.func("2", self.shengjiang, "1388")
+        if push_pos < 6:  # 放上面
+            self.motor_control("2", self.shengjiang, "1388")
             time.sleep(6)
             self.__spread_claw__()
-            self.func("2", self.shengjiang, "1948")
+            self.motor_control("2", self.shengjiang, "1948")
             time.sleep(2)
             self.__closed_claw__()
-            self.func("2", self.shengjiang, "4048")
+            self.motor_control("2", self.shengjiang, "4048")
             time.sleep(6)
-        else:
-            self.func("2", self.shengjiang, "1948")
+        else:  # 放下面
+            self.motor_control("2", self.shengjiang, "1948")
             time.sleep(1)
             self.__spread_claw__()
-            self.func("2", self.shengjiang, "1948")
+            self.motor_control("2", self.shengjiang, "1948")
             time.sleep(1)
             self.__closed_claw__()
-            self.func("2", self.shengjiang, "3048")
+            self.motor_control("2", self.shengjiang, "3048")
             time.sleep(1)
         ###############
         a_zone_item_list[grab_pos] = target_zone
@@ -244,7 +253,7 @@ class grab():
         basic.simple_movement(0.0, 0.1, 0, 10)
         if grab_pos < 6:
             self.grab_above()
-            self.func("2", self.shengjiang, "3048")
+            self.motor_control("2", self.shengjiang, "3048")
             time.sleep(5)
         else:
             self.grab_below()
@@ -259,7 +268,7 @@ class grab():
         basic.simple_movement(0.0, 0.1, 0, 10)
         if push_pos < 6:
             self.push_above()
-            self.func("2", self.shengjiang, "3048")
+            self.motor_control("2", self.shengjiang, "3048")
             time.sleep(5)
         else:
             self.push_below()
@@ -291,6 +300,8 @@ class grab():
                 continue
             for j in range(1, -1, -1):
                 for d, k in item.items():
+                    # if len(d_zone_item_list[i+(j*6)]) > 0:
+
                     if int(d_zone_item_list[i+(j*6)]//10) % 10 == k and grab_pos == -1:
                         grab_pos = i+(j*6)
                         push_pos = 2 if (k == 2 or k == 4) else 3
@@ -317,7 +328,7 @@ class grab():
                 basic.simple_movement(-0.1, 0.05, 0, 17)
         if grab_pos < 6:
             self.grab_above("1538")
-            self.func("2", self.shengjiang, "3048")
+            self.motor_control("2", self.shengjiang, "3048")
             time.sleep(5)
         else:
             self.grab_below()
@@ -338,7 +349,7 @@ class grab():
         basic.simple_movement(0.0, 0.1, 0, 10)
         if goal_item == 1 or goal_item == 2:
             self.push_above()
-            self.func("2", self.shengjiang, "3048")
+            self.motor_control("2", self.shengjiang, "3048")
             time.sleep(5)
         else:
             self.push_below()
@@ -349,78 +360,78 @@ class grab():
 
     def grab_below(self, outdis="2308"):
         self.spread_claw()
-        self.func("3", self.huatai, outdis)
+        self.motor_control("3", self.huatai, outdis)
         time.sleep(2)
         self.closed_claw()
-        self.func("3", self.huatai, "1748")
+        self.motor_control("3", self.huatai, "1748")
         time.sleep(2)
 
     def grab_above(self, updis="1538", outdis="2308"):
-        self.func("2", self.shengjiang, updis)
+        self.motor_control("2", self.shengjiang, updis)
         time.sleep(5)
         self.spread_claw()
-        self.func("3", self.huatai, outdis)
+        self.motor_control("3", self.huatai, outdis)
         time.sleep(2)
         self.closed_claw()
-        self.func("3", self.huatai, "1748")
+        self.motor_control("3", self.huatai, "1748")
         time.sleep(2)
 
     def push_below(self, outdis="2308"):
-        self.func("2", self.shengjiang, "1998")
+        self.motor_control("2", self.shengjiang, "1998")
         time.sleep(1)
-        self.func("3", self.huatai, outdis)
+        self.motor_control("3", self.huatai, outdis)
         time.sleep(2)
         self.spread_claw(x=0)
 
-        self.func("2", self.shengjiang, "1948")
+        self.motor_control("2", self.shengjiang, "1948")
         time.sleep(2)
-        self.func("3", self.huatai, "1748")
+        self.motor_control("3", self.huatai, "1748")
         time.sleep(2)
 
         self.closed_claw()
-        self.func("2", self.shengjiang, "2548")
+        self.motor_control("2", self.shengjiang, "2548")
         time.sleep(0.2)
 
     def push_above(self, updis="1538", outdis="2308"):
-        self.func("2", self.shengjiang, str(int(updis)-50))
+        self.motor_control("2", self.shengjiang, str(int(updis)-50))
         time.sleep(5)
 
-        self.func("3", self.huatai, outdis)
+        self.motor_control("3", self.huatai, outdis)
         time.sleep(3)
         self.spread_claw(x=0)
-        self.func("2", self.shengjiang, "1948")
+        self.motor_control("2", self.shengjiang, "1948")
         time.sleep(2)
-        self.func("3", self.huatai, "1748")
+        self.motor_control("3", self.huatai, "1748")
         time.sleep(2)
         self.closed_claw()
 
     def spread_claw(self, v="250", v1="250", x=70):
-        self.func("8", self.duoji, str(500-x), v)
-        self.func("8", self.duoji1, str(500+x), v1)
-        self.func("8", self.duoji, str(500-x), v)
-        self.func("8", self.duoji1, str(500+x), v1)
+        self.motor_control("8", self.duoji, str(500-x), v)
+        self.motor_control("8", self.duoji1, str(500+x), v1)
+        self.motor_control("8", self.duoji, str(500-x), v)
+        self.motor_control("8", self.duoji1, str(500+x), v1)
         time.sleep(1)
 
     def closed_claw(self, v="300", v1="300"):
-        self.func("8", self.duoji, "760", v)
-        self.func("8", self.duoji1, "260", v1)
-        self.func("8", self.duoji, "760", v)
-        self.func("8", self.duoji1, "260", v1)
+        self.motor_control("8", self.duoji, "760", v)
+        self.motor_control("8", self.duoji1, "260", v1)
+        self.motor_control("8", self.duoji, "760", v)
+        self.motor_control("8", self.duoji1, "260", v1)
         time.sleep(1)
 
     def __spread_claw__(self, x=-50):
-        self.func("4", self.duoji, str(2048+x), "300")
-        self.func("4", self.duoji1, str(2048-x), "300")
-        self.func("4", self.duoji, str(2048+x), "300")
-        self.func("4", self.duoji1, str(2048-x), "300")
+        self.motor_control("4", self.duoji, str(2048+x), "300")
+        self.motor_control("4", self.duoji1, str(2048-x), "300")
+        self.motor_control("4", self.duoji, str(2048+x), "300")
+        self.motor_control("4", self.duoji1, str(2048-x), "300")
 
         time.sleep(1)
 
     def __closed_claw__(self, x=0):
-        self.func("4", self.duoji1, "3048", "300")
-        self.func("4", self.duoji, "1048", "300")
-        self.func("4", self.duoji1, "3048", "300")
-        self.func("4", self.duoji, "1048", "300")
+        self.motor_control("4", self.duoji1, "3048", "300")
+        self.motor_control("4", self.duoji, "1048", "300")
+        self.motor_control("4", self.duoji1, "3048", "300")
+        self.motor_control("4", self.duoji, "1048", "300")
         time.sleep(1)
 
 

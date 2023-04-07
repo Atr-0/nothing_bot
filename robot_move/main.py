@@ -93,7 +93,7 @@ def tui(up=False):
     if up:
         time.sleep(10)
 
-    motor_control("3", huatai, "2568")
+    motor_control("3", huatai, "2508")
     time.sleep(6)
     motor_control("3", huatai, "1048")
     time.sleep(6)
@@ -131,7 +131,7 @@ def main():
     # time.sleep(10)
     # pub_detect("n")
     ########## -A-##########
-    # basic.simple_movement_forline(-0.01, -0.2, -0.05, 0.6, True)
+    # basic.simple_movement_forline(-0.01, -0.15, -0.02, dis=0.6, yaxis=True)
     # time.sleep(0.5)
     # basic.movement(4, 0.2, 0, 0.2, False)
     # time.sleep(0.5)
@@ -307,6 +307,34 @@ def main():
     #           duoji, duoji1, item_list, mode="c")
 
 
+def test():
+    motor_control("4", duoji1, "2048", "300")
+    motor_control("4", duoji, "2048", "300")
+    time.sleep(1)
+    motor_control("4", duoji1, "3048", "300")
+    motor_control("4", duoji, "1048", "300")
+    time.sleep(1)
+    motor_control("4", duoji1, "2048", "300")
+    motor_control("4", duoji, "2048", "300")
+    time.sleep(1)
+    motor_control("4", duoji1, "3048", "300")
+    motor_control("4", duoji, "1048", "300")
+    time.sleep(1)
+
+    motor_control("2", shengjiang, "1848", "250")
+    time.sleep(2)
+    motor_control("2", shengjiang, "3048", "250")
+    time.sleep(2)
+
+    motor_control("3", huatai, "2508", "250")
+    time.sleep(3)
+    motor_control("3", huatai, "1048", "250")
+    time.sleep(3)
+
+    # basic.movement(4, 0.25, 0.0, 0.35, False, 4)
+    # basic.movement(4, -0.25, 0.0, 0.35, False, 4)
+    # basic.movement(4, -0.25, 0.0, 0.35, True, 4)
+    # basic.movement(4, 0.25, 0.0, 0.35, True, 4)
 if __name__ == '__main__':
     try:
         grab.grab(motor_control, huatai, shengjiang,
