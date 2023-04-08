@@ -301,6 +301,13 @@ class grab():
             for j in range(1, -1, -1):
                 for d, k in item.items():
                     # if len(d_zone_item_list[i+(j*6)]) > 0:
+                    #     for num in d_zone_item_list[i+(j*6)]:
+                    #         if int(d_zone_item_list[i+(j*6)][num]//10) % 10 == k and grab_pos == -1:
+                    #             grab_pos = i+(j*6)
+                    #             push_pos = 2 if (k == 2 or k == 4) else 3
+                    #             goal_item = k
+                    #             item_pos = d_zone_item_list[i+(j*6)][num] % 10
+                    #             break
 
                     if int(d_zone_item_list[i+(j*6)]//10) % 10 == k and grab_pos == -1:
                         grab_pos = i+(j*6)

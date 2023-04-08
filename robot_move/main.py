@@ -247,7 +247,6 @@ def main():
     # time.sleep(0.5)
     # basic.movement(4, 0.2, 0, 0.38, True, 6)
     # for i in range(6):
-
     #     if i != 2 and i != 3:
     #         pub_detect("d")
     #         time.sleep(0.5)
