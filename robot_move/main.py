@@ -159,9 +159,6 @@ def main():
     # ########## -B-##########
     # for i in range(4):
     #     time.sleep(0.5)
-    #     basic.movement(6, 0.25, 0.0, 0.35, False, 4)
-    # for i in range(4):
-    #     time.sleep(0.5)
     #     basic.movement(4, -0.2, 0, 0.38, True, 4)
     # basic.movement(3, 0, -0.4, 0)
     # time.sleep(0.5)

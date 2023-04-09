@@ -75,6 +75,12 @@ class grab():
 
     def a_zone_grab(self, pos=5):
         global a_zone_item_list
+        if a_zone_item_list == [0, 0, 1, 1, 2, 2,
+                                0, 0, 1, 1, 2, 2]:
+            basic.movement(6, 0.2*((4-pos)/abs(4-pos)),
+                           0, 0.39*abs(4-pos), False, stop_weight=4)
+            return
+
         zone_num = 2 if (pos == 5 or pos == 4) else (
             1 if (pos == 3 or pos == 2) else 0)
         grab_pos, push_pos, target_zone = -1, -1, -1
@@ -104,12 +110,15 @@ class grab():
         # 车要走的距离
         to_dis = (pos-normalize_pos(push_pos))
         to_grab_dis = normalize_pos(push_pos)-normalize_pos(grab_pos)
+
         if grab_pos == -1 or push_pos == -1:
             if pos > 0:
                 basic.movement(6, -0.2,
                                0, 0.39, False, stop_weight=4)
                 return self.a_zone_grab(pos-1)
             else:
+                basic.movement(6, 0.2*((4-pos)/abs(4-pos)),
+                               0, 0.39*abs(4-pos), False, stop_weight=4)
                 return
 
         ##### grab#####
