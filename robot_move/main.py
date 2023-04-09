@@ -352,7 +352,6 @@ if __name__ == '__main__':
         time.sleep(3)
         motor_control("2", "02", "3048", "250")
         time.sleep(3)
-        pub_detect("b")
         main()
 
     except KeyboardInterrupt:
