@@ -49,6 +49,7 @@ class grab():
         self.motor_control = func
         match mode:
             case "a":
+
                 a_zone_item_list = item_list
                 self.a_zone_grab()
             case "c":

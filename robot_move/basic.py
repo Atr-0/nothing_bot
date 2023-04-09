@@ -17,6 +17,7 @@ np.set_printoptions(threshold=np.inf)
 direction = 0
 sensor_matrix = np.zeros([8, 4])
 position = Vector3()
+qos_profile = 20
 
 
 class movement(Node):
@@ -38,7 +39,7 @@ class movement(Node):
         global sensor_matrix, position, direction
 
         self.pub = self.create_publisher(
-            Twist, 'cmd_vel', 10)
+            Twist, 'cmd_vel', qos_profile)
 
         self.weight = weight
         self.speed = vel
@@ -131,8 +132,6 @@ class movement(Node):
             prepos.x = position.x
             prepos.y = position.y
             prepos.z = position.z
-
-            time.sleep(0.05)
         # 重置状态
         self.publish_twist(0, 0, 0)
         time.sleep(0.01)
@@ -328,7 +327,7 @@ class simple_movement(Node):
         # rclpy.init(args=None)
         super().__init__("simple_movement")
         self.pub = self.create_publisher(
-            Twist, 'cmd_vel', 10)
+            Twist, 'cmd_vel', qos_profile)
         self.x = 1.0
         self.y = 1.0
         self.dis = dis
@@ -337,7 +336,6 @@ class simple_movement(Node):
         while rclpy.ok() and self.dis > 0:
             self.publish_twist(xvel, yvel, turnVel)
             self.dis = self.dis - 1
-            time.sleep(0.05)
         self.destroy_node()
 
     def publish_twist(self, xvel, yvel, turn):
@@ -363,7 +361,7 @@ class simple_movement_forline(Node):
         # rclpy.init(args=None)
         super().__init__("simple_movement")
         self.pub = self.create_publisher(
-            Twist, 'cmd_vel', 10)
+            Twist, 'cmd_vel', qos_profile)
         self.x = 1.0
         self.y = 1.0
         self.dis = dis
@@ -419,8 +417,6 @@ class simple_movement_forline(Node):
             prepos.y = position.y
             prepos.z = position.z
 
-            time.sleep(0.05)
-
         self.publish_twist(0, 0, 0)
         time.sleep(0.01)
         self.publish_twist(0, 0, 0)
@@ -445,7 +441,7 @@ class line_sensor_subscription(Node):
         super().__init__("line_sensor_subscription")
 
         self.create_subscription(
-            Int64, 'linosensors', self.line_sensor_callback, rclpy.qos.qos_profile_sensor_data)
+            Int64, 'linosensors', self.line_sensor_callback, qos_profile)
         self.subscriptions
 
     def line_sensor_callback(self, data):
@@ -473,7 +469,7 @@ class odom_subscription(Node):
         # self.create_subscription(
         #     Vector3, 'frame_listener', self.odom_callback, 10)
         self.create_subscription(
-            Odometry, 'odom/unfiltered', self.odom_callback, 10)
+            Odometry, 'odom/unfiltered', self.odom_callback, qos_profile)
         self.subscriptions
 
     def odom_callback(self, data):
