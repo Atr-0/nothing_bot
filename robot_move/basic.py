@@ -17,7 +17,7 @@ np.set_printoptions(threshold=np.inf)
 direction = 0
 sensor_matrix = np.zeros([8, 4])
 position = Vector3()
-qos_profile = 20
+qos_profile = 50
 
 
 class movement(Node):
