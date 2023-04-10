@@ -152,7 +152,7 @@ class movement(Node):
     def x_axis_movement(self, v):
         global sensor_matrix
         weight = self.weight
-        kp, ki, kd = 0.8, 0.0, 0.08
+        kp, ki, kd = 0.67, 0.0, 0.06
         hou_kp, hou_ki, hou_kd = 0.56, 0.0, 0.05
 
         front, back = (list(sensor_matrix[0])+list(sensor_matrix[1]),
@@ -210,7 +210,7 @@ class movement(Node):
     def y_axis_movement(self, v):
         global sensor_matrix
         weight = self.weight
-        kp, ki, kd = 0.8, 0.0, 0.08
+        kp, ki, kd = 0.67, 0.0, 0.06
         hou_kp, hou_ki, hou_kd = 0.56, 0.0, 0.05
 
         front, back = (list(sensor_matrix[4])+list(sensor_matrix[5]),
@@ -333,7 +333,6 @@ class simple_movement(Node):
         while rclpy.ok() and self.dis > 0:
             self.publish_twist(xvel, yvel, turnVel)
             self.dis = self.dis - 1
-            time.sleep(0.05)
         self.destroy_node()
 
     def publish_twist(self, xvel, yvel, turn):
@@ -394,14 +393,14 @@ class simple_movement_forline(Node):
                     temp1[7-stop_weight] +
                     temp1[8-stop_weight] +
                     temp1[(stop_weight+7)] +
-                    temp1[(stop_weight+8)] >= 2) and not yaxis:
+                    temp1[(stop_weight+8)] >= 1) and not yaxis:
                 print("xxxxxx")
                 break
             elif distance > self.dis - 0.1 and (
                     temp[7-stop_weight] +
                     temp[8-stop_weight] +
                     temp[(stop_weight+7)] +
-                    temp[(stop_weight+8)] >= 2) and yaxis:
+                    temp[(stop_weight+8)] >= 1) and yaxis:
                 print("dddddd")
                 break
 

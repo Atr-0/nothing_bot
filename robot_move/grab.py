@@ -127,7 +127,8 @@ class grab():
         if to_dis != 0:
             basic.movement(6, -0.2*(to_dis/abs(to_dis)),
                            0, 0.39*abs(to_dis), False, stop_weight=4)
-        basic.simple_movement(0.0, 0.1, 0, 8)
+        if (push_pos != pos and pos != 5):
+            basic.simple_movement(0.0, 0.1, 0, 15)
         if push_pos < 6:  # 抓上面
             self.motor_control("2", self.shengjiang, "1348")
             time.sleep(6)
@@ -152,9 +153,9 @@ class grab():
             basic.movement(6, -0.2*(to_grab_dis/abs(to_grab_dis)),
                            0, 0.39*abs(to_grab_dis), False, stop_weight=4)
         time.sleep(0.5)
-        basic.simple_movement(0.0, 0.1, 0, 8)
+        basic.simple_movement(0.0, 0.1, 0, 15)
         time.sleep(0.5)
-        basic.simple_movement(-0.1, 0.01, 0, 17)
+        basic.simple_movement(-0.1, 0.01, 0, 43)
         if grab_pos < 6:
             # 放上面
             self.motor_control("2", self.shengjiang, "1408")
@@ -172,7 +173,7 @@ class grab():
             time.sleep(0.5)
             basic.simple_movement_forline(0.1, 0.05, 0, dis=0.1)
             time.sleep(0.5)
-            basic.simple_movement(0.1, 0.05, 0, 10)
+            basic.simple_movement(0.1, 0.05, 0, 15)
             time.sleep(0.5)
 
             self.motor_control("2", self.shengjiang, "2198")
@@ -196,7 +197,7 @@ class grab():
             time.sleep(0.5)
             basic.simple_movement_forline(0.1, 0.05, 0, dis=0.1)
             time.sleep(0.5)
-            basic.simple_movement(0.1, 0.05, 0, 10)
+            basic.simple_movement(0.1, 0.05, 0, 15)
             time.sleep(0.5)
 
             self.motor_control("2", self.shengjiang, "3048")
@@ -207,7 +208,7 @@ class grab():
             basic.movement(6, 0.2*(to_grab_dis/abs(to_grab_dis)),
                            0, 0.39*abs(to_grab_dis), False, stop_weight=4)
         time.sleep(0.5)
-        basic.simple_movement(0.0, 0.1, 0, 8)
+        basic.simple_movement(0.0, 0.1, 0, 15)
         if push_pos < 6:  # 放上面
             self.motor_control("2", self.shengjiang, "1388")
             time.sleep(6)
@@ -260,7 +261,7 @@ class grab():
                            0, 0.39*abs(to_grab_dis), False, stop_weight=4)
         time.sleep(0.5)
         ##### grab#####
-        basic.simple_movement(0.0, 0.1, 0, 10)
+        basic.simple_movement(0.0, 0.1, 0, 15)
         if grab_pos < 6:
             self.grab_above()
             self.motor_control("2", self.shengjiang, "3048")
@@ -275,7 +276,7 @@ class grab():
                            0, 0.39*abs(to_push_dis), False, stop_weight=4)
         time.sleep(0.5)
         ##### push#####
-        basic.simple_movement(0.0, 0.1, 0, 10)
+        basic.simple_movement(0.0, 0.1, 0, 15)
         if push_pos < 6:
             self.push_above()
             self.motor_control("2", self.shengjiang, "3048")
@@ -337,12 +338,12 @@ class grab():
                            0, 0.39*abs(to_grab_dis), False, stop_weight=4)
         time.sleep(0.5)
         ##### grab#####
-        basic.simple_movement(0.0, 0.1, 0, 10)
+        basic.simple_movement(0.0, 0.1, 0, 15)
         if item_pos != 1:
             if item_pos == 0:
-                basic.simple_movement(0.1, 0.05, 0, 17)
+                basic.simple_movement(0.1, 0.05, 0, 43)
             else:
-                basic.simple_movement(-0.1, 0.05, 0, 17)
+                basic.simple_movement(-0.1, 0.05, 0, 43)
         if grab_pos < 6:
             self.grab_above("1538")
             self.motor_control("2", self.shengjiang, "3048")
@@ -363,7 +364,7 @@ class grab():
                            0, 0.39*abs(to_push_dis), False, stop_weight=4)
         time.sleep(0.5)
         ##### push#####
-        basic.simple_movement(0.0, 0.1, 0, 10)
+        basic.simple_movement(0.0, 0.1, 0, 15)
         if goal_item == 1 or goal_item == 2:
             self.push_above()
             self.motor_control("2", self.shengjiang, "3048")
