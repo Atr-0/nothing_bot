@@ -121,8 +121,7 @@ def main():
     global jieguo, item_list
     temp = []
     ######### -A-##########
-    basic.daoxianting(-0.01, -0.15, -
-                      0.02, dis=0.6, yaxis=True, stop_weight=4)
+    basic.daoxianting(-0.01, -0.15, -0.02, dis=0.6, yaxis=True, stop_weight=4)
     time.sleep(0.5)
     basic.movement(4, 0.2, 0, 0.2, False)
     time.sleep(0.5)
