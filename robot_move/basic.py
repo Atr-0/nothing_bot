@@ -311,7 +311,7 @@ class movement(Node):
         self.pub.publish(self.twist)
 
 
-class simple_movement(Node):
+class shazou(Node):
     def __init__(self, xvel, yvel, turnVel=0.0, dis=0.0):
         '''
         不巡线的移动\n
@@ -345,7 +345,7 @@ class simple_movement(Node):
         self.pub.publish(self.twist)
 
 
-class simple_movement_forline(Node):
+class daoxianting(Node):
     def __init__(self, xvel, yvel, turnVel=0.0, dis=0.0, yaxis=False, stop_weight=3):
         '''
         Parameters:

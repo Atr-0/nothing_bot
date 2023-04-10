@@ -121,8 +121,8 @@ def main():
     global jieguo, item_list
     temp = []
     ######### -A-##########
-    basic.simple_movement_forline(-0.01, -0.15, -
-                                  0.02, dis=0.6, yaxis=True, stop_weight=4)
+    basic.daoxianting(-0.01, -0.15, -
+                      0.02, dis=0.6, yaxis=True, stop_weight=4)
     time.sleep(0.5)
     basic.movement(4, 0.2, 0, 0.2, False)
     time.sleep(0.5)
@@ -162,12 +162,12 @@ def main():
         temp = [int(x) for x in jieguo]
         print(temp)
         if len(temp) > 0:
-            basic.simple_movement(
+            basic.shazou(
                 0, 0.1, 0, 25)
             time.sleep(0.5)
             if len(temp) == 4:
                 if temp[2] != 1:
-                    basic.simple_movement(
+                    basic.shazou(
                         0.1*(-1 if temp[2] == 0 else 1), 0.03, 0, 50)
                     time.sleep(0.5)
                 print("tui down", temp[2])
@@ -175,14 +175,14 @@ def main():
 
                 if temp[2] != 1 and temp[1] != temp[2]:
                     time.sleep(0.5)
-                    basic.simple_movement_forline(-0.1 *
-                                                  (-1 if temp[2] == 0 else 1), 0.05, dis=0.05)
+                    basic.daoxianting(-0.1 *
+                                      (-1 if temp[2] == 0 else 1), 0.05, dis=0.05)
                 ################################################
-                basic.simple_movement(
+                basic.shazou(
                     0, 0.1, 0, 8)
                 time.sleep(0.5)
                 if temp[1] != 1 and temp[1] != temp[2]:
-                    basic.simple_movement(
+                    basic.shazou(
                         0.1*(-1 if temp[1] == 0 else 1), 0.03, 0, 50)
                     time.sleep(0.5)
                 print("tui up", temp[1])
@@ -190,14 +190,14 @@ def main():
 
                 if temp[1] != 1:
                     time.sleep(0.5)
-                    basic.simple_movement_forline(-0.1 *
-                                                  (-1 if temp[1] == 0 else 1), 0.05, dis=0.05)
+                    basic.daoxianting(-0.1 *
+                                      (-1 if temp[1] == 0 else 1), 0.05, dis=0.05)
                 time.sleep(1)
                 ################################################
             elif len(temp) == 2:
                 if temp[0] == 3:
                     if temp[1] != 1:
-                        basic.simple_movement(
+                        basic.shazou(
                             0.1*(-1 if temp[1] == 0 else 1), 0.03, 0, 50)
                         time.sleep(0.5)
 
@@ -205,12 +205,12 @@ def main():
 
                     if temp[1] != 1:
                         time.sleep(0.5)
-                        basic.simple_movement(
+                        basic.shazou(
                             -0.1*(-1 if temp[1] == 0 else 1), 0.03, 0, 50)
 
                 elif temp[1] == 4:
                     if temp[0] != 1:
-                        basic.simple_movement(
+                        basic.shazou(
                             0.1*(-1 if temp[0] == 0 else 1), 0.03, 0, 50)
                         time.sleep(0.5)
 
@@ -218,7 +218,7 @@ def main():
 
                     if temp[0] != 1:
                         time.sleep(0.5)
-                        basic.simple_movement(
+                        basic.shazou(
                             -0.1*(-1 if temp[0] == 0 else 1), 0.03, 0, 50)
         if i < 5:
             time.sleep(0.5)
