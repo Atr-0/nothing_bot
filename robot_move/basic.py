@@ -53,8 +53,6 @@ class movement(Node):
         self.z = 0.0
         self.th = 1.0
         self.dis = dis
-
-        self.rate = self.create_rate(20)
         self.twist = Twist()
 
         # 订阅odom->base_footprint变换并传入到 position
@@ -93,14 +91,14 @@ class movement(Node):
                         temp1[7-stop_weight] +
                         temp1[8-stop_weight] +
                         temp1[(stop_weight+7)] +
-                        temp1[(stop_weight+8)] > 2) and not yaxis:
+                        temp1[(stop_weight+8)] >= 2) and not yaxis:
                     print("xxxxxx")
                     break
                 elif distance > self.dis - 0.1 and (
                         temp[7-stop_weight] +
                         temp[8-stop_weight] +
                         temp[(stop_weight+7)] +
-                        temp[(stop_weight+8)] > 2) and yaxis:
+                        temp[(stop_weight+8)] >= 2) and yaxis:
                     print("dddddd")
                     break
                 elif distance > self.dis - 0.1:
@@ -331,7 +329,6 @@ class simple_movement(Node):
         self.x = 1.0
         self.y = 1.0
         self.dis = dis
-        self.rate = self.create_rate(20)
         self.twist = Twist()
         while rclpy.ok() and self.dis > 0:
             self.publish_twist(xvel, yvel, turnVel)
@@ -366,7 +363,6 @@ class simple_movement_forline(Node):
         self.x = 1.0
         self.y = 1.0
         self.dis = dis
-        self.rate = self.create_rate(20)
         self.twist = Twist()
 
         # 订阅odom->base_footprint变换并传入到 position
