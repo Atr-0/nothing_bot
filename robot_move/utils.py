@@ -21,6 +21,19 @@ def lerp(FORM, TO, t, clamp=True):
     return FORM + (TO - FORM) * t
 
 
+def clamp(t, min, max):
+    if t <= min:
+        return min
+    elif t >= max:
+        return max
+    return t
+
+
+def smoothstep(min, max, value):
+    value = clamp((value - min) / (max - min), 0.0, 1.0)
+    return (3.0 - 2.0 * value) * value * value
+
+
 def normalize_angle(angle):
     res = angle
     while res > math.pi:

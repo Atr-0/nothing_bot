@@ -106,9 +106,9 @@ class movement(Node):
                     self.speed = self.dir * 0.1
                 elif distance < self.dis - 0.1:
                     # 加速度
-                    accel_timer += 0.15
+                    accel_timer += 0.1
                     self.speed = utils.lerp(
-                        0.0, abs(vel), utils.lerp(0, 1, math.sqrt(accel_timer)))*self.dir
+                        0.0, abs(vel), utils.lerp(0, 1, utils.smoothstep(0.0, 1.0, accel_timer)))*self.dir
                     self.current_speed = self.speed
                 self.y_axis_movement(
                     self.speed) if yaxis else self.x_axis_movement(self.speed)
@@ -330,9 +330,14 @@ class shazou(Node):
         self.y = 1.0
         self.dis = dis
         self.twist = Twist()
+        node_sub = line_sensor_subscription()
+        rclpy.spin_once(node_sub)
         while rclpy.ok() and self.dis > 0:
+            rclpy.spin_once(node_sub)
             self.publish_twist(xvel, yvel, turnVel)
             self.dis = self.dis - 1
+            print(self.dis)
+        self.publish_twist(0, 0, 0)
         self.destroy_node()
 
     def publish_twist(self, xvel, yvel, turn):
@@ -462,8 +467,6 @@ class odom_subscription(Node):
     def __init__(self):
         super().__init__("odom_subscription")
 
-        # self.create_subscription(
-        #     Vector3, 'frame_listener', self.odom_callback, 10)
         self.create_subscription(
             Odometry, 'odom/unfiltered', self.odom_callback, qos_profile)
         self.subscriptions

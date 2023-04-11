@@ -61,7 +61,7 @@ def pub_detect(cmd=""):
     global detect_node_pub
     tmp = String()
     tmp.data = cmd
-    time.sleep(0.1)
+    time.sleep(1)
     detect_node_pub.publish(tmp)
     time.sleep(0.1)
 
@@ -90,19 +90,19 @@ def count_time(func):
 
 def tui(up=False):
     motor_control("2", shengjiang, "1808" if not up else "1248")
-    time.sleep(3)
+    time.sleep(2)
     if up:
-        time.sleep(10)
+        time.sleep(3)
 
-    motor_control("3", huatai, "2508")
-    time.sleep(6)
+    motor_control("3", huatai, "2528")
+    time.sleep(3)
     motor_control("3", huatai, "1048")
-    time.sleep(6)
+    time.sleep(3)
 
     motor_control("2", shengjiang, "4048")
-    time.sleep(3)
+    time.sleep(2)
     if up:
-        time.sleep(10)
+        time.sleep(3)
 
 
 # duoji, duoji1 = "18", "13"
@@ -145,8 +145,7 @@ def main():
     print(item_list)
     grab.grab(motor_control, huatai, shengjiang,
               duoji, duoji1, item_list, mode="a")
-    # return
-    ########## -B-##########
+    ######### -B-##########
     for i in range(4):
         time.sleep(0.5)
         basic.movement(4, -0.2, 0, 0.38, True, 4)
@@ -161,13 +160,11 @@ def main():
         temp = [int(x) for x in jieguo]
         print(temp)
         if len(temp) > 0:
-            basic.shazou(
-                0, 0.1, 0, 25)
+            basic.shazou(0, 0.1, 0, 25)
             time.sleep(0.5)
             if len(temp) == 4:
                 if temp[2] != 1:
-                    basic.shazou(
-                        0.1*(-1 if temp[2] == 0 else 1), 0.03, 0, 50)
+                    basic.shazou(0.1*(-1 if temp[2] == 0 else 1), 0.03, 0, 50)
                     time.sleep(0.5)
                 print("tui down", temp[2])
                 tui()
@@ -177,12 +174,10 @@ def main():
                     basic.daoxianting(-0.1 *
                                       (-1 if temp[2] == 0 else 1), 0.05, dis=0.05)
                 ################################################
-                basic.shazou(
-                    0, 0.1, 0, 8)
+                basic.shazou(0, 0.1, 0, 8)
                 time.sleep(0.5)
                 if temp[1] != 1 and temp[1] != temp[2]:
-                    basic.shazou(
-                        0.1*(-1 if temp[1] == 0 else 1), 0.03, 0, 50)
+                    basic.shazou(0.1*(-1 if temp[1] == 0 else 1), 0.03, 0, 50)
                     time.sleep(0.5)
                 print("tui up", temp[1])
                 tui(True)
@@ -204,8 +199,8 @@ def main():
 
                     if temp[1] != 1:
                         time.sleep(0.5)
-                        basic.shazou(
-                            -0.1*(-1 if temp[1] == 0 else 1), 0.03, 0, 50)
+                        basic.shazou(-0.1 *
+                                     (-1 if temp[1] == 0 else 1), 0.03, 0, 50)
 
                 elif temp[1] == 4:
                     if temp[0] != 1:
@@ -217,8 +212,8 @@ def main():
 
                     if temp[0] != 1:
                         time.sleep(0.5)
-                        basic.shazou(
-                            -0.1*(-1 if temp[0] == 0 else 1), 0.03, 0, 50)
+                        basic.shazou(-0.1 *
+                                     (-1 if temp[0] == 0 else 1), 0.03, 0, 50)
         if i < 5:
             time.sleep(0.5)
             basic.movement(6, 0.25, 0.0, 0.35, False, 4)
@@ -316,7 +311,6 @@ def test():
     time.sleep(3)
     motor_control("3", huatai, "1048", "250")
     time.sleep(3)
-
 
     # basic.movement(4, 0.25, 0.0, 0.35, False, 4)
     # basic.movement(4, -0.25, 0.0, 0.35, False, 4)

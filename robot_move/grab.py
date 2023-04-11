@@ -115,30 +115,31 @@ class grab():
         if grab_pos == -1 or push_pos == -1:
             if pos > 0:
                 basic.movement(6, -0.2,
-                               0, 0.39, False, stop_weight=4)
+                               0, 0.39, False)
                 return self.a_zone_grab(pos-1)
             else:
-                basic.movement(6, 0.2*((4-pos)/abs(4-pos)),
-                               0, 0.39*abs(4-pos), False, stop_weight=4)
+                if pos != 4:
+                    basic.movement(6, 0.2*((4-pos)/abs(4-pos)),
+                                   0, 0.39*abs(4-pos), False)
                 return
 
         ##### grab#####
         time.sleep(0.5)
         if to_dis != 0:
             basic.movement(6, -0.2*(to_dis/abs(to_dis)),
-                           0, 0.39*abs(to_dis), False, stop_weight=4)
+                           0, 0.39*abs(to_dis), False)
         if (push_pos != pos and pos != 5):
             basic.shazou(0.0, 0.1, 0, 15)
         if push_pos < 6:  # 抓上面
             self.motor_control("2", self.shengjiang, "1348")
-            time.sleep(6)
+            time.sleep(5)
             self.__spread_claw__(x=175)
             time.sleep(1)
             self.motor_control("2", self.shengjiang, "2188")
-            time.sleep(2)
+            time.sleep(1)
             self.__closed_claw__()
             self.motor_control("2", self.shengjiang, "4048")
-            time.sleep(6)
+            time.sleep(5)
         else:  # 抓下面
             self.motor_control("2", self.shengjiang, "1828")
             time.sleep(1)
@@ -151,15 +152,15 @@ class grab():
         time.sleep(0.5)
         if to_grab_dis != 0:
             basic.movement(6, -0.2*(to_grab_dis/abs(to_grab_dis)),
-                           0, 0.39*abs(to_grab_dis), False, stop_weight=4)
+                           0, 0.39*abs(to_grab_dis), False)
         time.sleep(0.5)
         basic.shazou(0.0, 0.1, 0, 15)
         time.sleep(0.5)
-        basic.shazou(-0.1, 0.01, 0, 43)
+        basic.shazou(-0.1, 0.01, 0, 50)
         if grab_pos < 6:
             # 放上面
             self.motor_control("2", self.shengjiang, "1408")
-            time.sleep(6)
+            time.sleep(5)
             self.__spread_claw__()
             self.motor_control("4", self.duoji1, str(2048-200))
             self.motor_control("4", self.duoji1, str(2048-200))
@@ -173,18 +174,18 @@ class grab():
             time.sleep(0.5)
             basic.daoxianting(0.1, 0.05, 0, dis=0.1)
             time.sleep(0.5)
-            basic.shazou(0.1, 0.05, 0, 15)
+            basic.shazou(0.1, 0.05, 0, 50)
             time.sleep(0.5)
 
             self.motor_control("2", self.shengjiang, "2198")
             time.sleep(1)
             self.__closed_claw__()
             self.motor_control("2", self.shengjiang, "4048")
-            time.sleep(6)
+            time.sleep(5)
         else:
             # 放下面
             self.motor_control("2", self.shengjiang, "1948")
-            time.sleep(1.5)
+            time.sleep(1)
             self.__spread_claw__()
             self.motor_control("4", self.duoji1, str(2048-200))
             self.motor_control("4", self.duoji1, str(2048-200))
@@ -197,7 +198,7 @@ class grab():
             time.sleep(0.5)
             basic.daoxianting(0.1, 0.05, 0, dis=0.1)
             time.sleep(0.5)
-            basic.shazou(0.1, 0.05, 0, 15)
+            basic.shazou(0.1, 0.05, 0, 50)
             time.sleep(0.5)
 
             self.motor_control("2", self.shengjiang, "3048")
@@ -206,18 +207,18 @@ class grab():
         ##### push#####
         if to_grab_dis != 0:
             basic.movement(6, 0.2*(to_grab_dis/abs(to_grab_dis)),
-                           0, 0.39*abs(to_grab_dis), False, stop_weight=4)
+                           0, 0.39*abs(to_grab_dis), False)
         time.sleep(0.5)
         basic.shazou(0.0, 0.1, 0, 15)
         if push_pos < 6:  # 放上面
             self.motor_control("2", self.shengjiang, "1388")
-            time.sleep(6)
+            time.sleep(5)
             self.__spread_claw__()
             self.motor_control("2", self.shengjiang, "1948")
-            time.sleep(2)
+            time.sleep(1)
             self.__closed_claw__()
             self.motor_control("2", self.shengjiang, "4048")
-            time.sleep(6)
+            time.sleep(5)
         else:  # 放下面
             self.motor_control("2", self.shengjiang, "1948")
             time.sleep(1)
@@ -250,7 +251,7 @@ class grab():
         if grab_pos == -1 or push_pos == -1:
             if abs(5-pos) != 0:
                 basic.movement(6, -0.25,
-                               0, 0.39*abs(5-pos), False, stop_weight=4)
+                               0, 0.39*abs(5-pos), False)
             return
         to_grab_dis = (pos-normalize_pos(grab_pos))
         to_push_dis = (normalize_pos(grab_pos)-normalize_pos(push_pos))
@@ -258,7 +259,7 @@ class grab():
         time.sleep(0.5)
         if to_grab_dis != 0:
             basic.movement(6, 0.2*(to_grab_dis/abs(to_grab_dis)),
-                           0, 0.39*abs(to_grab_dis), False, stop_weight=4)
+                           0, 0.39*abs(to_grab_dis), False)
         time.sleep(0.5)
         ##### grab#####
         basic.shazou(0.0, 0.1, 0, 15)
@@ -273,7 +274,7 @@ class grab():
         time.sleep(0.5)
         if to_push_dis != 0:
             basic.movement(6, 0.2*(to_push_dis/abs(to_push_dis)),
-                           0, 0.39*abs(to_push_dis), False, stop_weight=4)
+                           0, 0.39*abs(to_push_dis), False)
         time.sleep(0.5)
         ##### push#####
         basic.shazou(0.0, 0.1, 0, 15)
