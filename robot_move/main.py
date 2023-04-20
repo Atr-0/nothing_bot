@@ -109,7 +109,7 @@ def tui(up=False):
 # '''小舵机'''
 # huatai, shengjiang = "08", "02"
 # '''大舵机'''
-duoji, duoji1 = "09", "10"
+duoji, duoji1 = "03", "05"
 '''小舵机'''
 huatai, shengjiang = "08", "02"
 '''大舵机'''
@@ -121,7 +121,7 @@ def main():
     global jieguo, item_list
     temp = []
     ######### -A-##########
-    basic.daoxianting(-0.01, -0.15, -0.02, dis=0.6, yaxis=True, stop_weight=4)
+    basic.daoxianting(-0.005, -0.15, -0.01, dis=0.6, yaxis=True, stop_weight=4)
     time.sleep(0.5)
     basic.movement(4, 0.2, 0, 0.2, False)
     time.sleep(0.5)
@@ -145,7 +145,7 @@ def main():
     print(item_list)
     grab.grab(motor_control, huatai, shengjiang,
               duoji, duoji1, item_list, mode="a")
-    ######### -B-##########
+    # ######### -B-##########
     for i in range(4):
         time.sleep(0.5)
         basic.movement(4, -0.2, 0, 0.38, True, 4)
@@ -153,6 +153,8 @@ def main():
     time.sleep(0.5)
     basic.movement(4, 0.2, 0, 0.38, True, 6)
     for i in range(6):
+        if i != 0:
+            basic.daoxianting(0, -0.1, 0, dis=0.1, yaxis=True, stop_weight=7)
         pub_detect("b")
         time.sleep(0.5)
         rclpy.spin_once(detect_sub())
@@ -164,7 +166,7 @@ def main():
             time.sleep(0.5)
             if len(temp) == 4:
                 if temp[2] != 1:
-                    basic.shazou(0.1*(-1 if temp[2] == 0 else 1), 0.03, 0, 50)
+                    basic.shazou(0.1*(-1 if temp[2] == 0 else 1), 0.03, 0, 60)
                     time.sleep(0.5)
                 print("tui down", temp[2])
                 tui()
@@ -177,7 +179,7 @@ def main():
                 basic.shazou(0, 0.1, 0, 8)
                 time.sleep(0.5)
                 if temp[1] != 1 and temp[1] != temp[2]:
-                    basic.shazou(0.1*(-1 if temp[1] == 0 else 1), 0.03, 0, 50)
+                    basic.shazou(0.1*(-1 if temp[1] == 0 else 1), 0.03, 0, 60)
                     time.sleep(0.5)
                 print("tui up", temp[1])
                 tui(True)
@@ -192,7 +194,7 @@ def main():
                 if temp[0] == 3:
                     if temp[1] != 1:
                         basic.shazou(
-                            0.1*(-1 if temp[1] == 0 else 1), 0.03, 0, 50)
+                            0.1*(-1 if temp[1] == 0 else 1), 0.03, 0, 60)
                         time.sleep(0.5)
 
                     tui(True)
@@ -200,12 +202,12 @@ def main():
                     if temp[1] != 1:
                         time.sleep(0.5)
                         basic.shazou(-0.1 *
-                                     (-1 if temp[1] == 0 else 1), 0.03, 0, 50)
+                                     (-1 if temp[1] == 0 else 1), 0.03, 0, 60)
 
                 elif temp[1] == 4:
                     if temp[0] != 1:
                         basic.shazou(
-                            0.1*(-1 if temp[0] == 0 else 1), 0.03, 0, 50)
+                            0.1*(-1 if temp[0] == 0 else 1), 0.03, 0, 60)
                         time.sleep(0.5)
 
                     tui()
@@ -213,10 +215,10 @@ def main():
                     if temp[0] != 1:
                         time.sleep(0.5)
                         basic.shazou(-0.1 *
-                                     (-1 if temp[0] == 0 else 1), 0.03, 0, 50)
+                                     (-1 if temp[0] == 0 else 1), 0.03, 0, 60)
         if i < 5:
             time.sleep(0.5)
-            basic.movement(6, 0.25, 0.0, 0.35, False, 4)
+            basic.movement(6, 0.25, 0.0, 0.35, False, 3)
     time.sleep(0.2)
     ######### -D-##########
     basic.movement(6, -0.2, 0, 0.35, False)
@@ -307,8 +309,8 @@ def test():
     motor_control("2", shengjiang, "3048", "250")
     time.sleep(2)
 
-    motor_control("3", huatai, "2508", "250")
-    time.sleep(3)
+    # motor_control("3", huatai, "2508", "250")
+    # time.sleep(3)
     motor_control("3", huatai, "1048", "250")
     time.sleep(3)
 
@@ -323,19 +325,8 @@ if __name__ == '__main__':
         grab.grab(motor_control, huatai, shengjiang,
                   duoji, duoji1, mode="closed")
 
-        motor_control("4", duoji1, "2048", "300")
-        motor_control("4", duoji, "2048", "300")
-        time.sleep(3)
-        motor_control("4", duoji1, "3048", "300")
-        motor_control("4", duoji, "1048", "300")
-        time.sleep(3)
-
-        motor_control("2", shengjiang, "1848", "250")
-        time.sleep(3)
-        motor_control("2", shengjiang, "3048", "250")
-        time.sleep(3)
+        test()
         main()
-
     except KeyboardInterrupt:
         pass
     finally:
