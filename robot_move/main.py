@@ -61,7 +61,7 @@ def pub_detect(cmd=""):
     global detect_node_pub
     tmp = String()
     tmp.data = cmd
-    time.sleep(1)
+    time.sleep(3)
     detect_node_pub.publish(tmp)
     time.sleep(0.1)
 
@@ -105,11 +105,11 @@ def tui(up=False):
         time.sleep(3)
 
 
-# duoji, duoji1 = "18", "13"
-# '''小舵机'''
-# huatai, shengjiang = "08", "02"
-# '''大舵机'''
 duoji, duoji1 = "03", "05"
+'''小舵机'''
+huatai, shengjiang = "08", "02"
+'''大舵机'''
+duoji, duoji1 = "09", "10"
 '''小舵机'''
 huatai, shengjiang = "08", "02"
 '''大舵机'''
@@ -121,7 +121,7 @@ def main():
     global jieguo, item_list
     temp = []
     ######### -A-##########
-    basic.daoxianting(-0.005, -0.15, -0.01, dis=0.6, yaxis=True, stop_weight=4)
+    basic.daoxianting(-0.01, -0.15, -0.02, dis=0.6, yaxis=True, stop_weight=4)
     time.sleep(0.5)
     basic.movement(4, 0.2, 0, 0.2, False)
     time.sleep(0.5)
@@ -145,7 +145,7 @@ def main():
     print(item_list)
     grab.grab(motor_control, huatai, shengjiang,
               duoji, duoji1, item_list, mode="a")
-    # ######### -B-##########
+    ######## -B-##########
     for i in range(4):
         time.sleep(0.5)
         basic.movement(4, -0.2, 0, 0.38, True, 4)
@@ -153,8 +153,6 @@ def main():
     time.sleep(0.5)
     basic.movement(4, 0.2, 0, 0.38, True, 6)
     for i in range(6):
-        if i != 0:
-            basic.daoxianting(0, -0.1, 0, dis=0.1, yaxis=True, stop_weight=7)
         pub_detect("b")
         time.sleep(0.5)
         rclpy.spin_once(detect_sub())
@@ -218,7 +216,7 @@ def main():
                                      (-1 if temp[0] == 0 else 1), 0.03, 0, 60)
         if i < 5:
             time.sleep(0.5)
-            basic.movement(6, 0.25, 0.0, 0.35, False, 3)
+            basic.movement(6, 0.25, 0.0, 0.35, False, 4)
     time.sleep(0.2)
     ######### -D-##########
     basic.movement(6, -0.2, 0, 0.35, False)
@@ -324,7 +322,6 @@ if __name__ == '__main__':
                   duoji, duoji1, mode="closed")
         grab.grab(motor_control, huatai, shengjiang,
                   duoji, duoji1, mode="closed")
-
         test()
         main()
     except KeyboardInterrupt:
