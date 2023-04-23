@@ -95,10 +95,10 @@ class movement(Node):
                     print("xxxxxx")
                     break
                 elif distance > self.dis - 0.1 and (
-                        (temp1[7-stop_weight] +
-                         temp1[(stop_weight+8)] >= 1) and
-                        (temp1[8-stop_weight] +
-                         temp1[(stop_weight+7)] >= 1)) and yaxis:
+                        (temp[7-stop_weight] +
+                         temp[(stop_weight+8)] >= 1) and
+                        (temp[8-stop_weight] +
+                         temp[(stop_weight+7)] >= 1)) and yaxis:
                     print("dddddd")
                     break
                 elif distance > self.dis - 0.1:
