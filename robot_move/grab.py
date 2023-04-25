@@ -134,7 +134,7 @@ class grab():
         if push_pos < 6:  # 抓上面
             self.motor_control("2", self.shengjiang, "1348")
             time.sleep(5)
-            self.__spread_claw__(x=175)
+            self.__spread_claw__(x=160)
             time.sleep(1)
             self.motor_control("2", self.shengjiang, "2188")
             time.sleep(1)
@@ -144,7 +144,7 @@ class grab():
         else:  # 抓下面
             self.motor_control("2", self.shengjiang, "1828")
             time.sleep(1)
-            self.__spread_claw__(x=175)
+            self.__spread_claw__(x=160)
             time.sleep(1)
             self.motor_control("2", self.shengjiang, "3048")
             time.sleep(1)
@@ -157,7 +157,7 @@ class grab():
         time.sleep(0.5)
         basic.shazou(0.0, 0.1, 0, 15)
         time.sleep(0.5)
-        basic.shazou(-0.1, 0.01, 0, 50)
+        basic.shazou(-0.1, 0.01, 0, 45)
         if grab_pos < 6:
             # 放上面
             self.motor_control("2", self.shengjiang, "1408")

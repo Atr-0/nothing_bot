@@ -95,27 +95,29 @@ class movement(Node):
                     print("xxxxxx")
                     break
                 elif distance > self.dis - 0.1 and (
-                        (temp[7-stop_weight] +
-                         temp[(stop_weight+8)] >= 1) and
-                        (temp[8-stop_weight] +
-                         temp[(stop_weight+7)] >= 1)) and yaxis:
+                        temp[7-stop_weight] +
+                        temp[8-stop_weight] +
+                        temp[(stop_weight+7)] +
+                        temp[(stop_weight+8)] >= 2) and yaxis:
                     print("dddddd")
                     break
                 elif distance > self.dis - 0.1:
                     # 减速度
-                    self.speed = self.dir * 0.1
+                    self.speed = self.smooth_speed(
+                        0.1, accel_timer, (self.current_speed if self.current_speed > 0.1 else 0.0))
+
                 elif distance < self.dis - 0.1:
                     # 加速度
-                    accel_timer += 0.05
-                    self.speed = utils.lerp(
-                        0.0, abs(vel), utils.lerp(0, 1, utils.smoothstep(0.0, 1.0, accel_timer)))*self.dir
+                    accel_timer += 0.025
+                    self.speed = self.smooth_speed(vel, accel_timer)
                     self.current_speed = self.speed
                 self.y_axis_movement(
                     self.speed) if yaxis else self.x_axis_movement(self.speed)
             else:
                 # 转弯
-                turn_timer += 0.07
-                angle_fac = utils.lerp(0, 90, turn_timer)
+                turn_timer += 0.015
+                angle_fac = utils.lerp(0.0, 90.0, turn_timer)
+                print(angle_fac)
                 if angle_fac >= 90 and (
                         temp[3] +
                         temp[11] +
@@ -149,10 +151,14 @@ class movement(Node):
         node_sub.destroy_node()
         node_odom_sub.destroy_node()
 
+    def smooth_speed(self, speed, t, start=0.0):
+        return utils.lerp(start, abs(speed), utils.lerp(
+            0.0, 1.0, utils.smoothstep(0.0, 1.0, t)))*self.dir
+
     def x_axis_movement(self, v):
         global sensor_matrix
         weight = self.weight
-        kp, ki, kd = 0.67, 0.0, 0.06
+        kp, ki, kd = 0.3, 0.0, 0.06
         hou_kp, hou_ki, hou_kd = 0.56, 0.0, 0.05
 
         front, back = (list(sensor_matrix[0])+list(sensor_matrix[1]),
