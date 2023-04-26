@@ -34,7 +34,7 @@ def motor_control(num="1", num1="1", v="0", v1="250"):
     msg.data = int(temp)
     motor_control_pub.publish(msg)
 
-    time.sleep(0.2)
+    time.sleep(0.05)
 
 
 def huataidaduoji(num, v1, v2):
@@ -61,7 +61,7 @@ def pub_detect(cmd=""):
     global detect_node_pub
     tmp = String()
     tmp.data = cmd
-    time.sleep(3)
+    time.sleep(1)
     detect_node_pub.publish(tmp)
     time.sleep(0.1)
 
@@ -105,10 +105,10 @@ def tui(up=False):
         time.sleep(3)
 
 
-duoji, duoji1 = "03", "05"
-'''小舵机'''
-huatai, shengjiang = "08", "02"
-'''大舵机'''
+# duoji, duoji1 = "03", "05"
+# '''小舵机'''
+# huatai, shengjiang = "08", "02"
+# '''大舵机'''
 duoji, duoji1 = "09", "10"
 '''小舵机'''
 huatai, shengjiang = "08", "02"
@@ -123,9 +123,9 @@ def main():
     ######### -A-##########
     basic.daoxianting(-0.01, -0.2, -0.03, dis=0.6, yaxis=True, stop_weight=4)
     time.sleep(0.5)
-    basic.movement(4, 0.2, 0, 0.2, False)
+    basic.movement(4, 0.2, 0, 0.2, False, 4)
     time.sleep(0.5)
-    basic.movement(4, 0.2, 0, 0.38, False)
+    basic.movement(4, 0.2, 0, 0.38, False, 4)
     time.sleep(0.5)
     basic.movement(4, 0.2, 0, 0.38, True, 6)
     for i in range(6):
@@ -146,11 +146,12 @@ def main():
     grab.grab(motor_control, huatai, shengjiang,
               duoji, duoji1, item_list, mode="a")
     ######## -B-##########
-    for i in range(4):
-        time.sleep(0.5)
-        basic.movement(4, -0.2, 0, 0.38, True, 4)
+    basic.movement(4, -0.2, 0, 0.38, True, 4)
     basic.movement(3, 0, -0.4, 0)
     time.sleep(0.5)
+    for i in range(3):
+        time.sleep(0.5)
+        basic.movement(4, 0.25, 0, 0.38, False)
     basic.movement(4, 0.2, 0, 0.38, True, 6)
     for i in range(6):
         pub_detect("b")
@@ -219,13 +220,13 @@ def main():
             basic.movement(6, 0.25, 0.0, 0.35, False, 4)
     time.sleep(0.2)
     ######### -D-##########
-    basic.movement(6, -0.2, 0, 0.35, False)
+    basic.movement(6, -0.2, 0, 0.35, False, 4)
     time.sleep(0.5)
     basic.movement(4, -0.2, 0, 0.6, True)
     time.sleep(0.5)
     basic.movement(4, 0.2, 0, 0.38, True)
     time.sleep(0.5)
-    basic.movement(3, 0, 0.4, 0)
+    basic.movement(3, 0, 0.4, 0, False, 4)
     time.sleep(0.5)
     basic.movement(4, 0.2, 0, 0.38, True, 6)
     for i in range(6):
@@ -262,9 +263,9 @@ def main():
               duoji, duoji1, item_list, mode="d")
 
     ####### -C-##########
-    basic.movement(6, -0.2, 0, 0.35, False)
+    basic.movement(6, -0.2, 0, 0.35, False, 4)
     time.sleep(0.5)
-    basic.movement(4, -0.2, 0, 0.78, False)
+    basic.movement(4, -0.2, 0, 0.78, False, 4)
     time.sleep(0.5)
     basic.movement(3, 0, 0.4, 0)
     time.sleep(0.5)
@@ -312,16 +313,13 @@ def test():
     motor_control("3", huatai, "1048", "250")
     time.sleep(3)
 
+
     # basic.movement(4, 0.25, 0.0, 0.35, False, 4)
     # basic.movement(4, -0.25, 0.0, 0.35, False, 4)
     # basic.movement(4, -0.25, 0.0, 0.35, True, 4)
     # basic.movement(4, 0.25, 0.0, 0.35, True, 4)
 if __name__ == '__main__':
     try:
-        grab.grab(motor_control, huatai, shengjiang,
-                  duoji, duoji1, mode="closed")
-        grab.grab(motor_control, huatai, shengjiang,
-                  duoji, duoji1, mode="closed")
         test()
         main()
     except KeyboardInterrupt:
