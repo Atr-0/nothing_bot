@@ -263,7 +263,7 @@ class grab():
         time.sleep(0.5)
         if to_grab_dis != 0:
             basic.movement(6, 0.25*(to_grab_dis/abs(to_grab_dis)),
-                           0, 0.39*abs(to_grab_dis), False)
+                           0, 0.39*abs(to_grab_dis), False, 4)
         time.sleep(0.5)
         ##### grab#####
         basic.shazou(0.0, 0.1, 0, 15)
@@ -278,7 +278,7 @@ class grab():
         time.sleep(0.5)
         if to_push_dis != 0:
             basic.movement(6, 0.25*(to_push_dis/abs(to_push_dis)),
-                           0, 0.39*abs(to_push_dis), False)
+                           0, 0.39*abs(to_push_dis), False, 4)
         time.sleep(0.5)
         ##### push#####
         basic.shazou(0.0, 0.1, 0, 15)
@@ -384,18 +384,16 @@ class grab():
     def grab_below(self, outdis="2308"):
         time.sleep(1)
         self.spread_claw(v="200")
-        time.sleep(1)
         self.motor_control("3", self.huatai, outdis)
         time.sleep(2)
         self.closed_claw(v1="135")
         self.motor_control("3", self.huatai, "1748")
         time.sleep(2)
 
-    def grab_above(self, updis="1498", outdis="2308"):
+    def grab_above(self, updis="1528", outdis="2308"):
         self.motor_control("2", self.shengjiang, updis)
         time.sleep(5)
         self.spread_claw(v="200")
-        time.sleep(1)
         self.motor_control("3", self.huatai, outdis)
         time.sleep(2)
         self.closed_claw(v1="135")
@@ -407,7 +405,7 @@ class grab():
         time.sleep(1)
         self.motor_control("3", self.huatai, outdis)
         time.sleep(2)
-        self.spread_claw(x=100, v="150")
+        self.spread_claw(x=0, v="150")
 
         self.motor_control("2", self.shengjiang, "1948")
         time.sleep(2)
@@ -418,13 +416,13 @@ class grab():
         self.motor_control("2", self.shengjiang, "2548")
         time.sleep(0.2)
 
-    def push_above(self, updis="1508", outdis="2308"):
+    def push_above(self, updis="1528", outdis="2308"):
         self.motor_control("2", self.shengjiang, str(int(updis)-50))
         time.sleep(5)
 
         self.motor_control("3", self.huatai, outdis)
         time.sleep(3)
-        self.spread_claw(x=100, v="150")
+        self.spread_claw(x=0, v="150")
         self.motor_control("2", self.shengjiang, "1948")
         time.sleep(2)
         self.motor_control("3", self.huatai, "1748")
@@ -437,7 +435,6 @@ class grab():
         # self.motor_control("8", self.duoji, str(500-x), v)
         # self.motor_control("8", self.duoji1, str(500+x), v1)
         self.__spread_claw__(x, v)
-        time.sleep(1)
 
     def closed_claw(self, x=0, v1="250"):
         # self.motor_control("8", self.duoji, "760", v)
@@ -445,7 +442,6 @@ class grab():
         # self.motor_control("8", self.duoji, "760", v)
         # self.motor_control("8", self.duoji1, "260", v1)
         self.__closed_claw__(x=x, v=v1)
-        time.sleep(1)
 
     def __spread_claw__(self, x=0, v="250"):
         self.motor_control("4", self.duoji, str(2048+x), v)
