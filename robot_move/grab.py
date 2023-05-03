@@ -383,7 +383,7 @@ class grab():
 
     def grab_below(self, outdis="2308"):
         time.sleep(1)
-        self.spread_claw(v="200")
+        self.spread_claw(v="200", x=50)
         self.motor_control("3", self.huatai, outdis)
         time.sleep(2)
         self.closed_claw(v1="135")
@@ -393,7 +393,7 @@ class grab():
     def grab_above(self, updis="1528", outdis="2308"):
         self.motor_control("2", self.shengjiang, updis)
         time.sleep(4)
-        self.spread_claw(v="200")
+        self.spread_claw(v="200", x=50)
         self.motor_control("3", self.huatai, outdis)
         time.sleep(2)
         self.closed_claw(v1="135")
@@ -405,7 +405,7 @@ class grab():
         time.sleep(1)
         self.motor_control("3", self.huatai, outdis)
         time.sleep(2)
-        self.spread_claw(x=0, v="150")
+        self.spread_claw(x=-50, v="150")
 
         self.motor_control("2", self.shengjiang, "1948")
         time.sleep(1.5)
@@ -422,7 +422,7 @@ class grab():
 
         self.motor_control("3", self.huatai, outdis)
         time.sleep(3)
-        self.spread_claw(x=0, v="150")
+        self.spread_claw(x=-50, v="150")
         self.motor_control("2", self.shengjiang, "1948")
         time.sleep(1.5)
         self.motor_control("3", self.huatai, "1748")
