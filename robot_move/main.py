@@ -9,6 +9,7 @@ from std_msgs.msg import String, Int64
 import grab
 
 rclpy.init()
+qidong = 0
 motor_control_node = Node("motor_control")
 motor_control_pub = motor_control_node.create_publisher(
     Int64, 'action_msg', 10)
@@ -37,20 +38,29 @@ def motor_control(num="1", num1="1", v="0", v1="250"):
     time.sleep(0.05)
 
 
-def huataidaduoji(num, v1, v2):
-    motor_control(3, num, v1, v2)
+detect_node = Node("detect_pub")
+detect_node_pub = detect_node.create_publisher(String, "shibie", 10)
 
 
-def shengjiangdaduoji(num, v1, v2):
-    motor_control(2, num, v1, v2)
+def pub_detect(cmd=""):
+    global detect_node_pub
+    tmp = String()
+    tmp.data = cmd
+    time.sleep(1)
+    detect_node_pub.publish(tmp)
+    time.sleep(0.1)
 
 
-def xiaoduoji(num, v1, v2):
-    motor_control(8, num, v1, v2)
+class qidong_sub(Node):
+    def __init__(self):
+        super().__init__("qidong_sub")
+        self.create_subscription(String, "debug", self.callback, 10)
+        self.subscriptions
 
-
-def ABduoji(num, v1, v2):
-    motor_control(4, num, v1, v2)
+    def callback(self, data):
+        self.get_logger().info('I heard: "%s"' % data.data)
+        global qidong
+        qidong = data
 
 
 detect_node = Node("detect_pub")
@@ -320,6 +330,10 @@ def test():
     # basic.movement(4, 0.25, 0.0, 0.35, True, 4)
 if __name__ == '__main__':
     try:
+        while 1:
+            rclpy.spin_once(qidong_sub(), timeout_sec=0.1)
+            if qidong == "666":
+                break
         test()
         main()
     except KeyboardInterrupt:
