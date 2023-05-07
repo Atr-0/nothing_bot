@@ -9,7 +9,6 @@ from std_msgs.msg import String, Int64
 import grab
 
 rclpy.init()
-qidong = 0
 motor_control_node = Node("motor_control")
 motor_control_pub = motor_control_node.create_publisher(
     Int64, 'action_msg', 10)
@@ -36,31 +35,6 @@ def motor_control(num="1", num1="1", v="0", v1="250"):
     motor_control_pub.publish(msg)
 
     time.sleep(0.05)
-
-
-detect_node = Node("detect_pub")
-detect_node_pub = detect_node.create_publisher(String, "shibie", 10)
-
-
-def pub_detect(cmd=""):
-    global detect_node_pub
-    tmp = String()
-    tmp.data = cmd
-    time.sleep(1)
-    detect_node_pub.publish(tmp)
-    time.sleep(0.1)
-
-
-class qidong_sub(Node):
-    def __init__(self):
-        super().__init__("qidong_sub")
-        self.create_subscription(String, "debug", self.callback, 10)
-        self.subscriptions
-
-    def callback(self, data):
-        self.get_logger().info('I heard: "%s"' % data.data)
-        global qidong
-        qidong = data
 
 
 detect_node = Node("detect_pub")
@@ -115,14 +89,14 @@ def tui(up=False):
         time.sleep(3)
 
 
-# duoji, duoji1 = "03", "05"
-# '''小舵机'''
-# huatai, shengjiang = "08", "02"
-# '''大舵机'''
-duoji, duoji1 = "09", "10"
+duoji, duoji1 = "03", "05"
 '''小舵机'''
 huatai, shengjiang = "08", "02"
 '''大舵机'''
+# duoji, duoji1 = "09", "10"
+# '''小舵机'''
+# huatai, shengjiang = "08", "02"
+# '''大舵机'''
 
 
 @count_time
@@ -131,13 +105,13 @@ def main():
     global jieguo, item_list
     temp = []
     ######### -A-##########
-    basic.daoxianting(-0.01, -0.2, -0.03, dis=0.6, yaxis=True, stop_weight=4)
+    basic.daoxianting(-0.015, -0.2, -0.01, dis=0.6, yaxis=True, stop_weight=4)
     time.sleep(0.5)
     basic.movement(4, 0.2, 0, 0.2, False, 4)
     time.sleep(0.5)
     basic.movement(4, 0.2, 0, 0.38, False, 4)
     time.sleep(0.5)
-    basic.movement(4, 0.2, 0, 0.38, True, 6)
+    basic.movement(4, 0.2, 0, 0.35, True, 6)
     for i in range(6):
         pub_detect("a")
         time.sleep(0.5)
@@ -153,6 +127,7 @@ def main():
             basic.movement(6, 0.25, 0.0, 0.35, False, 4)
     time.sleep(0.2)
     print(item_list)
+    # basic.movement(6, -0.25, 0.0, 0.35, False,4)
     grab.grab(motor_control, huatai, shengjiang,
               duoji, duoji1, item_list, mode="a")
     ######## -B-##########
@@ -169,6 +144,19 @@ def main():
         rclpy.spin_once(detect_sub())
         time.sleep(0.1)
         temp = [int(x) for x in jieguo]
+        # match i:
+        #     case 0:
+        #         temp = [0,0,0,0]
+        #     case 1:
+        #         temp = [0,0,0,0]
+        #     case 2:
+        #         temp = [0,0,0,0]
+        #     case 3:
+        #         temp = [0,0,0,0]
+        #     case 4:
+        #         temp = [0,0,0,0]
+        #     case 5:
+        #         temp = [0,0,0,0]
         print(temp)
         if len(temp) > 0:
             basic.shazou(0, 0.1, 0, 25)
@@ -318,11 +306,10 @@ def test():
     motor_control("2", shengjiang, "3048", "250")
     time.sleep(2)
 
-    # motor_control("3", huatai, "2508", "250")
-    # time.sleep(3)
+    motor_control("3", huatai, "2508", "250")
+    time.sleep(3)
     motor_control("3", huatai, "1048", "250")
     time.sleep(3)
-
 
     # basic.movement(4, 0.25, 0.0, 0.35, False, 4)
     # basic.movement(4, -0.25, 0.0, 0.35, False, 4)
@@ -330,10 +317,6 @@ def test():
     # basic.movement(4, 0.25, 0.0, 0.35, True, 4)
 if __name__ == '__main__':
     try:
-        while 1:
-            rclpy.spin_once(qidong_sub(), timeout_sec=0.1)
-            if qidong == "666":
-                break
         test()
         main()
     except KeyboardInterrupt:

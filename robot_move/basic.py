@@ -87,30 +87,36 @@ class movement(Node):
             '''x计线'''
             # print("xxxxx",temp)
             if self.turnVel == 0.0:
-                if distance > self.dis - 0.1 and (
+                if distance > self.dis - 0.10 and ((
                         (temp1[8-stop_weight] +
                          temp1[(stop_weight+7)] >= 1) and
                         (temp1[7-stop_weight] +
-                         temp1[(stop_weight+8)] >= 1)) and not yaxis:
+                         temp1[(stop_weight+8)] >= 1)) and
+
+                        ((temp1[8-stop_weight] +
+                         temp1[(stop_weight+7)] >= 2) or
+                         (temp1[7-stop_weight] +
+                         temp1[(stop_weight+8)] >= 2))) and not yaxis:
                     print("xxxxxx")
                     break
-                elif distance > self.dis - 0.1 and (
+                elif distance > self.dis - 0.10 and (
                         (temp[8-stop_weight] +
                          temp[(stop_weight+7)] >= 1) and
                         (temp[7-stop_weight] +
                          temp[(stop_weight+8)] >= 1)) and yaxis:
                     print("dddddd")
                     break
-                elif distance > self.dis - 0.1:
+                elif distance > self.dis - 0.08:
                     # 减速度
+                    decel_timer += 0.03
                     self.speed = self.smooth_speed(
-                        0.1, accel_timer, (self.current_speed if self.current_speed > 0.1 else 0.0))
+                        0.05, decel_timer, (self.current_speed if self.current_speed > 0.05 else 0.05))
 
-                elif distance < self.dis - 0.1:
+                elif distance < self.dis - 0.08:
                     # 加速度
-                    accel_timer += 0.025
+                    accel_timer += 0.03
                     self.speed = self.smooth_speed(vel, accel_timer)
-                    self.current_speed = self.speed
+                    self.current_speed = abs(self.speed)
                 self.y_axis_movement(
                     self.speed) if yaxis else self.x_axis_movement(self.speed)
             else:
