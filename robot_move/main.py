@@ -60,7 +60,7 @@ class qidong_sub(Node):
     def callback(self, data):
         self.get_logger().info('I heard: "%s"' % data.data)
         global qidong
-        qidong = data
+        qidong = data.data
 
 
 class detect_sub(Node):
