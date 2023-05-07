@@ -9,6 +9,7 @@ from std_msgs.msg import String, Int64
 import grab
 
 rclpy.init()
+qidong = 0
 motor_control_node = Node("motor_control")
 motor_control_pub = motor_control_node.create_publisher(
     Int64, 'action_msg', 10)
@@ -48,6 +49,18 @@ def pub_detect(cmd=""):
     time.sleep(1)
     detect_node_pub.publish(tmp)
     time.sleep(0.1)
+
+
+class qidong_sub(Node):
+    def __init__(self):
+        super().__init__("qidong_sub")
+        self.create_subscription(String, "debug", self.callback, 10)
+        self.subscriptions
+
+    def callback(self, data):
+        self.get_logger().info('I heard: "%s"' % data.data)
+        global qidong
+        qidong = data
 
 
 class detect_sub(Node):
@@ -311,12 +324,17 @@ def test():
     motor_control("3", huatai, "1048", "250")
     time.sleep(3)
 
+
     # basic.movement(4, 0.25, 0.0, 0.35, False, 4)
     # basic.movement(4, -0.25, 0.0, 0.35, False, 4)
     # basic.movement(4, -0.25, 0.0, 0.35, True, 4)
     # basic.movement(4, 0.25, 0.0, 0.35, True, 4)
 if __name__ == '__main__':
     try:
+        while 1:
+            rclpy.spin_once(qidong_sub(), timeout_sec=0.1)
+            if qidong == "666":
+                break
         test()
         main()
     except KeyboardInterrupt:
