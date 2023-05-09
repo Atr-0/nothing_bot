@@ -310,6 +310,7 @@ class grab():
         '''
         grab_pos = -1
         goal_item = -1
+        item_index = -1
         item_pos = 1
         range_value = range(5, -1, -1)
         if pos < 3:
@@ -319,21 +320,23 @@ class grab():
                 continue
             for j in range(1, -1, -1):
                 for d, k in item.items():
-                    # if len(d_zone_item_list[i+(j*6)]) > 0:
-                    #     for num in d_zone_item_list[i+(j*6)]:
-                    #         if int(d_zone_item_list[i+(j*6)][num]//10) % 10 == k and grab_pos == -1:
-                    #             grab_pos = i+(j*6)
-                    #             push_pos = 2 if (k == 2 or k == 4) else 3
-                    #             goal_item = k
-                    #             item_pos = d_zone_item_list[i+(j*6)][num] % 10
-                    #             break
+                    if isinstance(d_zone_item_list[i+(j*6)], list) and len(d_zone_item_list[i+(j*6)]) != 0:
+                        for num in range(len(d_zone_item_list[i+(j*6)])):
+                            item_number = int(d_zone_item_list[i+(j*6)][num])
+                            if (item_number // 10) % 10 == k and grab_pos == -1:
+                                grab_pos = i+(j*6)
+                                push_pos = 2 if (k == 2 or k == 4) else 3
+                                goal_item = k
+                                item_pos = item_number % 10
+                                item_index = num
+                                break
 
-                    if int(d_zone_item_list[i+(j*6)]//10) % 10 == k and grab_pos == -1:
-                        grab_pos = i+(j*6)
-                        push_pos = 2 if (k == 2 or k == 4) else 3
-                        goal_item = k
-                        item_pos = d_zone_item_list[i+(j*6)] % 10
-                        break
+                    # if int(d_zone_item_list[i+(j*6)]//10) % 10 == k and grab_pos == -1:
+                    #     grab_pos = i+(j*6)
+                    #     push_pos = 2 if (k == 2 or k == 4) else 3
+                    #     goal_item = k
+                    #     item_pos = d_zone_item_list[i+(j*6)] % 10
+                    #     break
         if grab_pos == -1:
             basic.movement(6, -0.25,
                            0, 0.39*(5-pos), False, stop_weight=4)
@@ -364,7 +367,9 @@ class grab():
             else:
                 basic.daoxianting(0.1, 0.05, 0, dis=0.05)
 
-        d_zone_item_list[grab_pos] = -1
+        # d_zone_item_list[grab_pos] = -1
+        del d_zone_item_list[grab_pos][item_index]
+        # list.remove(d_zone_item_list[grab_pos],item_index)
         ###############
         time.sleep(0.5)
         if to_push_dis != 0:
@@ -406,15 +411,15 @@ class grab():
         time.sleep(2)
 
     def push_below(self, outdis="2308"):
-        self.motor_control("2", self.shengjiang, "1998")
+        self.motor_control("2", self.shengjiang, "2008")
         time.sleep(1)
         self.motor_control("3", self.huatai, outdis)
         time.sleep(3.5)
-        self.spread_claw(x=-150, v="250")
+        self.spread_claw(x=-115, v="150")
 
         self.motor_control("2", self.shengjiang, "1948")
         time.sleep(2)
-        self.spread_claw(x=0, v="100")
+        # self.spread_claw(x=0, v="100")
         self.motor_control("3", self.huatai, "1748")
         time.sleep(2)
 
@@ -423,15 +428,15 @@ class grab():
         time.sleep(0.2)
 
     def push_above(self, updis="1488", outdis="2308"):
-        self.motor_control("2", self.shengjiang, str(int(updis)-50))
+        self.motor_control("2", self.shengjiang, str(int(updis)-40))
         time.sleep(5)
 
         self.motor_control("3", self.huatai, outdis)
         time.sleep(3.5)
-        self.spread_claw(x=-150, v="250")
+        self.spread_claw(x=-115, v="150")
         self.motor_control("2", self.shengjiang, "1948")
         time.sleep(2)
-        self.spread_claw(x=0, v="100")
+        # self.spread_claw(x=0, v="100")
         self.motor_control("3", self.huatai, "1748")
         time.sleep(2)
         self.closed_claw()

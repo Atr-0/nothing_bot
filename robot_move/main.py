@@ -75,6 +75,28 @@ class detect_sub(Node):
         jieguo = data.data
 
 
+class dqu_detect_sub(Node):
+    def __init__(self):
+        super().__init__("dqu_obj_detect_sub")
+        self.create_subscription(String, "dqu_detect", self.callback, 10)
+        self.subscriptions
+
+    def callback(self, data):
+        self.get_logger().info('I heard: "%s"' % data)
+        global jieguo
+        temp = String()
+        temp = data.data
+        ilist = temp.split('/')
+        uplist = []
+        uplist = ilist[0].split('*')
+        uplist = [x for x in uplist if x != '']
+        downlist = []
+        downlist = ilist[1].split('*')
+        downlist = [x for x in downlist if x != '']
+        jieguo = [uplist, downlist]
+        print(jieguo)
+
+
 def count_time(func):
     def wrapper(*args, **kwargs):
         t = time.time()
@@ -233,9 +255,7 @@ def main():
     ######### -D-##########
     basic.movement(6, -0.2, 0, 0.35, False, 4)
     time.sleep(0.5)
-    basic.movement(4, -0.2, 0, 0.6, True)
-    time.sleep(0.5)
-    basic.movement(4, 0.2, 0, 0.38, True)
+    basic.movement(4, -0.2, 0, 0.2, True)
     time.sleep(0.5)
     basic.movement(3, 0, 0.4, 0, False, 4)
     time.sleep(0.5)
@@ -244,20 +264,15 @@ def main():
         if i != 2 and i != 3:
             pub_detect("d")
             time.sleep(0.5)
-            rclpy.spin_once(detect_sub())
+            rclpy.spin_once(dqu_detect_sub())
             time.sleep(0.1)
-            temp = [str(x) for x in jieguo]
+            temp = jieguo
             print(temp)
-            if len(temp) > 3:
-                item_list[i] = int(temp[1]+temp[2])
-                item_list[i+6] = int(temp[4]+temp[5])
-            elif len(temp) == 3:
-                if temp[0] == "1":
-                    item_list[i] = int(temp[1]+temp[2])
-                    item_list[i+6] = -1
-                else:
-                    item_list[i] = -1
-                    item_list[i+6] = int(temp[1]+temp[2])
+            if len(temp[0]) >= 1 or len(temp[0]) >= 1:
+                if len(temp[0]) > 0:
+                    item_list[i] = temp[0]
+                if len(temp[1]) > 0:
+                    item_list[i+6] = temp[1]
             else:
                 item_list[i] = -1
                 item_list[i+6] = -1
@@ -324,18 +339,18 @@ def test():
     motor_control("3", huatai, "1048", "250")
     time.sleep(3)
 
-
     # basic.movement(4, 0.25, 0.0, 0.35, False, 4)
     # basic.movement(4, -0.25, 0.0, 0.35, False, 4)
     # basic.movement(4, -0.25, 0.0, 0.35, True, 4)
     # basic.movement(4, 0.25, 0.0, 0.35, True, 4)
 if __name__ == '__main__':
     try:
+        test()
         while 1:
             rclpy.spin_once(qidong_sub(), timeout_sec=0.1)
             if qidong == "666":
                 break
-        test()
+
         main()
     except KeyboardInterrupt:
         pass
