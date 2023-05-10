@@ -87,16 +87,11 @@ class movement(Node):
             '''x计线'''
             # print("xxxxx",temp)
             if self.turnVel == 0.0:
-                if distance > self.dis - 0.10 and ((
+                if distance > self.dis - 0.10 and (
                         (temp1[8-stop_weight] +
                          temp1[(stop_weight+7)] >= 1) and
                         (temp1[7-stop_weight] +
-                         temp1[(stop_weight+8)] >= 1)) and
-
-                        ((temp1[8-stop_weight] +
-                         temp1[(stop_weight+7)] >= 2) or
-                         (temp1[7-stop_weight] +
-                         temp1[(stop_weight+8)] >= 2))) and not yaxis:
+                         temp1[(stop_weight+8)] >= 1)) and not yaxis:
                     print("xxxxxx")
                     break
                 elif distance > self.dis - 0.10 and (
@@ -373,7 +368,7 @@ class daoxianting(Node):
                 dis - 距离\n
         '''
         # rclpy.init(args=None)
-        super().__init__("simple_movement")
+        super().__init__("daoxianting")
         self.pub = self.create_publisher(
             Twist, 'cmd_vel', qos_profile)
         self.x = 1.0
@@ -419,6 +414,69 @@ class daoxianting(Node):
                     temp[(stop_weight+7)] +
                     temp[(stop_weight+8)] >= 1) and yaxis:
                 print("dddddd")
+                break
+
+            self.publish_twist(xvel, yvel, turnVel)
+
+            # 更新距离
+            distance = math.sqrt(pow((position.x - prepos.x), 2) +
+                                 pow((position.y - prepos.y), 2))+distance
+            prepos.x = position.x
+            prepos.y = position.y
+            prepos.z = position.z
+
+        self.publish_twist(0, 0, 0)
+        time.sleep(0.01)
+        self.publish_twist(0, 0, 0)
+        time.sleep(0.01)
+        self.publish_twist(0, 0, 0)
+        node_odom_sub.destroy_node()
+        node_sub.destroy_node()
+        self.destroy_node()
+
+    def publish_twist(self, xvel, yvel, turn):
+        self.twist.linear.x = self.x*xvel
+        self.twist.linear.y = self.y*yvel
+        self.twist.linear.z = 0.0
+        self.twist.angular.x = 0.0
+        self.twist.angular.y = 0.0
+        self.twist.angular.z = 2.0*turn
+        self.pub.publish(self.twist)
+
+
+class yibianting(Node):
+    def __init__(self, xvel, yvel, turnVel=0.0):
+        # rclpy.init(args=None)
+        super().__init__("yibianting")
+        self.pub = self.create_publisher(
+            Twist, 'cmd_vel', qos_profile)
+        self.x = 1.0
+        self.y = 1.0
+        # self.dis = dis
+        self.twist = Twist()
+
+        # 订阅odom->base_footprint变换并传入到 position
+        node_odom_sub = odom_subscription()
+        rclpy.spin_once(node_odom_sub)
+        # 订阅传感器数据
+        node_sub = line_sensor_subscription()
+        rclpy.spin_once(node_sub)
+
+        global position
+        prepos = Vector3()
+        prepos.x = position.x
+        prepos.y = position.y
+        prepos.z = position.z
+        distance = 0.0
+        timer = 0
+        while rclpy.ok():
+            rclpy.spin_once(node_odom_sub)
+            rclpy.spin_once(node_sub)
+            # 更新传感器
+
+            right = list(sensor_matrix[0])+list(sensor_matrix[1])
+            left = list(sensor_matrix[2])+list(sensor_matrix[3])
+            if np.sum(right) >= 5 or np.sum(left) >= 5:
                 break
 
             self.publish_twist(xvel, yvel, turnVel)

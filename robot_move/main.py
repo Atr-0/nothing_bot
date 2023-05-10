@@ -84,16 +84,7 @@ class dqu_detect_sub(Node):
     def callback(self, data):
         self.get_logger().info('I heard: "%s"' % data)
         global jieguo
-        temp = String()
-        temp = data.data
-        ilist = temp.split('/')
-        uplist = []
-        uplist = ilist[0].split('*')
-        uplist = [x for x in uplist if x != '']
-        downlist = []
-        downlist = ilist[1].split('*')
-        downlist = [x for x in downlist if x != '']
-        jieguo = [uplist, downlist]
+        jieguo = data.data
         print(jieguo)
 
 
@@ -267,12 +258,20 @@ def main():
             rclpy.spin_once(dqu_detect_sub())
             time.sleep(0.1)
             temp = jieguo
-            print(temp)
-            if len(temp[0]) >= 1 or len(temp[0]) >= 1:
-                if len(temp[0]) > 0:
-                    item_list[i] = temp[0]
-                if len(temp[1]) > 0:
-                    item_list[i+6] = temp[1]
+            ilist = temp.split('/')
+            uplist = []
+            uplist = ilist[0].split('*')
+            uplist = [x for x in uplist if x != '']
+            downlist = []
+            downlist = ilist[1].split('*')
+            downlist = [x for x in downlist if x != '']
+            temp_list = [uplist, downlist]
+            print(jieguo)
+            if isinstance(temp_list, list):
+                if not len(temp_list[0]) == 0:
+                    item_list[i] = temp_list[0]
+                if not len(temp_list[1]) == 0:
+                    item_list[i+6] = temp_list[1]
             else:
                 item_list[i] = -1
                 item_list[i+6] = -1
