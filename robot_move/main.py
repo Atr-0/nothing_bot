@@ -169,80 +169,50 @@ def main():
         time.sleep(0.5)
         rclpy.spin_once(detect_sub())
         time.sleep(0.1)
-        temp = [int(x) for x in jieguo]
+        jieguostr = jieguo
+        temp = jieguostr.split('/')
         # match i:
         #     case 0:
-        #         temp = [0,0,0,0]
+        #         temp = ['','']
         #     case 1:
-        #         temp = [0,0,0,0]
+        #         temp = ['','']
         #     case 2:
-        #         temp = [0,0,0,0]
+        #         temp = ['','']
         #     case 3:
-        #         temp = [0,0,0,0]
+        #         temp = ['','']
         #     case 4:
-        #         temp = [0,0,0,0]
+        #         temp = ['','']
         #     case 5:
-        #         temp = [0,0,0,0]
-        print(temp)
-        if len(temp) > 0:
-            basic.shazou(0, 0.1, 0, 25)
-            time.sleep(0.5)
-            if len(temp) == 4:
-                if temp[2] != 1:
-                    basic.shazou(0.1*(-1 if temp[2] == 0 else 1), 0.03, 0, 60)
+        #         temp = ['','']
+        if len(temp) == 2:
+            print(temp)
+            if not temp[1] == '':
+                if temp[1] != '1':
+                    basic.yibianting(
+                        0.1*(-1 if int(temp[1]) == 0 else 1), 0.03)
                     time.sleep(0.5)
-                print("tui down", temp[2])
-                tui()
-
-                if temp[2] != 1 and temp[1] != temp[2]:
-                    time.sleep(0.5)
-                    basic.daoxianting(-0.1 *
-                                      (-1 if temp[2] == 0 else 1), 0.05, dis=0.05)
-                ################################################
-                basic.shazou(0, 0.1, 0, 8)
-                time.sleep(0.5)
-                if temp[1] != 1 and temp[1] != temp[2]:
-                    basic.shazou(0.1*(-1 if temp[1] == 0 else 1), 0.03, 0, 60)
-                    time.sleep(0.5)
-                print("tui up", temp[1])
-                tui(True)
-
-                if temp[1] != 1:
-                    time.sleep(0.5)
-                    basic.daoxianting(-0.1 *
-                                      (-1 if temp[1] == 0 else 1), 0.05, dis=0.05)
-                time.sleep(1)
-                ################################################
-            elif len(temp) == 2:
-                if temp[0] == 3:
-                    if temp[1] != 1:
-                        basic.shazou(
-                            0.1*(-1 if temp[1] == 0 else 1), 0.03, 0, 60)
-                        time.sleep(0.5)
-
-                    tui(True)
-
-                    if temp[1] != 1:
-                        time.sleep(0.5)
-                        basic.shazou(-0.1 *
-                                     (-1 if temp[1] == 0 else 1), 0.03, 0, 60)
-
-                elif temp[1] == 4:
-                    if temp[0] != 1:
-                        basic.shazou(
-                            0.1*(-1 if temp[0] == 0 else 1), 0.03, 0, 60)
-                        time.sleep(0.5)
-
                     tui()
 
-                    if temp[0] != 1:
-                        time.sleep(0.5)
-                        basic.shazou(-0.1 *
-                                     (-1 if temp[0] == 0 else 1), 0.03, 0, 60)
+                    basic.daoxianting(-0.1 *
+                                      (-1 if int(temp[1]) == 0 else 1), 0.03, 0, dis=0.1)
+                else:
+                    tui()
+            if not temp[0] == '':
+                if temp[0] != '1':
+                    basic.yibianting(
+                        0.1*(-1 if int(temp[0]) == 0 else 1), 0.03)
+                    time.sleep(0.5)
+                    tui(True)
+
+                    basic.daoxianting(-0.1 *
+                                      (-1 if int(temp[0]) == 0 else 1), 0.03, 0, dis=0.1)
+                else:
+                    tui(True)
         if i < 5:
             time.sleep(0.5)
             basic.movement(6, 0.25, 0.0, 0.35, False, 4)
     time.sleep(0.2)
+
     ######### -D-##########
     basic.movement(6, -0.2, 0, 0.35, False, 4)
     time.sleep(0.5)
@@ -337,6 +307,7 @@ def test():
     time.sleep(3)
     motor_control("3", huatai, "1048", "250")
     time.sleep(3)
+
 
     # basic.movement(4, 0.25, 0.0, 0.35, False, 4)
     # basic.movement(4, -0.25, 0.0, 0.35, False, 4)
