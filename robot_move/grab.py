@@ -17,8 +17,8 @@ c_zone_item_list = [1, 2, 0, 0, 0, 1,
 '''
 1 2 3 4 5 6
 '''
-d_zone_item_list = [2, 1, 0, 0, 3, -1,
-                    -1, -1, 0, 0, -1, 4]
+d_zone_item_list = [[''], [''], 0, 0, [''], [''],
+                    [''], [''], 0, 0, [''], ['']]
 '''
 1 2 3 4 5 6
 '''
@@ -79,7 +79,7 @@ class grab():
         if a_zone_item_list == [0, 0, 1, 1, 2, 2,
                                 0, 0, 1, 1, 2, 2]:
             if pos != 4:
-                basic.movement(6, 0.2*((4-pos)/abs(4-pos)),
+                basic.movement(6, -0.2*((4-pos)/abs(4-pos)),
                                0, 0.39*abs(4-pos), False, stop_weight=4)
             return
 
@@ -115,19 +115,19 @@ class grab():
 
         if grab_pos == -1 or push_pos == -1:
             if pos > 0:
-                basic.movement(6, -0.25,
+                basic.movement(6, 0.25,
                                0, 0.39, False, 4)
                 return self.a_zone_grab(pos-1)
             else:
                 if pos != 4:
-                    basic.movement(6, 0.25*((4-pos)/abs(4-pos)),
+                    basic.movement(6, -0.25*((4-pos)/abs(4-pos)),
                                    0, 0.39*abs(4-pos), False, 4)
                 return
 
         ##### grab#####
         time.sleep(0.5)
         if to_dis != 0:
-            basic.movement(6, -0.25*(to_dis/abs(to_dis)),
+            basic.movement(6, 0.25*(to_dis/abs(to_dis)),
                            0, 0.39*abs(to_dis), False, 4)
         basic.shazou(0.0, 0.1, 0, 15)
         if push_pos < 6:  # 抓上面
@@ -151,12 +151,12 @@ class grab():
         ##### push#####
         time.sleep(0.5)
         if to_grab_dis != 0:
-            basic.movement(6, -0.25*(to_grab_dis/abs(to_grab_dis)),
+            basic.movement(6, 0.25*(to_grab_dis/abs(to_grab_dis)),
                            0, 0.39*abs(to_grab_dis), False, 4)
         time.sleep(0.5)
         basic.shazou(0.0, 0.1, 0, 15)
         time.sleep(0.5)
-        basic.yibianting(-0.1, 0.05)
+        basic.yibianting(0.1, 0.05)
         time.sleep(0.1)
         # basic.shazou(-0.1,0,0,1)
         if grab_pos < 6:
@@ -178,10 +178,10 @@ class grab():
             self.motor_control("2", self.shengjiang, "1988")
 
             time.sleep(0.5)
-            basic.daoxianting(0.1, 0.05, 0, dis=0.1)
+            basic.daoxianting(-0.1, 0.05, 0, dis=0.1)
             time.sleep(0.5)
             # basic.shazou(0.1, 0.05, 0, 70)
-            basic.yibianting(0.1, 0.05)
+            basic.yibianting(-0.1, 0.05)
             time.sleep(0.5)
 
             self.motor_control("2", self.shengjiang, "2188")
@@ -189,7 +189,7 @@ class grab():
             self.__closed_claw__()
             self.motor_control("2", self.shengjiang, "4048")
             time.sleep(5)
-            basic.daoxianting(-0.1, 0.05, 0, dis=0.1)
+            basic.daoxianting(0.1, 0.05, 0, dis=0.1)
         else:
             # 放下面
             self.motor_control("2", self.shengjiang, "1998")
@@ -207,19 +207,19 @@ class grab():
             # 抓下面
             self.motor_control("2", self.shengjiang, "1958")
             time.sleep(0.5)
-            basic.daoxianting(0.1, 0.05, 0, dis=0.1)
+            basic.daoxianting(-0.1, 0.05, 0, dis=0.1)
             time.sleep(0.5)
             # basic.shazou(0.1, 0.05, 0, 70)
-            basic.yibianting(0.1, 0.05)
+            basic.yibianting(-0.1, 0.05)
             time.sleep(0.5)
 
             self.motor_control("2", self.shengjiang, "3048")
             time.sleep(2)
             self.__closed_claw__()
-            basic.daoxianting(-0.1, 0.05, 0, dis=0.1)
+            basic.daoxianting(0.1, 0.05, 0, dis=0.1)
         ##### push#####
         if to_grab_dis != 0:
-            basic.movement(6, 0.25*(to_grab_dis/abs(to_grab_dis)),
+            basic.movement(6, -0.25*(to_grab_dis/abs(to_grab_dis)),
                            0, 0.39*abs(to_grab_dis), False, 4)
         time.sleep(0.5)
         basic.shazou(0.0, 0.1, 0, 15)
@@ -263,7 +263,7 @@ class grab():
 
         if grab_pos == -1 or push_pos == -1:
             if abs(5-pos) != 0:
-                basic.movement(6, -0.25,
+                basic.movement(6, 0.25,
                                0, 0.39*abs(5-pos), False)
             return
         to_grab_dis = (pos-normalize_pos(grab_pos))
@@ -271,7 +271,7 @@ class grab():
 
         time.sleep(0.5)
         if to_grab_dis != 0:
-            basic.movement(6, 0.25*(to_grab_dis/abs(to_grab_dis)),
+            basic.movement(6, -0.25*(to_grab_dis/abs(to_grab_dis)),
                            0, 0.39*abs(to_grab_dis), False, 4)
         time.sleep(0.5)
         ##### grab#####
@@ -286,7 +286,7 @@ class grab():
         ###############
         time.sleep(0.5)
         if to_push_dis != 0:
-            basic.movement(6, 0.25*(to_push_dis/abs(to_push_dis)),
+            basic.movement(6, -0.25*(to_push_dis/abs(to_push_dis)),
                            0, 0.39*abs(to_push_dis), False, 4)
         time.sleep(0.5)
         ##### push#####
@@ -336,35 +336,28 @@ class grab():
                                 item_pos = item_number % 10
                                 item_index = num
                                 break
-
-                    # if int(d_zone_item_list[i+(j*6)]//10) % 10 == k and grab_pos == -1:
-                    #     grab_pos = i+(j*6)
-                    #     push_pos = 2 if (k == 2 or k == 4) else 3
-                    #     goal_item = k
-                    #     item_pos = d_zone_item_list[i+(j*6)] % 10
-                    #     break
         if grab_pos == -1:
-            basic.movement(6, -0.25,
+            basic.movement(6, 0.25,
                            0, 0.39*(5-pos), False, stop_weight=4)
             return
         to_grab_dis = (pos-normalize_pos(grab_pos))
         to_push_dis = (normalize_pos(grab_pos) -
                        normalize_pos(push_pos))
         if to_grab_dis != 0:
-            basic.movement(6, 0.25*(to_grab_dis/abs(to_grab_dis)),
+            basic.movement(6, -0.25*(to_grab_dis/abs(to_grab_dis)),
                            0, 0.39*abs(to_grab_dis), False, stop_weight=4)
         time.sleep(0.5)
         ##### grab#####
         basic.shazou(0.0, 0.1, 0, 15)
         if item_pos != 1:
             if item_pos == 0:
-                basic.yibianting(0.1, 0.05)
-                time.sleep(0.1)
-                basic.shazou(0.1, 0, 0, 18)
-            else:
                 basic.yibianting(-0.1, 0.05)
                 time.sleep(0.1)
                 basic.shazou(-0.1, 0, 0, 18)
+            else:
+                basic.yibianting(0.1, 0.05)
+                time.sleep(0.1)
+                basic.shazou(0.1, 0, 0, 18)
         if grab_pos < 6:
             self.grab_above()
             self.motor_control("2", self.shengjiang, "3048")
@@ -373,9 +366,9 @@ class grab():
             self.grab_below()
         if item_pos != 1:
             if item_pos == 0:
-                basic.daoxianting(-0.1, 0.05, 0, dis=0.05)
-            else:
                 basic.daoxianting(0.1, 0.05, 0, dis=0.05)
+            else:
+                basic.daoxianting(-0.1, 0.05, 0, dis=0.05)
 
         # d_zone_item_list[grab_pos] = -1
         del d_zone_item_list[grab_pos][item_index]
@@ -383,7 +376,7 @@ class grab():
         ###############
         time.sleep(0.5)
         if to_push_dis != 0:
-            basic.movement(6, 0.25*(to_push_dis/abs(to_push_dis)),
+            basic.movement(6, -0.25*(to_push_dis/abs(to_push_dis)),
                            0, 0.39*abs(to_push_dis), False, stop_weight=4)
         time.sleep(0.5)
         ##### push#####

@@ -131,13 +131,13 @@ def main():
     global jieguo, item_list
     temp = []
     ######### -A-##########
-    basic.daoxianting(-0.015, -0.2, -0.01, dis=0.6, yaxis=True, stop_weight=4)
+    basic.movement(6, -0.2, 0, 0.35, False, 4)
     time.sleep(0.5)
-    basic.movement(4, 0.2, 0, 0.2, False, 4)
+    basic.movement(4, -0.2, 0, 0.2, True)
     time.sleep(0.5)
-    basic.movement(4, 0.2, 0, 0.38, False, 4)
+    basic.movement(3, 0, 0.4, 0, False, 4)
     time.sleep(0.5)
-    basic.movement(4, 0.2, 0, 0.35, True, 6)
+    basic.movement(4, 0.2, 0, 0.38, True, 6)
     for i in range(6):
         pub_detect("a")
         time.sleep(0.5)
@@ -150,19 +150,19 @@ def main():
             item_list[i+6] = temp[1]
         if i < 5:
             time.sleep(0.5)
-            basic.movement(6, 0.25, 0.0, 0.35, False, 4)
+            basic.movement(6, -0.25, 0.0, 0.35, False, 4)
     time.sleep(0.2)
     print(item_list)
     # basic.movement(6, -0.25, 0.0, 0.35, False,4)
     grab.grab(motor_control, huatai, shengjiang,
               duoji, duoji1, item_list, mode="a")
     ######## -B-##########
-    basic.movement(4, -0.2, 0, 0.38, True, 4)
-    basic.movement(3, 0, -0.4, 0)
+    basic.movement(6, -0.2, 0, 0.35, False, 4)
     time.sleep(0.5)
-    for i in range(3):
-        time.sleep(0.5)
-        basic.movement(4, 0.25, 0, 0.38, False)
+    basic.movement(4, -0.2, 0, 0.78, False, 4)
+    time.sleep(0.5)
+    basic.movement(3, 0, 0.4, 0)
+    time.sleep(0.5)
     basic.movement(4, 0.2, 0, 0.38, True, 6)
     for i in range(6):
         pub_detect("b")
@@ -214,13 +214,14 @@ def main():
     time.sleep(0.2)
 
     ######### -D-##########
-    basic.movement(6, -0.2, 0, 0.35, False, 4)
+    time.sleep(1)
+    basic.daoxianting(-0.015, -0.2, -0.015, dis=0.6, yaxis=True, stop_weight=4)
     time.sleep(0.5)
-    basic.movement(4, -0.2, 0, 0.2, True)
+    basic.movement(4, 0.2, 0, 0.1, False, 4)
     time.sleep(0.5)
-    basic.movement(3, 0, 0.4, 0, False, 4)
+    basic.movement(4, 0.2, 0, 0.38, False, 4)
     time.sleep(0.5)
-    basic.movement(4, 0.2, 0, 0.38, True, 6)
+    basic.movement(4, 0.2, 0, 0.35, True, 6)
     for i in range(6):
         if i != 2 and i != 3:
             pub_detect("d")
@@ -251,19 +252,19 @@ def main():
 
         if i < 5:
             time.sleep(0.5)
-            basic.movement(6, -0.25, 0.0, 0.35, False, 4)
+            basic.movement(6, 0.25, 0.0, 0.35, False, 4)
     time.sleep(0.2)
     print(item_list)
     grab.grab(motor_control, huatai, shengjiang,
               duoji, duoji1, item_list, mode="d")
 
     ####### -C-##########
-    basic.movement(6, -0.2, 0, 0.35, False, 4)
+    basic.movement(4, -0.2, 0, 0.38, True, 4)
+    basic.movement(3, 0, -0.4, 0)
     time.sleep(0.5)
-    basic.movement(4, -0.2, 0, 0.78, False, 4)
-    time.sleep(0.5)
-    basic.movement(3, 0, 0.4, 0)
-    time.sleep(0.5)
+    for i in range(3):
+        time.sleep(0.5)
+        basic.movement(4, 0.25, 0, 0.38, False)
     basic.movement(4, 0.2, 0, 0.38, True, 6)
     for i in range(6):
 
@@ -277,7 +278,7 @@ def main():
         item_list[i+6] = np.sum(np.array(temp) == 1)
         if i < 5:
             time.sleep(0.5)
-            basic.movement(6, -0.25, 0.0, 0.35, False, 4)
+            basic.movement(6, 0.25, 0.0, 0.35, False, 4)
     time.sleep(0.2)
     print(item_list)
     grab.grab(motor_control, huatai, shengjiang,
@@ -307,7 +308,6 @@ def test():
     time.sleep(3)
     motor_control("3", huatai, "1048", "250")
     time.sleep(3)
-
 
     # basic.movement(4, 0.25, 0.0, 0.35, False, 4)
     # basic.movement(4, -0.25, 0.0, 0.35, False, 4)
