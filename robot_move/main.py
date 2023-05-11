@@ -189,35 +189,34 @@ def main():
             if not temp[1] == '':
                 if temp[1] != '1':
                     basic.yibianting(
-                        -0.1*(-1 if int(temp[1]) == 0 else 1), 0.03)
+                        0.1*(-1 if int(temp[1]) == 0 else 1), 0.03)
                     time.sleep(0.5)
                     tui()
 
-                    basic.daoxianting(0.1 *
+                    basic.daoxianting(-0.1 *
                                       (-1 if int(temp[1]) == 0 else 1), 0.03, 0, dis=0.1)
                 else:
                     tui()
             if not temp[0] == '':
                 if temp[0] != '1':
                     basic.yibianting(
-                        -0.1*(-1 if int(temp[0]) == 0 else 1), 0.03)
+                        0.1*(-1 if int(temp[0]) == 0 else 1), 0.03)
                     time.sleep(0.5)
                     tui(True)
 
-                    basic.daoxianting(0.1 *
+                    basic.daoxianting(-0.1 *
                                       (-1 if int(temp[0]) == 0 else 1), 0.03, 0, dis=0.1)
                 else:
                     tui(True)
         if i < 5:
             time.sleep(0.5)
-            basic.movement(6, 0.25, 0.0, 0.35, False, 4)
+            basic.movement(6, -0.25, 0.0, 0.35, False, 4)
     time.sleep(0.2)
-
     ######### -D-##########
     time.sleep(1)
-    basic.daoxianting(-0.015, -0.2, -0.015, dis=0.6, yaxis=True, stop_weight=4)
+    basic.daoxianting(0, -0.2, -0.015, dis=0.6, yaxis=True, stop_weight=4)
     time.sleep(0.5)
-    basic.movement(4, 0.2, 0, 0.1, False, 4)
+    basic.movement(4, 0.2, 0, 0.2, False, 4)
     time.sleep(0.5)
     basic.movement(4, 0.2, 0, 0.38, False, 4)
     time.sleep(0.5)
