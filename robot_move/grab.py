@@ -74,7 +74,7 @@ class grab():
     def motor_control(self, *args, **kwargs):
         return self.motor_control(*args, **kwargs)
 
-    def a_zone_grab(self, pos=5):
+    def a_zone_grab(self, pos=0):
         global a_zone_item_list
         if a_zone_item_list == [0, 0, 1, 1, 2, 2,
                                 0, 0, 1, 1, 2, 2]:
