@@ -78,9 +78,8 @@ class grab():
         global a_zone_item_list
         if a_zone_item_list == [2, 2, 1, 1, 0, 0,
                                 2, 2, 1, 1, 0, 0]:
-            if pos != 4:
-                basic.movement(6, -0.2*((4-pos)/abs(4-pos)),
-                               0, 0.39*abs(4-pos), False, stop_weight=4)
+            basic.movement(6, -0.25,
+                           0, 0.39*(5-pos), False, stop_weight=4)
             return
 
         zone_num = 0 if (pos == 5 or pos == 4) else (
@@ -119,9 +118,8 @@ class grab():
                                0, 0.39, False, 4)
                 return self.a_zone_grab(pos-1)
             else:
-                if pos != 4:
-                    basic.movement(6, -0.25*((4-pos)/abs(4-pos)),
-                                   0, 0.39*abs(4-pos), False, 4)
+                basic.movement(6, -0.25,
+                               0, 0.39*(5-pos), False, stop_weight=4)
                 return
 
         ##### grab#####
@@ -337,8 +335,9 @@ class grab():
                                 item_index = num
                                 break
         if grab_pos == -1:
-            basic.movement(6, 0.25,
-                           0, 0.39*(5-pos), False, stop_weight=4)
+            if pos != 4:
+                basic.movement(6, 0.2*((4-pos)/abs(4-pos)),
+                               0, 0.39*abs(4-pos), False, stop_weight=4)
             return
         to_grab_dis = (pos-normalize_pos(grab_pos))
         to_push_dis = (normalize_pos(grab_pos) -
