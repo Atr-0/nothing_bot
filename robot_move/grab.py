@@ -350,13 +350,13 @@ class grab():
         basic.shazou(0.0, 0.1, 0, 15)
         if item_pos != 1:
             if item_pos == 0:
-                basic.yibianting(-0.1, 0.05)
-                time.sleep(0.1)
-                basic.shazou(-0.1, 0, 0, 18)
-            else:
                 basic.yibianting(0.1, 0.05)
                 time.sleep(0.1)
                 basic.shazou(0.1, 0, 0, 18)
+            else:
+                basic.yibianting(-0.1, 0.05)
+                time.sleep(0.1)
+                basic.shazou(-0.1, 0, 0, 18)
         if grab_pos < 6:
             self.grab_above()
             self.motor_control("2", self.shengjiang, "3048")

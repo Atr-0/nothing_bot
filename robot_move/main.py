@@ -189,22 +189,22 @@ def main():
             if not temp[1] == '':
                 if temp[1] != '1':
                     basic.yibianting(
-                        0.1*(-1 if int(temp[1]) == 0 else 1), 0.03)
+                        -0.1*(-1 if int(temp[1]) == 0 else 1), 0.03)
                     time.sleep(0.5)
                     tui()
 
-                    basic.daoxianting(-0.1 *
+                    basic.daoxianting(0.1 *
                                       (-1 if int(temp[1]) == 0 else 1), 0.03, 0, dis=0.1)
                 else:
                     tui()
             if not temp[0] == '':
                 if temp[0] != '1':
                     basic.yibianting(
-                        0.1*(-1 if int(temp[0]) == 0 else 1), 0.03)
+                        -0.1*(-1 if int(temp[0]) == 0 else 1), 0.03)
                     time.sleep(0.5)
                     tui(True)
 
-                    basic.daoxianting(-0.1 *
+                    basic.daoxianting(0.1 *
                                       (-1 if int(temp[0]) == 0 else 1), 0.03, 0, dis=0.1)
                 else:
                     tui(True)
