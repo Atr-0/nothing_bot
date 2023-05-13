@@ -27,9 +27,10 @@ def motor_control(num="1", num1="1", v="0", v1="250"):
         v1 - 舵机速度(只在用小舵机时有用)
     '''
     global motor_control_pub
-    temp = num+num1+v+v1
-    # if num == "8":
-    #     temp = temp+v1
+    if num == "5":
+        temp = num+num1
+    else:
+        temp = num+num1+v+v1
     msg = Int64()
 
     msg.data = int(temp)
@@ -284,6 +285,34 @@ def main():
               duoji, duoji1, item_list, mode="c")
 
 
+def fanpai(x=1):
+    motor_control("5", "1")
+    time.sleep(0.2)
+    motor_control("2", shengjiang, "4048", "250")
+    time.sleep(4)
+    motor_control("2", shengjiang, "1708", "250")
+    time.sleep(1.5)
+    motor_control("3", huatai, str(2248 + (5*x)), "250")
+    time.sleep(1.5)
+    motor_control("2", shengjiang, "2138", "250")
+    time.sleep(2)
+    motor_control("2", shengjiang, "1888", "250")
+    time.sleep(2)
+    motor_control("4", "05", "2648")
+    time.sleep(0.2)
+    motor_control("3", huatai, "2248", "250")
+    time.sleep(2)
+    motor_control("5", "0")
+    time.sleep(2)
+    motor_control("4", "05", "1048")
+    time.sleep(0.2)
+
+    # motor_control("2", shengjiang, "2548", "250")
+    # time.sleep(2)
+    motor_control("3", huatai, "1048", "250")
+    time.sleep(2.5)
+
+
 def test():
     motor_control("4", duoji1, "2048", "300")
     motor_control("4", duoji, "2048", "300")
@@ -312,6 +341,8 @@ def test():
     # basic.movement(4, -0.25, 0.0, 0.35, False, 4)
     # basic.movement(4, -0.25, 0.0, 0.35, True, 4)
     # basic.movement(4, 0.25, 0.0, 0.35, True, 4)
+
+
 if __name__ == '__main__':
     try:
         test()
@@ -321,6 +352,16 @@ if __name__ == '__main__':
                 break
 
         main()
+        basic.movement(6, -0.2, 0, 0.38, False, 4)
+        basic.movement(4, -0.2, 0, 0.38, False, 4)
+        basic.movement(3, 0, -0.4, 0)
+        time.sleep(0.5)
+        for i in range(4):
+            basic.movement(4, 0.25, 0, 0.38, False)
+            time.sleep(0.5)
+        basic.shazou(0.0, 0.2, 0, 75)
+        for i in range(15):
+            fanpai(1 if i % 2 == 0 else -1)
     except KeyboardInterrupt:
         pass
     finally:
