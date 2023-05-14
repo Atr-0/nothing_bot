@@ -154,7 +154,7 @@ def main(onlyA=False, onlyB=False):
         pub_detect("a")
         time.sleep(0.5)
         rclpy.spin_once(detect_sub(), timeout_sec=5)
-        while jieguo == '':
+        while jieguo == 'n':
             pub_detect("a")
             time.sleep(0.5)
             rclpy.spin_once(detect_sub(), timeout_sec=5)
@@ -167,7 +167,7 @@ def main(onlyA=False, onlyB=False):
         if i < 5:
             time.sleep(0.5)
             basic.movement(6, -0.25, 0.0, 0.35, False, 4)
-        jieguo = ''
+        jieguo = 'n'
     time.sleep(0.2)
     print(item_list)
     # basic.movement(6, -0.25, 0.0, 0.35, False,4)
@@ -191,7 +191,7 @@ def main(onlyA=False, onlyB=False):
         pub_detect("b")
         time.sleep(0.5)
         rclpy.spin_once(detect_sub(), timeout_sec=5)
-        while jieguo == '':
+        while jieguo == 'n':
             pub_detect("b")
             time.sleep(0.5)
             rclpy.spin_once(detect_sub(), timeout_sec=5)
@@ -234,7 +234,7 @@ def main(onlyA=False, onlyB=False):
         if i < 5:
             time.sleep(0.5)
             basic.movement(6, -0.25, 0.0, 0.35, False, 4)
-        jieguo = ''
+        jieguo = 'n'
     time.sleep(0.2)
     ######### -D-##########
     time.sleep(1)
@@ -250,7 +250,7 @@ def main(onlyA=False, onlyB=False):
             pub_detect("d")
             time.sleep(0.5)
             rclpy.spin_once(dqu_detect_sub(), timeout_sec=5)
-            while jieguo == '':
+            while jieguo == 'n':
                 pub_detect("d")
                 time.sleep(0.5)
                 rclpy.spin_once(dqu_detect_sub(), timeout_sec=5)
@@ -280,7 +280,7 @@ def main(onlyA=False, onlyB=False):
         if i < 5:
             time.sleep(0.5)
             basic.movement(6, 0.25, 0.0, 0.35, False, 4)
-        jieguo = ''
+        jieguo = 'n'
     time.sleep(0.2)
     print(item_list)
     grab.grab(motor_control, huatai, shengjiang,
@@ -298,7 +298,7 @@ def main(onlyA=False, onlyB=False):
         pub_detect("c")
         time.sleep(0.5)
         rclpy.spin_once(detect_sub(), timeout_sec=5)
-        while jieguo == '':
+        while jieguo == 'n':
             pub_detect("c")
             time.sleep(0.5)
             rclpy.spin_once(detect_sub(), timeout_sec=5)
@@ -310,7 +310,7 @@ def main(onlyA=False, onlyB=False):
         if i < 5:
             time.sleep(0.5)
             basic.movement(6, 0.25, 0.0, 0.35, False, 4)
-        jieguo = ''
+        jieguo = 'n'
     time.sleep(0.2)
     print(item_list)
     grab.grab(motor_control, huatai, shengjiang,
