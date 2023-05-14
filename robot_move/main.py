@@ -116,18 +116,29 @@ def tui(up=False):
         time.sleep(3)
 
 
-duoji, duoji1 = "03", "05"
-'''小舵机'''
-huatai, shengjiang = "08", "02"
-'''大舵机'''
-# duoji, duoji1 = "09", "10"
+def bqushoudongshuru():
+    temp = ['', '']
+    up = input("从中间看上 0 or 1 or 2 没有直接回车")
+    print(up)
+    temp[0] = up
+    down = input("从中间看下 0 or 1 or 2 没有直接回车")
+    print(down)
+    temp[1] = down
+    return temp
+
+
+# duoji, duoji1 = "03", "05"
 # '''小舵机'''
 # huatai, shengjiang = "08", "02"
 # '''大舵机'''
+duoji, duoji1 = "09", "10"
+'''小舵机'''
+huatai, shengjiang = "08", "02"
+'''大舵机'''
 
 
 @count_time
-def main():
+def main(onlyA=False, onlyB=False):
     global duoji, duoji1, huatai, shengjiang
     global jieguo, item_list
     temp = []
@@ -142,7 +153,11 @@ def main():
     for i in range(6):
         pub_detect("a")
         time.sleep(0.5)
-        rclpy.spin_once(detect_sub())
+        rclpy.spin_once(detect_sub(), timeout_sec=5)
+        while jieguo == '':
+            pub_detect("a")
+            time.sleep(0.5)
+            rclpy.spin_once(detect_sub(), timeout_sec=5)
         time.sleep(0.1)
         temp = [int(x) for x in jieguo]
         print(temp)
@@ -152,11 +167,13 @@ def main():
         if i < 5:
             time.sleep(0.5)
             basic.movement(6, -0.25, 0.0, 0.35, False, 4)
+        jieguo = ''
     time.sleep(0.2)
     print(item_list)
     # basic.movement(6, -0.25, 0.0, 0.35, False,4)
-    grab.grab(motor_control, huatai, shengjiang,
-              duoji, duoji1, item_list, mode="a")
+    if not onlyB:
+        grab.grab(motor_control, huatai, shengjiang,
+                  duoji, duoji1, item_list, mode="a")
     ######## -B-##########
     basic.movement(6, -0.2, 0, 0.35, False, 4)
     time.sleep(0.5)
@@ -166,31 +183,33 @@ def main():
     time.sleep(0.5)
     basic.movement(4, 0.2, 0, 0.38, True, 6)
     for i in range(6):
+        if i == 0:
+            time.sleep(0.5)
+            basic.movement(6, -0.25, 0.0, 0.35, False, 4)
+            time.sleep(0.5)
+            basic.movement(6, 0.25, 0.0, 0.35, False, 3)
         pub_detect("b")
         time.sleep(0.5)
-        rclpy.spin_once(detect_sub())
+        rclpy.spin_once(detect_sub(), timeout_sec=5)
+        while jieguo == '':
+            pub_detect("b")
+            time.sleep(0.5)
+            rclpy.spin_once(detect_sub(), timeout_sec=5)
         time.sleep(0.1)
         jieguostr = jieguo
         temp = jieguostr.split('/')
-        # match i:
-        #     case 0:
-        #         temp = ['','']
-        #     case 1:
-        #         temp = ['','']
-        #     case 2:
-        #         temp = ['','']
-        #     case 3:
-        #         temp = ['','']
-        #     case 4:
-        #         temp = ['','']
-        #     case 5:
-        #         temp = ['','']
-        if len(temp) == 2:
+        # 手动输入
+        # temp = bqushoudongshuru()
+
+        if len(temp) == 2 and not onlyA:
             print(temp)
             if not temp[1] == '':
                 if temp[1] != '1':
                     basic.yibianting(
                         0.1*(-1 if int(temp[1]) == 0 else 1), 0.03)
+                    time.sleep(0.1)
+                    basic.shazou(
+                        0.1*(-1 if int(temp[1]) == 0 else 1), 0.0, 0, 15)
                     time.sleep(0.5)
                     tui()
 
@@ -202,6 +221,9 @@ def main():
                 if temp[0] != '1':
                     basic.yibianting(
                         0.1*(-1 if int(temp[0]) == 0 else 1), 0.03)
+                    time.sleep(0.1)
+                    basic.shazou(
+                        0.1*(-1 if int(temp[0]) == 0 else 1), 0.0, 0, 15)
                     time.sleep(0.5)
                     tui(True)
 
@@ -212,6 +234,7 @@ def main():
         if i < 5:
             time.sleep(0.5)
             basic.movement(6, -0.25, 0.0, 0.35, False, 4)
+        jieguo = ''
     time.sleep(0.2)
     ######### -D-##########
     time.sleep(1)
@@ -226,7 +249,11 @@ def main():
         if i != 2 and i != 3:
             pub_detect("d")
             time.sleep(0.5)
-            rclpy.spin_once(dqu_detect_sub())
+            rclpy.spin_once(dqu_detect_sub(), timeout_sec=5)
+            while jieguo == '':
+                pub_detect("d")
+                time.sleep(0.5)
+                rclpy.spin_once(dqu_detect_sub(), timeout_sec=5)
             time.sleep(0.1)
             temp = jieguo
             ilist = temp.split('/')
@@ -237,7 +264,7 @@ def main():
             downlist = ilist[1].split('*')
             downlist = [x for x in downlist if x != '']
             temp_list = [uplist, downlist]
-            print(jieguo)
+            print(temp_list)
             if isinstance(temp_list, list):
                 if not len(temp_list[0]) == 0:
                     item_list[i] = temp_list[0]
@@ -253,6 +280,7 @@ def main():
         if i < 5:
             time.sleep(0.5)
             basic.movement(6, 0.25, 0.0, 0.35, False, 4)
+        jieguo = ''
     time.sleep(0.2)
     print(item_list)
     grab.grab(motor_control, huatai, shengjiang,
@@ -267,10 +295,13 @@ def main():
         basic.movement(4, 0.25, 0, 0.38, False)
     basic.movement(4, 0.2, 0, 0.38, True, 6)
     for i in range(6):
-
         pub_detect("c")
         time.sleep(0.5)
-        rclpy.spin_once(detect_sub())
+        rclpy.spin_once(detect_sub(), timeout_sec=5)
+        while jieguo == '':
+            pub_detect("c")
+            time.sleep(0.5)
+            rclpy.spin_once(detect_sub(), timeout_sec=5)
         time.sleep(0.1)
         temp = [int(x) for x in jieguo]
         print(temp)
@@ -279,26 +310,28 @@ def main():
         if i < 5:
             time.sleep(0.5)
             basic.movement(6, 0.25, 0.0, 0.35, False, 4)
+        jieguo = ''
     time.sleep(0.2)
     print(item_list)
     grab.grab(motor_control, huatai, shengjiang,
               duoji, duoji1, item_list, mode="c")
 
 
-def fanpai(x=1):
+@count_time
+def fanpai(x=0):
     motor_control("5", "1")
     time.sleep(0.2)
     motor_control("2", shengjiang, "4048", "250")
     time.sleep(4)
     motor_control("2", shengjiang, "1708", "250")
     time.sleep(1.5)
-    motor_control("3", huatai, str(2248 + (5*x)), "250")
+    motor_control("3", huatai, "2248", "250")
     time.sleep(1.5)
-    motor_control("2", shengjiang, "2138", "250")
+    motor_control("2", shengjiang, str(2118+x), "250")
     time.sleep(2)
     motor_control("2", shengjiang, "1888", "250")
     time.sleep(2)
-    motor_control("4", "05", "2648")
+    motor_control("4", "05", "2548")
     time.sleep(0.2)
     motor_control("3", huatai, "2248", "250")
     time.sleep(2)
@@ -352,8 +385,8 @@ if __name__ == '__main__':
                 break
 
         main()
-        basic.movement(6, -0.2, 0, 0.38, False, 4)
-        basic.movement(4, -0.2, 0, 0.38, False, 4)
+        basic.movement(6, -0.2, 0, 0.38, False, 3)
+        basic.movement(4, -0.2, 0, 0.38, False, 3)
         basic.movement(3, 0, -0.4, 0)
         time.sleep(0.5)
         for i in range(4):
@@ -361,7 +394,7 @@ if __name__ == '__main__':
             time.sleep(0.5)
         basic.shazou(0.0, 0.2, 0, 75)
         for i in range(15):
-            fanpai(1 if i % 2 == 0 else -1)
+            fanpai(i*6)
     except KeyboardInterrupt:
         pass
     finally:
