@@ -12,7 +12,7 @@ rclpy.init()
 qidong = 0
 motor_control_node = Node("motor_control")
 motor_control_pub = motor_control_node.create_publisher(
-    Int64, 'action_msg', 10)
+    Int64, 'action_msg', 20)
 jieguo = ""
 item_list = [0, 0, 0, 0, 0, 0,
              0, 0, 0, 0, 0, 0]
@@ -35,8 +35,9 @@ def motor_control(num="1", num1="1", v="0", v1="250"):
 
     msg.data = int(temp)
     motor_control_pub.publish(msg)
-
     time.sleep(0.05)
+    motor_control_pub.publish(msg)
+    time.sleep(0.1)
 
 
 detect_node = Node("detect_pub")
@@ -138,7 +139,7 @@ huatai, shengjiang = "08", "02"
 
 
 @count_time
-def main(onlyA=False, onlyB=False):
+def main():
     global duoji, duoji1, huatai, shengjiang
     global jieguo, item_list
     temp = []
@@ -151,6 +152,7 @@ def main(onlyA=False, onlyB=False):
     time.sleep(0.5)
     basic.movement(4, 0.2, 0, 0.38, True, 6)
     for i in range(6):
+        jieguo = 'n'
         pub_detect("a")
         time.sleep(0.5)
         rclpy.spin_once(detect_sub(), timeout_sec=5)
@@ -167,13 +169,12 @@ def main(onlyA=False, onlyB=False):
         if i < 5:
             time.sleep(0.5)
             basic.movement(6, -0.25, 0.0, 0.35, False, 4)
-        jieguo = 'n'
     time.sleep(0.2)
     print(item_list)
     # basic.movement(6, -0.25, 0.0, 0.35, False,4)
-    if not onlyB:
-        grab.grab(motor_control, huatai, shengjiang,
-                  duoji, duoji1, item_list, mode="a")
+
+    grab.grab(motor_control, huatai, shengjiang,
+              duoji, duoji1, item_list, mode="a")
     ######## -B-##########
     basic.movement(6, -0.2, 0, 0.35, False, 4)
     time.sleep(0.5)
@@ -182,7 +183,10 @@ def main(onlyA=False, onlyB=False):
     basic.movement(3, 0, 0.4, 0)
     time.sleep(0.5)
     basic.movement(4, 0.2, 0, 0.38, True, 6)
+    item_list = ['2', '', '', '', '', '1',
+                 '2', '0', '', '0', '', '1']
     for i in range(6):
+        jieguo = 'n'
         if i == 0:
             time.sleep(0.5)
             basic.movement(6, -0.25, 0.0, 0.35, False, 4)
@@ -198,10 +202,9 @@ def main(onlyA=False, onlyB=False):
         time.sleep(0.1)
         jieguostr = jieguo
         temp = jieguostr.split('/')
-        # 手动输入
-        # temp = bqushoudongshuru()
-
-        if len(temp) == 2 and not onlyA:
+        # temp[0]=item_list[i]
+        # temp[1]=item_list[i+6]
+        if len(temp) == 2:
             print(temp)
             if not temp[1] == '':
                 if temp[1] != '1':
@@ -234,7 +237,6 @@ def main(onlyA=False, onlyB=False):
         if i < 5:
             time.sleep(0.5)
             basic.movement(6, -0.25, 0.0, 0.35, False, 4)
-        jieguo = 'n'
     time.sleep(0.2)
     ######### -D-##########
     time.sleep(1)
@@ -246,6 +248,7 @@ def main(onlyA=False, onlyB=False):
     time.sleep(0.5)
     basic.movement(4, 0.2, 0, 0.35, True, 6)
     for i in range(6):
+        jieguo = 'n'
         if i != 2 and i != 3:
             pub_detect("d")
             time.sleep(0.5)
@@ -280,7 +283,6 @@ def main(onlyA=False, onlyB=False):
         if i < 5:
             time.sleep(0.5)
             basic.movement(6, 0.25, 0.0, 0.35, False, 4)
-        jieguo = 'n'
     time.sleep(0.2)
     print(item_list)
     grab.grab(motor_control, huatai, shengjiang,
@@ -295,6 +297,7 @@ def main(onlyA=False, onlyB=False):
         basic.movement(4, 0.25, 0, 0.38, False)
     basic.movement(4, 0.2, 0, 0.38, True, 6)
     for i in range(6):
+        jieguo = 'n'
         pub_detect("c")
         time.sleep(0.5)
         rclpy.spin_once(detect_sub(), timeout_sec=5)
@@ -310,7 +313,6 @@ def main(onlyA=False, onlyB=False):
         if i < 5:
             time.sleep(0.5)
             basic.movement(6, 0.25, 0.0, 0.35, False, 4)
-        jieguo = 'n'
     time.sleep(0.2)
     print(item_list)
     grab.grab(motor_control, huatai, shengjiang,
@@ -329,12 +331,14 @@ def fanpai(x=0):
     time.sleep(1.5)
     motor_control("2", shengjiang, str(2118+x), "250")
     time.sleep(2)
-    motor_control("2", shengjiang, "1888", "250")
+    motor_control("2", shengjiang, "1788", "250")
     time.sleep(2)
     motor_control("4", "05", "2548")
     time.sleep(0.2)
     motor_control("3", huatai, "2248", "250")
     time.sleep(2)
+    motor_control("2", shengjiang, "2148", "250")
+    time.sleep(1)
     motor_control("5", "0")
     time.sleep(2)
     motor_control("4", "05", "1048")
